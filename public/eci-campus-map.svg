@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 800" width="100%" height="100%" className="eci-campus-map-svg">
+  <defs>
+    <filter id="building-shadow" x="-5%" y="-5%" width="115%" height="115%">
+      <feDropShadow dx="2" dy="4" stdDeviation="4" flood-color="#000" flood-opacity="0.25"/>
+    </filter>
+    <linearGradient id="grass-gradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#14532D" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#166534" stop-opacity="0.25"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Fondo del Campus / Zonas Verdes -->
+  <rect width="1000" height="800" fill="#0B132B" rx="16"/>
+  <rect x="40" y="40" width="920" height="720" fill="url(#grass-gradient)" rx="12" stroke="#1E293B" stroke-width="2"/>
+
+  <!-- Vías y Caminos Peatonales Principales -->
+  <path d="M 60 400 L 940 400 M 500 60 L 500 740 M 200 150 L 800 650 M 200 650 L 800 150" 
+        stroke="#334155" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+  <path d="M 60 400 L 940 400 M 500 60 L 500 740" 
+        stroke="#64748B" stroke-width="4" stroke-dasharray="8 6" opacity="0.4"/>
+
+  <!-- Edificios Principales (Con IDs Normalizados de Dominio) -->
+
+  <!-- Bloque A (Administración y Admisiones) -->
+  <g id="ECI-BLQ-A" class="campus-building cursor-pointer group" filter="url(#building-shadow)">
+    <rect x="120" y="100" width="140" height="100" rx="8" fill="#1E293B" stroke="#8B0000" stroke-width="3"
+          class="transition-all duration-300 hover:fill-[#2A374A] hover:stroke-[#F59E0B]"/>
+    <text x="190" y="145" fill="#F8FAFC" font-size="16" font-weight="bold" text-anchor="middle" font-family="sans-serif">BLOQUE A</text>
+    <text x="190" y="170" fill="#94A3B8" font-size="11" text-anchor="middle" font-family="sans-serif">Admisiones / Rectoría</text>
+  </g>
+
+  <!-- Bloque B (Aulas Generales) -->
+  <g id="ECI-BLQ-B" class="campus-building cursor-pointer group" filter="url(#building-shadow)">
+    <rect x="320" y="100" width="150" height="110" rx="8" fill="#1E293B" stroke="#8B0000" stroke-width="3"
+          class="transition-all duration-300 hover:fill-[#2A374A] hover:stroke-[#F59E0B]"/>
+    <text x="395" y="150" fill="#F8FAFC" font-size="16" font-weight="bold" text-anchor="middle" font-family="sans-serif">BLOQUE B</text>
+    <text x="395" y="175" fill="#94A3B8" font-size="11" text-anchor="middle" font-family="sans-serif">Aulas Básicas</text>
+  </g>
+
+  <!-- Bloque C (Ingeniería de Sistemas y Electrónica) -->
+  <g id="ECI-BLQ-C" class="campus-building cursor-pointer group" filter="url(#building-shadow)">
+    <rect x="540" y="90" width="160" height="130" rx="8" fill="#1E293B" stroke="#8B0000" stroke-width="3"
+          class="transition-all duration-300 hover:fill-[#2A374A] hover:stroke-[#F59E0B]"/>
+    <text x="620" y="150" fill="#F8FAFC" font-size="16" font-weight="bold" text-anchor="middle" font-family="sans-serif">BLOQUE C</text>
+    <text x="620" y="175" fill="#94A3B8" font-size="11" text-anchor="middle" font-family="sans-serif">Sistemas y Telemática</text>
+  </g>
+
+  <!-- Bloque D (Ingeniería Civil y Ambiental) -->
+  <g id="ECI-BLQ-D" class="campus-building cursor-pointer group" filter="url(#building-shadow)">
+    <rect x="750" y="120" width="140" height="120" rx="8" fill="#1E293B" stroke="#8B0000" stroke-width="3"
+          class="transition-all duration-300 hover:fill-[#2A374A] hover:stroke-[#F59E0B]"/>
+    <text x="820" y="170" fill="#F8FAFC" font-size="16" font-weight="bold" text-anchor="middle" font-family="sans-serif">BLOQUE D</text>
+    <text x="820" y="195" fill="#94A3B8" font-size="11" text-anchor="middle" font-family="sans-serif">Civil y Geotecnia</text>
+  </g>
+
+  <!-- Biblioteca Jorge Álvarez Lleras (Centro del Campus) -->
+  <g id="ECI-BIB-LLR" class="campus-building cursor-pointer group" filter="url(#building-shadow)">
+    <polygon points="430,340 570,340 600,440 400,440" fill="#1E293B" stroke="#D97706" stroke-width="3"
+             class="transition-all duration-300 hover:fill-[#2A374A] hover:stroke-[#FBBF24]"/>
+    <text x="500" y="385" fill="#F8FAFC" font-size="15" font-weight="bold" text-anchor="middle" font-family="sans-serif">BIBLIOTECA</text>
+    <text x="500" y="410" fill="#FBBF24" font-size="11" text-anchor="middle" font-family="sans-serif">Jorge Álvarez Lleras</text>
+  </g>
+
+  <!-- Bloque E (Ingeniería Industrial y Economía) -->
+  <g id="ECI-BLQ-E" class="campus-building cursor-pointer group" filter="url(#building-shadow)">
+    <rect x="150" y="480" width="160" height="120" rx="8" fill="#1E293B" stroke="#8B0000" stroke-width="3"
+          class="transition-all duration-300 hover:fill-[#2A374A] hover:stroke-[#F59E0B]"/>
+    <text x="230" y="535" fill="#F8FAFC" font-size="16" font-weight="bold" text-anchor="middle" font-family="sans-serif">BLOQUE E</text>
+    <text x="230" y="560" fill="#94A3B8" font-size="11" text-anchor="middle" font-family="sans-serif">Industrial y Finanzas</text>
+  </g>
+
+  <!-- Bloque F (Laboratorios Especializados e Innovación) -->
+  <g id="ECI-BLQ-F" class="campus-building cursor-pointer group" filter="url(#building-shadow)">
+    <rect x="360" y="520" width="180" height="130" rx="8" fill="#1E293B" stroke="#8B0000" stroke-width="3"
+          class="transition-all duration-300 hover:fill-[#2A374A] hover:stroke-[#F59E0B]"/>
+    <text x="450" y="580" fill="#F8FAFC" font-size="16" font-weight="bold" text-anchor="middle" font-family="sans-serif">BLOQUE F</text>
+    <text x="450" y="605" fill="#94A3B8" font-size="11" text-anchor="middle" font-family="sans-serif">I+D+i y Robótica</text>
+  </g>
+
+  <!-- Escenarios Deportivos -->
+
+  <!-- Coliseo El Otoño -->
+  <g id="ECI-COL-OTO" class="campus-building cursor-pointer group" filter="url(#building-shadow)">
+    <path d="M 680 480 Q 820 440 920 480 L 920 620 Q 820 660 680 620 Z" fill="#1E293B" stroke="#0284C7" stroke-width="3"
+          class="transition-all duration-300 hover:fill-[#2A374A] hover:stroke-[#38BDF8]"/>
+    <text x="800" y="545" fill="#F8FAFC" font-size="16" font-weight="bold" text-anchor="middle" font-family="sans-serif">COLISEO</text>
+    <text x="800" y="570" fill="#38BDF8" font-size="12" text-anchor="middle" font-family="sans-serif">El Otoño (Deportes)</text>
+  </g>
+
+  <!-- Cancha Principal de Fútbol -->
+  <g id="ECI-CAN-FUT" class="campus-building cursor-pointer group">
+    <rect x="650" y="660" width="260" height="75" rx="6" fill="#14532D" stroke="#22C55E" stroke-width="2" stroke-dasharray="4 4"
+          class="transition-all duration-300 hover:fill-[#166534]"/>
+    <circle cx="780" cy="697" r="18" fill="none" stroke="#22C55E" stroke-width="1.5"/>
+    <line x1="780" y1="660" x2="780" y2="735" stroke="#22C55E" stroke-width="1.5"/>
+    <text x="780" y="702" fill="#DCFCE7" font-size="11" font-weight="bold" text-anchor="middle" font-family="sans-serif">Cancha de Fútbol 1</text>
+  </g>
+
+  <!-- Brújula / Rosa de los Vientos -->
+  <g transform="translate(900, 90)">
+    <circle cx="0" cy="0" r="28" fill="#1E293B" stroke="#475569" stroke-width="1.5"/>
+    <polygon points="0,-22 6,-4 0,0 -6,-4" fill="#8B0000"/>
+    <polygon points="0,22 6,4 0,0 -6,4" fill="#64748B"/>
+    <text x="0" y="-8" fill="#F8FAFC" font-size="10" font-weight="bold" text-anchor="middle" font-family="sans-serif">N</text>
+  </g>
+</svg>
