@@ -70,3 +70,21 @@ export interface UserSession {
   facultyId?: string | null;
   isAuthorizedOrganizer?: boolean;
 }
+
+export interface EventRegistration {
+  id: string;
+  eventId: string;
+  userId: string;
+  status: 'CONFIRMADA' | 'CANCELADA';
+  registeredAt: string;
+}
+
+/** Contrato estándar de error de los microservicios (ErrorResponseDTO). */
+export interface ApiError {
+  status: number;
+  error: string;
+  mensaje: string;
+  path: string;
+  timestamp: string;
+  detalles?: { campo: string; mensaje: string }[];
+}
