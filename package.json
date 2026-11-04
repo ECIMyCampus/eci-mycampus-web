@@ -2,7 +2,7 @@
   "name": "eci-mycampus-web",
   "version": "0.1.0",
   "private": true,
-  "description": "Frontend Web y BFF Gateway para la comunidad de la Escuela Colombiana de Ingeniería Julio Garavito",
+  "description": "Frontend web para la comunidad de la Escuela Colombiana de Ingeniería Julio Garavito",
   "scripts": {
     "dev": "next dev -p 3000",
     "build": "next build",

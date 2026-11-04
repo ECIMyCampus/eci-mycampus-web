@@ -5,6 +5,8 @@ const backendUrl = process.env.INTERNAL_API_URL || 'http://localhost:4000';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  // Imagen mínima: incluye solo lo necesario para ejecutar `node server.js`.
+  output: 'standalone',
   async rewrites() {
     return [
       {

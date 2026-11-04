@@ -19,3 +19,9 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npm audit --omit=dev --audit-level=high
+      - name: Build production image
+        run: docker build -t eci-mycampus-web:ci .
+      - name: Smoke test production image
+        run: |
+          docker run -d --name web -p 3000:3000 eci-mycampus-web:ci
+          curl --fail --silent --retry 15 --retry-delay 2 --retry-all-errors --output /dev/null http://localhost:3000/
