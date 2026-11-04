@@ -1,33 +1,68 @@
-# ECI-MyCampus — Frontend Web & Gateway BFF
+# ECI-MyCampus Web
 
-Aplicación web adaptable (móviles y escritorio) para la comunidad universitaria de la **Escuela Colombiana de Ingeniería Julio Garavito**.
+Aplicación web adaptable para la comunidad de la **Escuela Colombiana de Ingeniería Julio Garavito**. Es un cliente del backend del repo `eci-mycampus-backend`.
+
+**Estado actual:** piloto. La portada muestra eventos de demostración y el mapa es interactivo, pero la interfaz aún no consume la API: `src/lib/api.ts` está listo y sin usar. Los enlaces a `/login`, `/mis-eventos` y `/perfil` todavía no tienen página.
 
 ## Tecnologías
-* **Framework:** Next.js 15 (App Router, React 19)
-* **Lenguaje:** TypeScript 5
-* **Estilos:** Tailwind CSS
-* **Iconografía:** Lucide React
-* **Validación:** Zod
+
+- Next.js 15 (App Router) y React 19
+- TypeScript 5
+- Tailwind CSS
+- Lucide React
+- Vitest
 
 ## Estructura
+
 ```text
 src/
-├── app/               # Rutas de la aplicación (Radar, Mapa, Eventos, Lugares, Admin)
-├── components/        # Componentes UI reutilizables
-├── features/          # Módulos de dominio (radar, campus-map, events, auth)
-├── lib/               # Clientes HTTP y utilidades
-└── types/             # Contratos de datos TypeScript
+├── app/          # Rutas: / (radar) y /mapa
+├── components/   # layout, map y radar
+├── lib/          # Cliente HTTP y utilidades
+└── types/        # Contratos de datos
 ```
 
-## Ejecución Local
+## Ejecución local
+
+Requiere Node.js 22 o superior y el backend corriendo en `http://localhost:4000`.
+
 ```bash
+cp .env.example .env.local
 npm install
 npm run dev
 ```
-La aplicación iniciará en `http://localhost:3000`.
 
-## Variables de Entorno (`.env.local`)
-Ver `.env.example` para la configuración de URLs de microservicios:
-* `NEXT_PUBLIC_AUTH_SERVICE_URL=http://localhost:4001`
-* `NEXT_PUBLIC_CAMPUS_SERVICE_URL=http://localhost:4002`
-* `NEXT_PUBLIC_EVENTS_SERVICE_URL=http://localhost:4003`
+La aplicación queda en `http://localhost:3000`.
+
+## Variables de entorno
+
+| Variable | Por defecto | Descripción |
+| :--- | :--- | :--- |
+| `INTERNAL_API_URL` | `http://localhost:4000` | URL del backend |
+| `PORT` | `3000` | Puerto, solo en la imagen Docker |
+
+Next.js reenvía `/api/v1/*` al backend mediante un rewrite que se resuelve **al compilar**. Cambiar `INTERNAL_API_URL` exige recompilar. Por eso la imagen la recibe como argumento:
+
+```bash
+docker build --build-arg INTERNAL_API_URL=https://api.ejemplo.edu.co -t eci-mycampus-web .
+```
+
+## Calidad
+
+```bash
+npx tsc --noEmit
+npm test
+npm run build
+```
+
+ESLint no está configurado todavía: `npm run lint` abre un asistente interactivo.
+
+## Flujo Git
+
+| Rama | Uso |
+| :--- | :--- |
+| `main` | Versión estable |
+| `develop` | Integración |
+| `feature/*`, `refactor/*`, `fix/*`, `docs/*` | Un objetivo por rama, con PR hacia `develop` |
+
+Los commits son atómicos y siguen Conventional Commits. El contrato de la API se consulta en `/docs` del backend.
