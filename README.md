@@ -47,6 +47,8 @@ Next.js reenvía `/api/v1/*` al backend mediante un rewrite que se resuelve **al
 docker build --build-arg INTERNAL_API_URL=https://api.ejemplo.edu.co -t eci-mycampus-web .
 ```
 
+La imagen usa la salida `standalone` de Next.js y arranca con `node server.js`. El despliegue en Azure está en `docs/deployment/AZURE.md` del repo `eci-mycampus-backend`.
+
 ## Calidad
 
 ```bash
