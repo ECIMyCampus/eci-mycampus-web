@@ -6,3 +6,125 @@
   --eci-red: #8B0000;
   --eci-dark: #0f1115;
 }
+
+/* ---------- Mapa interactivo del campus ---------- */
+.campus-pin {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.15s ease-out;
+}
+
+/* Edificio: pin rojo ECI. */
+.campus-pin--building {
+  background: #a51d24;
+  border: 2px solid #fff;
+  border-radius: 50% 50% 50% 6px;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.45);
+}
+
+/* Escenario deportivo: círculo ámbar con borde punteado. */
+.campus-pin--sports {
+  background: #f59e0b;
+  color: #1e293b;
+  border: 2px dashed #1e293b;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px #f59e0b, 0 4px 12px rgb(0 0 0 / 0.45);
+}
+
+/* El pin no se escala con transform: Mapbox usa esa propiedad para ubicarlo. */
+.campus-pin:hover,
+.campus-pin:focus-visible,
+.campus-pin.is-hovered,
+.campus-pin.is-selected {
+  z-index: 2;
+  filter: brightness(1.2);
+}
+
+.campus-pin:focus-visible,
+.campus-pin.is-selected,
+.campus-pin.is-hovered {
+  outline: 3px solid #38bdf8;
+  outline-offset: 3px;
+}
+
+.campus-pin__label {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 8px;
+  border-radius: 8px;
+  background: #0f172a;
+  border: 1px solid #334155;
+  color: #f1f5f9;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease-out;
+}
+
+.campus-pin:hover .campus-pin__label,
+.campus-pin:focus-visible .campus-pin__label,
+.campus-pin.is-hovered .campus-pin__label {
+  opacity: 1;
+}
+
+.campus-pin__live,
+.campus-pin__count {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  border: 2px solid #0f172a;
+  border-radius: 999px;
+}
+
+.campus-pin__live {
+  width: 14px;
+  height: 14px;
+  background: #34d399;
+  animation: campus-pulse 1.6s ease-out infinite;
+}
+
+.campus-pin__count {
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  background: #0f172a;
+  color: #f1f5f9;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 14px;
+}
+
+.campus-live-dot {
+  animation: campus-pulse 1.6s ease-out infinite;
+}
+
+.campus-card {
+  animation: campus-card-in 0.2s ease-out;
+}
+
+@keyframes campus-pulse {
+  0% { box-shadow: 0 0 0 0 rgb(52 211 153 / 0.7); }
+  100% { box-shadow: 0 0 0 10px rgb(52 211 153 / 0); }
+}
+
+@keyframes campus-card-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .campus-pin__label { transition: none; }
+  .campus-pin__live,
+  .campus-live-dot,
+  .campus-card { animation: none; }
+}
