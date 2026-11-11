@@ -3,6 +3,9 @@ WORKDIR /app
 # Next.js resuelve los rewrites al compilar: la URL del backend se fija en esta etapa.
 ARG INTERNAL_API_URL=http://localhost:4000
 ENV INTERNAL_API_URL=$INTERNAL_API_URL
+# El token público de Mapbox queda incluido en el JavaScript del navegador al compilar.
+ARG NEXT_PUBLIC_MAPBOX_TOKEN=
+ENV NEXT_PUBLIC_MAPBOX_TOKEN=$NEXT_PUBLIC_MAPBOX_TOKEN
 ENV NEXT_TELEMETRY_DISABLED=1
 COPY package*.json ./
 RUN npm ci
