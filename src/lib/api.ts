@@ -1,4 +1,4 @@
-import { ApiError, CampusEvent, Building, EventRegistration, Faculty } from '../types';
+import { ApiError, CampusEvent, Building, EventRegistration, Faculty, SportsFacility } from '../types';
 
 const API_BASE = '/api/v1';
 
@@ -34,6 +34,12 @@ export const api = {
   async getBuildings(): Promise<Building[]> {
     const res = await fetch(`${API_BASE}/campus/buildings`);
     if (!res.ok) throw await toApiError(res, 'Error al consultar edificios');
+    return res.json();
+  },
+
+  async getSportsFacilities(): Promise<SportsFacility[]> {
+    const res = await fetch(`${API_BASE}/campus/sports`);
+    if (!res.ok) throw await toApiError(res, 'Error al consultar escenarios deportivos');
     return res.json();
   },
 

@@ -53,6 +53,24 @@ export interface Building {
   floorsCount: number;
   academicInfo?: string | null;
   isActive: boolean;
+  services?: CampusServiceInfo[];
+}
+
+export interface CampusServiceInfo {
+  id: string;
+  name: string;
+  serviceType: string;
+  operatingHours?: string | null;
+  phone?: string | null;
+}
+
+export interface SportsFacility {
+  id: string;
+  code: string;
+  name: string;
+  sportTypes: string[];
+  svgElementId: string;
+  isActive: boolean;
 }
 
 export interface Faculty {
