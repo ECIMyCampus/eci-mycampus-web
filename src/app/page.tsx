@@ -2,72 +2,11 @@ import React from 'react';
 import Link from 'next/link';
 import { Compass, MapPin, Sparkles, Filter } from 'lucide-react';
 import { EventCard } from '../components/radar/EventCard';
-import { CampusEvent } from '../types';
+import { CampusMap } from '../components/map/CampusMap';
+import { createDemoEvents } from '../lib/map/demo-data';
 
 // Eventos de demostración para el piloto inicial
-const DEMO_EVENTS: CampusEvent[] = [
-  {
-    id: 'evt-1',
-    title: 'Torneo Interfacultades de Futsal: Sistemas vs. Civil',
-    description: 'Fase de cuartos de final del torneo universitario. Asiste y apoya a tu facultad en las canchas múltiples.',
-    category: 'DEPORTIVO',
-    buildingId: 'COL-OTO',
-    specificLocation: 'Coliseo El Otoño - Cancha Principal',
-    startTime: new Date().toISOString(),
-    endTime: new Date(Date.now() + 7200000).toISOString(),
-    originalEndTime: new Date(Date.now() + 7200000).toISOString(),
-    status: 'PUBLICADO',
-    temporalStatus: 'EN_CURSO',
-    isLive: true,
-    isPublic: true,
-    requiresRegistration: false,
-    price: 0,
-    organizerId: 'org-1',
-    organizerName: 'Bienestar Universitario',
-  },
-  {
-    id: 'evt-2',
-    title: 'Taller de Drones Autónomos y Robótica con ROS2',
-    description: 'Semillero de innovación. Aprende algoritmos de navegación para drones en ambientes cerrados. Cupos limitados a capacidad de laboratorio.',
-    category: 'ACADEMICO',
-    buildingId: 'BLQ-F',
-    specificLocation: 'Bloque F - Laboratorio F-201',
-    startTime: new Date(Date.now() + 10800000).toISOString(),
-    endTime: new Date(Date.now() + 18000000).toISOString(),
-    originalEndTime: new Date(Date.now() + 18000000).toISOString(),
-    status: 'PUBLICADO',
-    temporalStatus: 'PROXIMO',
-    isLive: false,
-    isPublic: true,
-    requiresRegistration: true,
-    maxCapacity: 20,
-    availableCapacity: 6,
-    price: 0,
-    organizerId: 'org-2',
-    organizerName: 'Semillero I+D+i',
-  },
-  {
-    id: 'evt-3',
-    title: 'Club de Debate: Inteligencia Artificial y Ética Profesional',
-    description: 'Espacio de discusión abierta sobre el impacto de los modelos fundacionales en la práctica de la ingeniería colombiana.',
-    category: 'CULTURAL',
-    buildingId: 'BIB-LLR',
-    specificLocation: 'Biblioteca Jorge Álvarez Lleras - Auditorio',
-    startTime: new Date(Date.now() + 86400000).toISOString(),
-    endTime: new Date(Date.now() + 93600000).toISOString(),
-    originalEndTime: new Date(Date.now() + 93600000).toISOString(),
-    status: 'PUBLICADO',
-    temporalStatus: 'PROXIMO',
-    isLive: false,
-    isPublic: true,
-    requiresRegistration: true,
-    maxCapacity: 40,
-    availableCapacity: 18,
-    price: 0,
-    organizerId: 'org-3',
-    organizerName: 'Humanidades ECI',
-  },
-];
+const DEMO_EVENTS = createDemoEvents();
 
 export default function HomePage() {
   const categories = ['Todos', 'En Vivo', 'Académico', 'Deportivo', 'Cultural', 'Semilleros'];
@@ -103,6 +42,20 @@ export default function HomePage() {
             Publicar Actividad
           </Link>
         </div>
+      </section>
+
+      {/* El campus en el mapa */}
+      <section className="mb-6 space-y-3">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <MapPin className="h-5 w-5 text-sky-400" />
+            <h2 className="text-lg font-bold text-white">El campus en el mapa</h2>
+          </div>
+          <Link href="/mapa" className="text-xs font-semibold text-eci-red-light hover:text-white transition-colors">
+            Abrir mapa completo →
+          </Link>
+        </div>
+        <CampusMap variant="preview" />
       </section>
 
       {/* Filtros Rápidos de Categoría (Scroll Horizontal en Móviles) */}
