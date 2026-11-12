@@ -449,7 +449,7 @@ export const CampusMap: React.FC<CampusMapProps> = ({ variant = 'full', showList
           />
 
           <AnimatePresence>
-            {selectedPoint && <PointCard key={selectedPoint.id} point={selectedPoint} onClose={() => setSelectedId(null)} />}
+            {selectedPoint && <PointCard key="point-card" point={selectedPoint} onClose={() => setSelectedId(null)} />}
           </AnimatePresence>
         </div>
 

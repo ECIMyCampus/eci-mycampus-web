@@ -42,7 +42,7 @@ export function ViewSwitch({ view, onChange }: ViewSwitchProps) {
           onClick={() => onChange(option.value)}
           aria-pressed={view === option.value}
           className={cn(
-            'min-h-8 rounded-full px-3 text-xs font-medium transition-colors duration-fast ease-out',
+            'pressable min-h-8 rounded-full px-3 text-xs font-medium transition-colors duration-fast ease-out',
             view === option.value ? 'bg-ink text-canvas' : 'text-ink-muted hover:text-ink',
           )}
         >
@@ -62,7 +62,7 @@ interface LegendProps {
   onStraighten: () => void;
 }
 
-const chip = 'inline-flex min-h-8 items-center gap-1 rounded-full px-3 text-xs font-medium transition-colors duration-fast ease-out';
+const chip = 'pressable inline-flex min-h-8 items-center gap-1 rounded-full px-3 text-xs font-medium transition-colors duration-fast ease-out';
 
 /** Filtro por tipo de lugar y atajos de encuadre. */
 export function MapLegend({ filter, onFilter, onFitAll, rotated, onStraighten }: LegendProps) {

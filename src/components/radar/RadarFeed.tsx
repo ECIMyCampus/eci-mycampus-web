@@ -105,6 +105,7 @@ export const RadarFeed: React.FC = () => {
         <RadarSkeleton />
       ) : events.length === 0 ? (
         <EmptyState
+          className="enter"
           icon={<CalendarX className="h-6 w-6" aria-hidden="true" />}
           title="No hay actividades para mostrar"
           description={
@@ -121,7 +122,7 @@ export const RadarFeed: React.FC = () => {
           }
         />
       ) : (
-        <ul className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <ul className="enter grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {events.map((event) => (
             <li key={event.id}>
               <EventCard event={event} placeName={data.places[event.buildingId] ? placeName(event, data.places) : undefined} />
