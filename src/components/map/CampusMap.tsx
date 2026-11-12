@@ -265,6 +265,10 @@ export const CampusMap: React.FC<CampusMapProps> = ({ variant = 'full', showList
           // Si alguna capa opcional falla, el mapa base y los pines siguen mostrándose.
         }
         mapRef.current = created;
+        // Solo en desarrollo: deja el mapa a mano en la consola para inspeccionarlo.
+        if (process.env.NODE_ENV !== 'production') {
+          (window as unknown as { __campusMap?: MapboxMap }).__campusMap = created;
+        }
         setMapReady(true);
       });
       created.once('idle', () => setTilesLoaded(true));
