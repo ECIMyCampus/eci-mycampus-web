@@ -193,3 +193,27 @@
   .campus-live-dot,
   .campus-card { animation: none; }
 }
+
+/* ---------- Base para celular ---------- */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Sin espera de doble toque y sin selección de texto al mantener presionado un control. */
+  button,
+  a,
+  [role='button'] {
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  /* iOS amplía la página si un campo tiene letra menor a 16 px. */
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
+}
