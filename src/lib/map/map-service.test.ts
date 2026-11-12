@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { CampusEvent } from '../../types';
 import { DEMO_BUILDINGS, DEMO_SPORTS, POINT_COORDINATES, createDemoEvents } from './demo-data';
-import { buildPoints, filterPoints, loadCampusMapData, sortByActivity } from './map-service';
+import { buildPoints, filterPoints, loadCampusMapData, resolvePosition, sortByActivity } from './map-service';
 
 const jsonResponse = (status: number, body: unknown) =>
   new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } });
@@ -17,7 +17,7 @@ describe('puntos del mapa', () => {
 
   it('asocia los eventos por id o por código y cuenta los que están en vivo', () => {
     const events = createDemoEvents();
-    const byUuid = { ...DEMO_BUILDINGS[5], id: 'uuid-f' };
+    const byUuid = { ...DEMO_BUILDINGS.find((b) => b.code === 'BLQ-F')!, id: 'uuid-f' };
     const points = buildPoints([byUuid], DEMO_SPORTS, [...events, { ...events[1], id: 'evt-x', buildingId: 'uuid-f' }]);
 
     expect(points.find((p) => p.code === 'BLQ-F')?.events.map((e) => e.id)).toEqual(['evt-2', 'evt-x']);
@@ -42,6 +42,22 @@ describe('puntos del mapa', () => {
       [],
     );
     expect(points).toEqual([]);
+  });
+
+  it('prefiere la ubicación del backend sobre la tabla local', () => {
+    const fromApi = { ...DEMO_BUILDINGS[0], latitude: 4.5, longitude: -74.5 };
+    expect(resolvePosition(fromApi)).toEqual([-74.5, 4.5]);
+    expect(buildPoints([fromApi], [], [])[0].coordinates).toEqual([-74.5, 4.5]);
+  });
+
+  it('usa la tabla local si el backend no trae ubicación', () => {
+    expect(resolvePosition({ code: 'BLQ-A', latitude: null, longitude: null })).toEqual(POINT_COORDINATES['BLQ-A']);
+    expect(resolvePosition({ code: 'SIN-UBICAR' })).toBeNull();
+  });
+
+  it('ubica un lugar nuevo del backend aunque no esté en la tabla local', () => {
+    const nuevo = { ...DEMO_BUILDINGS[0], id: 'uuid-n', code: 'BLQ-NUEVO', latitude: 4.78, longitude: -74.04 };
+    expect(buildPoints([nuevo], [], []).map((p) => p.code)).toEqual(['BLQ-NUEVO']);
   });
 
   it('filtra por tipo y por actividad en vivo', () => {

@@ -52,6 +52,9 @@ export interface Building {
   imageUrl?: string | null;
   floorsCount: number;
   academicInfo?: string | null;
+  /** Ubicación en el mapa (WGS84). null o ausente si el backend aún no la tiene. */
+  latitude?: number | null;
+  longitude?: number | null;
   isActive: boolean;
   services?: CampusServiceInfo[];
 }
@@ -70,6 +73,8 @@ export interface SportsFacility {
   name: string;
   sportTypes: string[];
   svgElementId: string;
+  latitude?: number | null;
+  longitude?: number | null;
   isActive: boolean;
 }
 

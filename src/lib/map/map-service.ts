@@ -41,6 +41,20 @@ function eventsAt(place: { id: string; code: string }, events: CampusEvent[]): C
     );
 }
 
+/**
+ * Ubicación de un lugar: manda la que entrega el backend; si aún no la tiene,
+ * se usa la tabla local por código. Devuelve null si no hay ninguna.
+ */
+export function resolvePosition(
+  place: { code: string; latitude?: number | null; longitude?: number | null },
+  fallback: Record<string, [number, number]> = POINT_COORDINATES,
+): [number, number] | null {
+  if (typeof place.latitude === 'number' && typeof place.longitude === 'number') {
+    return [place.longitude, place.latitude];
+  }
+  return fallback[place.code] ?? null;
+}
+
 /** Une edificios, escenarios y eventos en puntos del mapa. Omite los que no tienen coordenadas. */
 export function buildPoints(
   buildings: Building[],
@@ -51,7 +65,7 @@ export function buildPoints(
   const points: CampusPoint[] = [];
 
   for (const b of buildings) {
-    const position = coordinates[b.code];
+    const position = resolvePosition(b, coordinates);
     if (!position || !b.isActive) continue;
     const placed = eventsAt(b, events);
     points.push({
@@ -70,7 +84,7 @@ export function buildPoints(
   }
 
   for (const s of sports) {
-    const position = coordinates[s.code];
+    const position = resolvePosition(s, coordinates);
     if (!position || !s.isActive) continue;
     const placed = eventsAt(s, events);
     points.push({
