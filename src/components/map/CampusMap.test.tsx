@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import React from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import * as tokenModule from '../../lib/map/token';
 import * as mapService from '../../lib/map/map-service';
 import { DEMO_BUILDINGS, DEMO_SPORTS, createDemoEvents } from '../../lib/map/demo-data';
@@ -27,6 +27,9 @@ interface FakeMap {
   flyTo: ReturnType<typeof vi.fn>;
   fitBounds: ReturnType<typeof vi.fn>;
   getZoom: () => number;
+  getBearing: () => number;
+  getPitch: () => number;
+  setBearing: (bearing: number) => void;
   getContainer: () => HTMLElement;
   emit: (event: string, payload?: unknown) => void;
 }
@@ -83,6 +86,21 @@ vi.mock('mapbox-gl', () => {
 
     getZoom() {
       return 16.3;
+    }
+
+    private bearing = -90;
+
+    getBearing() {
+      return this.bearing;
+    }
+
+    getPitch() {
+      return 0;
+    }
+
+    setBearing(bearing: number) {
+      this.bearing = bearing;
+      this.emit('rotate');
     }
 
     getContainer() {
@@ -254,5 +272,26 @@ describe('CampusMap', () => {
     const mapCanvas = screen.getByLabelText('Mapa interactivo del campus de la Escuela');
     const coliseoPin = within(mapCanvas).getByRole('button', { name: /Coliseo El Otoño/i });
     expect(coliseoPin.classList.contains('is-selected')).toBe(true);
+  });
+
+  it('limita el giro del mapa y lo endereza a la orientación base', async () => {
+    vi.spyOn(tokenModule, 'resolveMapboxToken').mockReturnValue('pk.prueba');
+
+    render(<CampusMap showList />);
+    const list = screen.getByRole('list', { name: 'Lugares del campus' });
+    await within(list).findByRole('button', { name: /Coliseo El Otoño/i });
+    expect(screen.queryByRole('button', { name: /Enderezar/i })).toBeNull();
+
+    // Girar más allá del tope se recorta a 45 grados a cada lado de la base (-90).
+    act(() => lastMap?.setBearing(0));
+    expect(lastMap?.getBearing()).toBe(-45);
+    act(() => lastMap?.setBearing(170));
+    expect(lastMap?.getBearing()).toBe(-135);
+
+    fireEvent.click(await screen.findByRole('button', { name: /Enderezar/i }));
+    expect(lastMap?.easeTo).toHaveBeenCalledWith(expect.objectContaining({ bearing: -90 }));
+
+    act(() => lastMap?.setBearing(-90));
+    await waitFor(() => expect(screen.queryByRole('button', { name: /Enderezar/i })).toBeNull());
   });
 });

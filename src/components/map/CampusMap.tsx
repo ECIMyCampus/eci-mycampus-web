@@ -3,7 +3,7 @@
 import 'mapbox-gl/dist/mapbox-gl.css';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { Map as MapboxMap, Marker } from 'mapbox-gl';
-import { Building2, Check, Copy, Maximize2, Move, Radio, Trophy, TriangleAlert } from 'lucide-react';
+import { Building2, Check, Copy, Maximize2, Move, Radio, RotateCcw, Trophy, TriangleAlert } from 'lucide-react';
 import { CAMPUS_CENTER } from '../../lib/map/demo-data';
 import {
   CampusMapData,
@@ -51,6 +51,20 @@ const TERRAIN_SOURCE = 'mapbox-dem';
 /** Cada cuánto se vuelven a consultar los eventos del radar. */
 const REFRESH_MS = 30_000;
 
+/**
+ * Orientación base del mapa: la entrada del campus (Autopista Norte, AK 45) queda abajo.
+ * El bearing es el rumbo que apunta hacia arriba: -90 deja el occidente arriba y el oriente abajo.
+ */
+const BASE_BEARING = -90;
+/** Cuánto se puede girar el mapa a cada lado de la orientación base. */
+const MAX_ROTATION_DEG = 45;
+
+/** Orientación "recta" de cada vista. */
+const baseBearing = (view: MapView) => BASE_BEARING + (view === '3d' ? -20 : 0);
+
+/** Diferencia entre dos rumbos, entre -180 y 180 grados. */
+const bearingDelta = (bearing: number, base: number) => ((((bearing - base) % 360) + 540) % 360) - 180;
+
 const ICONS: Record<CampusPoint['kind'], string> = {
   EDIFICIO:
     '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>',
@@ -73,7 +87,7 @@ function applyView(map: MapboxMap, view: MapView, animate: boolean) {
     map.setLayoutProperty(SATELLITE_LAYER, 'visibility', view === 'normal' ? 'none' : 'visible');
   }
   map.setTerrain(view === '3d' && map.getSource(TERRAIN_SOURCE) ? { source: TERRAIN_SOURCE, exaggeration: 1.3 } : null);
-  const camera = view === '3d' ? { pitch: 60, bearing: -20 } : { pitch: 0, bearing: 0 };
+  const camera = { pitch: view === '3d' ? 60 : 0, bearing: baseBearing(view) };
   if (animate && !prefersReducedMotion()) map.easeTo({ ...camera, duration: 800 });
   else map.jumpTo(camera);
 }
@@ -149,6 +163,7 @@ export const CampusMap: React.FC<CampusMapProps> = ({ variant = 'full', showList
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [mapReady, setMapReady] = useState(false);
   const [tilesLoaded, setTilesLoaded] = useState(false);
+  const [rotated, setRotated] = useState(false);
   const [tokenRejected, setTokenRejected] = useState(false);
 
   const viewRef = useRef(view);
@@ -217,6 +232,7 @@ export const CampusMap: React.FC<CampusMapProps> = ({ variant = 'full', showList
         style: MAP_STYLE,
         center: CAMPUS_CENTER,
         zoom: 16.3,
+        bearing: BASE_BEARING,
         attributionControl: false,
         locale: MAP_LOCALE,
         // En pantallas táctiles un dedo desplaza la página y dos mueven el mapa.
@@ -273,6 +289,26 @@ export const CampusMap: React.FC<CampusMapProps> = ({ variant = 'full', showList
         setMapReady(true);
       });
       created.once('idle', () => setTilesLoaded(true));
+
+      // Mapbox no limita el giro: se recorta aquí a MAX_ROTATION_DEG a cada lado de la base.
+      created.on('rotate', () => {
+        const base = baseBearing(viewRef.current);
+        const delta = bearingDelta(created.getBearing(), base);
+        if (Math.abs(delta) > MAX_ROTATION_DEG) {
+          created.setBearing(base + Math.sign(delta) * MAX_ROTATION_DEG);
+          return;
+        }
+        setRotated(Math.abs(delta) > 0.5);
+      });
+      // La brújula endereza hacia la orientación base de la vista, no hacia el norte.
+      const straighten = () => {
+        const bearing = baseBearing(viewRef.current);
+        if (prefersReducedMotion()) created.jumpTo({ bearing });
+        else created.easeTo({ bearing, duration: 500 });
+        return created;
+      };
+      created.resetNorth = straighten;
+      created.resetNorthPitch = straighten;
       created.on('error', (event) => {
         const status = (event.error as { status?: number } | undefined)?.status;
         if (status === 401 || status === 403) setTokenRejected(true);
@@ -302,7 +338,7 @@ export const CampusMap: React.FC<CampusMapProps> = ({ variant = 'full', showList
           [Math.min(...lngs), Math.min(...lats)],
           [Math.max(...lngs), Math.max(...lats)],
         ],
-        { padding: map.getContainer().clientWidth < 480 ? 36 : 70, maxZoom: 17.5, duration: animate && !prefersReducedMotion() ? 800 : 0 },
+        { padding: map.getContainer().clientWidth < 480 ? 36 : 70, maxZoom: 17.5, bearing: map.getBearing(), pitch: map.getPitch(), duration: animate && !prefersReducedMotion() ? 800 : 0 },
       );
     },
     [visiblePoints],
@@ -472,6 +508,14 @@ export const CampusMap: React.FC<CampusMapProps> = ({ variant = 'full', showList
             >
               <Maximize2 className="h-3 w-3" /> Ver todo
             </button>
+            {rotated && (
+              <button
+                onClick={() => mapRef.current?.resetNorth()}
+                className="inline-flex items-center gap-1 rounded-full bg-slate-800 px-2.5 py-1 text-[11px] font-medium text-slate-300 hover:text-white"
+              >
+                <RotateCcw className="h-3 w-3" /> Enderezar
+              </button>
+            )}
           </div>
         </div>
 
