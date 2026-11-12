@@ -12,6 +12,7 @@ export interface CampusPoint {
   name: string;
   kind: PointKind;
   description: string | null;
+  imageUrl?: string | null;
   /** [longitud, latitud] */
   coordinates: [number, number];
   floorsCount?: number;
@@ -68,12 +69,14 @@ export function buildPoints(
     const position = resolvePosition(b, coordinates);
     if (!position || !b.isActive) continue;
     const placed = eventsAt(b, events);
+    const defaultImage = DEMO_BUILDINGS.find((d) => d.code === b.code)?.imageUrl ?? null;
     points.push({
       id: b.id,
       code: b.code,
       name: b.name,
       kind: 'EDIFICIO',
       description: b.description ?? null,
+      imageUrl: b.imageUrl ?? defaultImage,
       coordinates: position,
       floorsCount: b.floorsCount,
       sportTypes: [],
@@ -93,6 +96,7 @@ export function buildPoints(
       name: s.name,
       kind: 'DEPORTIVO',
       description: null,
+      imageUrl: null,
       coordinates: position,
       sportTypes: s.sportTypes,
       services: [],

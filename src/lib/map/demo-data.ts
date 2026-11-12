@@ -30,33 +30,42 @@ export const POINT_COORDINATES: Record<string, [number, number]> = {
   'CAN-FUT': [-74.04564, 4.78308],
 };
 
-const building = (code: string, name: string, description: string | null = null): Building => ({
+const wikiImage = (file: string) =>
+  `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(file)}?width=640`;
+
+const building = (
+  code: string,
+  name: string,
+  description: string | null = null,
+  imageFile?: string,
+): Building => ({
   id: code,
   code,
   name,
   description,
   svgElementId: `ECI-${code}`,
+  imageUrl: imageFile ? wikiImage(imageFile) : null,
   floorsCount: 1,
   isActive: true,
 });
 
 /** Datos de ejemplo: se usan mientras el backend no esté disponible. */
 export const DEMO_BUILDINGS: Building[] = [
-  building('BLQ-A', 'Bloque A', 'Rectoría, Vicerrectoría, Admisiones y Registro Académico.'),
-  building('BLQ-B', 'Bloque B', 'Aulas de clases magistrales y dependencias de Ciencias Básicas.'),
-  building('BLQ-C', 'Bloque C', 'Decanatura de Ingeniería de Sistemas, Electrónica y Salas de Cómputo.'),
-  building('BLQ-D', 'Bloque D', 'Decanatura de Ingeniería Civil, Laboratorios de Suelos e Hidráulica.'),
-  building('BLQ-E', 'Bloque E', 'Ingeniería Industrial, Economía, Administración y Cafetería Central.'),
-  building('BLQ-F', 'Bloque F', 'Centro de Innovación y Desarrollo (I+D+i), Robótica y Posgrados.'),
-  building('BIB-LLR', 'Biblioteca Jorge Álvarez Lleras', 'Salas de estudio individual y grupal, hemeroteca y auditorio.'),
-  building('BLQ-G', 'Bloque G'),
-  building('BLQ-H', 'Bloque H'),
-  building('BLQ-I', 'Bloque I'),
-  building('AUL-MAX', 'Aula Máxima', 'Auditorio principal de la Escuela.'),
-  building('LAB-L2', 'Laboratorios L2'),
-  building('LAB-L3', 'Laboratorios L3'),
-  building('CEA', 'Centro de Estudios Astronómicos'),
-  building('CAF-DIA', 'Cafetería Dialimentos'),
+  building('BLQ-A', 'Bloque A', 'Rectoría, Vicerrectoría, Admisiones y Registro Académico.', 'BloqueA ECI.jpg'),
+  building('BLQ-B', 'Bloque B', 'Aulas de clases magistrales y dependencias de Ciencias Básicas.', 'Bloque B - ECI.jpg'),
+  building('BLQ-C', 'Bloque C', 'Decanatura de Ingeniería de Sistemas, Electrónica y Salas de Cómputo.', 'Bloque C ECI 2.jpg'),
+  building('BLQ-D', 'Bloque D', 'Decanatura de Ingeniería Civil, Laboratorios de Suelos e Hidráulica.', 'Bloque D - ECI.jpg'),
+  building('BLQ-E', 'Bloque E', 'Ingeniería Industrial, Economía, Administración y Cafetería Central.', 'Bloque E ECI.jpg'),
+  building('BLQ-F', 'Bloque F', 'Centro de Innovación y Desarrollo (I+D+i), Robótica y Posgrados.', 'Bloque F ECI 2.jpg'),
+  building('BIB-LLR', 'Biblioteca Jorge Álvarez Lleras', 'Salas de estudio individual y grupal, hemeroteca y auditorio.', 'Bloque B - ECI.jpg'),
+  building('BLQ-G', 'Bloque G', null, 'Bloque G - ECI.jpg'),
+  building('BLQ-H', 'Bloque H', null, 'Bloque H 311018.jpg'),
+  building('BLQ-I', 'Bloque I', null, 'Bloque I 311018.jpg'),
+  building('AUL-MAX', 'Aula Máxima', 'Auditorio principal de la Escuela.', 'Hacienda El Otoño - ECI.jpg'),
+  building('LAB-L2', 'Laboratorios L2', null, 'Bloque L2 - ECI.jpg'),
+  building('LAB-L3', 'Laboratorios L3', null, 'L1 ECI.jpg'),
+  building('CEA', 'Centro de Estudios Astronómicos', null, 'Escuela ing Julio Garavito Bog nov 2019.jpg'),
+  building('CAF-DIA', 'Cafetería Dialimentos', null, 'Rincón de Tolkien - ECI.jpg'),
 ];
 
 export const DEMO_SPORTS: SportsFacility[] = [

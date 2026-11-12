@@ -159,6 +159,7 @@ export const CampusMap: React.FC<CampusMapProps> = ({ variant = 'full', showList
   const [calibrating, setCalibrating] = useState(false);
   const [overrides, setOverrides] = useState<Record<string, [number, number]>>({});
   const [copied, setCopied] = useState(false);
+  const [failedThumbnails, setFailedThumbnails] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     if (process.env.NODE_ENV === 'production') return;
@@ -415,10 +416,10 @@ export const CampusMap: React.FC<CampusMapProps> = ({ variant = 'full', showList
       <div className={cn('relative w-full overflow-hidden rounded-2xl border border-slate-800 bg-[#0B132B]', height)}>
         <div ref={containerRef} className="h-full w-full" aria-label="Mapa interactivo del campus de la Escuela" />
 
-        {!tilesLoaded && (
+        {(!tilesLoaded || !data) && (
           <div role="status" className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
             <span className="rounded-full border border-slate-700 bg-slate-900/90 px-3 py-1.5 text-xs font-medium text-slate-200">
-              Cargando mapa…
+              {!data ? 'Cargando datos del campus…' : 'Cargando mapa…'}
             </span>
           </div>
         )}
@@ -503,37 +504,56 @@ export const CampusMap: React.FC<CampusMapProps> = ({ variant = 'full', showList
 
       {showList && (
         <ul className="flex gap-2 overflow-x-auto pb-1 lg:max-h-[650px] lg:flex-col lg:overflow-y-auto lg:overflow-x-visible lg:pb-0" aria-label="Lugares del campus">
-          {listPoints.map((point) => (
-            <li key={point.id} className="flex-shrink-0">
-              <button
-                onClick={() => setSelectedId(point.id)}
-                onMouseEnter={() => setHoveredId(point.id)}
-                onMouseLeave={() => setHoveredId(null)}
-                onFocus={() => setHoveredId(point.id)}
-                onBlur={() => setHoveredId(null)}
-                className={cn(
-                  'flex w-56 items-center gap-3 rounded-xl border p-2.5 text-left transition-colors lg:w-full',
-                  point.id === selectedId ? 'border-eci-red-light bg-slate-900' : 'border-slate-800 bg-slate-900/60 hover:border-slate-700',
-                )}
-              >
-                <span className={cn('flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full', point.kind === 'EDIFICIO' ? 'bg-eci-red/20 text-eci-red-light' : 'bg-amber-500/15 text-amber-400')}>
-                  {point.kind === 'EDIFICIO' ? <Building2 className="h-4 w-4" /> : <Trophy className="h-4 w-4" />}
-                </span>
-                <span className="min-w-0">
-                  <span className="block truncate text-xs font-semibold text-slate-100">{point.name}</span>
-                  <span className={cn('block text-[11px]', point.liveCount > 0 ? 'text-emerald-400' : 'text-slate-400')}>
-                    {point.liveCount > 0
-                      ? `${point.liveCount} en vivo`
-                      : point.events.length > 0
-                        ? `${point.events.length} ${point.events.length === 1 ? 'próxima' : 'próximas'}`
-                        : 'Sin actividades'}
-                  </span>
-                </span>
-              </button>
+          {!data && (
+            <li role="status" className="rounded-xl border border-slate-800 bg-slate-900/60 p-3 text-xs text-slate-300">
+              Cargando lugares del campus…
             </li>
-          ))}
+          )}
+          {listPoints.map((point) => {
+            const showThumb = Boolean(point.imageUrl) && !failedThumbnails[point.id];
+            return (
+              <li key={point.id} className="flex-shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setSelectedId(point.id)}
+                  onMouseEnter={() => setHoveredId(point.id)}
+                  onMouseLeave={() => setHoveredId(null)}
+                  onFocus={() => setHoveredId(point.id)}
+                  onBlur={() => setHoveredId(null)}
+                  className={cn(
+                    'flex w-56 items-center gap-3 rounded-xl border p-2.5 text-left transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400 lg:w-full',
+                    point.id === selectedId ? 'border-eci-red-light bg-slate-900' : 'border-slate-800 bg-slate-900/60 hover:border-slate-700',
+                  )}
+                >
+                  {showThumb && point.imageUrl ? (
+                    <img
+                      src={point.imageUrl}
+                      alt=""
+                      loading="lazy"
+                      onError={() => setFailedThumbnails((prev) => ({ ...prev, [point.id]: true }))}
+                      className="h-9 w-9 flex-shrink-0 rounded-lg object-cover"
+                    />
+                  ) : (
+                    <span className={cn('flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full', point.kind === 'EDIFICIO' ? 'bg-eci-red/20 text-eci-red-light' : 'bg-amber-500/15 text-amber-400')}>
+                      {point.kind === 'EDIFICIO' ? <Building2 className="h-4 w-4" /> : <Trophy className="h-4 w-4" />}
+                    </span>
+                  )}
+                  <span className="min-w-0">
+                    <span className="block truncate text-xs font-semibold text-slate-100">{point.name}</span>
+                    <span className={cn('block text-[11px]', point.liveCount > 0 ? 'text-emerald-400' : 'text-slate-300')}>
+                      {point.liveCount > 0
+                        ? `${point.liveCount} en vivo`
+                        : point.events.length > 0
+                          ? `${point.events.length} ${point.events.length === 1 ? 'próxima' : 'próximas'}`
+                          : 'Sin actividades'}
+                    </span>
+                  </span>
+                </button>
+              </li>
+            );
+          })}
           {data && listPoints.length === 0 && (
-            <li className="rounded-xl border border-slate-800 bg-slate-900/60 p-3 text-xs text-slate-400">
+            <li className="rounded-xl border border-slate-800 bg-slate-900/60 p-3 text-xs text-slate-300">
               No hay lugares para este filtro.
             </li>
           )}

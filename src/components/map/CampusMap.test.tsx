@@ -193,6 +193,12 @@ describe('CampusMap', () => {
 
     const dialog = await screen.findByRole('dialog', { name: 'Detalle de Bloque F' });
     expect(within(dialog).getByText(/Taller de Drones Autónomos/i)).toBeTruthy();
+    expect(within(dialog).getByAltText('Fotografía de Bloque F')).toBeTruthy();
+    expect(
+      within(dialog)
+        .getByRole('link', { name: /Ver actividades en este lugar/i })
+        .getAttribute('href'),
+    ).toBe('/?edificio=BLQ-F#radar');
 
     fireEvent.click(within(dialog).getByRole('button', { name: 'Cerrar ficha' }));
     expect(screen.queryByRole('dialog')).toBeNull();

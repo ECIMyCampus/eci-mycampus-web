@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { Building2, Clock, Layers, MapPin, Trophy, X } from 'lucide-react';
 import { CampusPoint, isLiveEvent } from '../../lib/map/map-service';
@@ -17,6 +17,14 @@ const MAX_EVENTS = 3;
 export const PointCard: React.FC<PointCardProps> = ({ point, onClose }) => {
   const isBuilding = point.kind === 'EDIFICIO';
   const events = point.events.slice(0, MAX_EVENTS);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const [failedImageUrl, setFailedImageUrl] = useState<string | null>(null);
+
+  const showImage = Boolean(point.imageUrl) && failedImageUrl !== point.imageUrl;
+
+  useEffect(() => {
+    closeButtonRef.current?.focus();
+  }, [point.id]);
 
   return (
     <aside
@@ -28,28 +36,42 @@ export const PointCard: React.FC<PointCardProps> = ({ point, onClose }) => {
         <div className={`flex items-center gap-2 text-xs font-bold ${isBuilding ? 'text-eci-red-light' : 'text-amber-400'}`}>
           {isBuilding ? <Building2 className="h-4 w-4" /> : <Trophy className="h-4 w-4" />}
           <span>{point.code}</span>
-          <span className="font-medium text-slate-400">· {isBuilding ? 'Edificio' : 'Escenario deportivo'}</span>
+          <span className="font-medium text-slate-300">· {isBuilding ? 'Edificio' : 'Escenario deportivo'}</span>
         </div>
         <button
+          ref={closeButtonRef}
+          type="button"
           onClick={onClose}
-          className="-mr-1 -mt-1 flex h-9 w-9 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white"
+          className="-mr-1 -mt-1 flex h-9 w-9 items-center justify-center rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400"
           aria-label="Cerrar ficha"
         >
           <X className="h-4 w-4" />
         </button>
       </div>
 
-      <h3 className="mt-1 text-base font-bold text-white">{point.name}</h3>
+      {showImage && point.imageUrl && (
+        <div className="mt-2 overflow-hidden rounded-xl border border-slate-800 bg-slate-950">
+          <img
+            src={point.imageUrl}
+            alt={`Fotografía de ${point.name}`}
+            loading="lazy"
+            onError={() => setFailedImageUrl(point.imageUrl ?? null)}
+            className="h-28 w-full object-cover"
+          />
+        </div>
+      )}
+
+      <h3 className="mt-2 text-base font-bold text-white">{point.name}</h3>
       {point.description && <p className="mt-1 text-xs leading-relaxed text-slate-300">{point.description}</p>}
 
-      <div className="mt-2 flex flex-wrap gap-1.5 text-[11px] text-slate-300">
+      <div className="mt-2 flex flex-wrap gap-1.5 text-[11px] text-slate-200">
         {isBuilding && point.floorsCount !== undefined && point.floorsCount > 1 && (
           <span className="inline-flex items-center gap-1 rounded-full bg-slate-800 px-2 py-0.5">
             <Layers className="h-3 w-3" /> {point.floorsCount} pisos
           </span>
         )}
         {point.sportTypes.map((sport) => (
-          <span key={sport} className="rounded-full bg-amber-500/10 px-2 py-0.5 text-amber-300">
+          <span key={sport} className="rounded-full bg-amber-500/15 px-2 py-0.5 text-amber-300">
             {sport}
           </span>
         ))}
@@ -61,9 +83,9 @@ export const PointCard: React.FC<PointCardProps> = ({ point, onClose }) => {
       </div>
 
       <div className="mt-3 border-t border-slate-800 pt-3">
-        <h4 className="text-xs font-semibold uppercase tracking-wide text-slate-400">Actividades aquí</h4>
+        <h4 className="text-xs font-semibold uppercase tracking-wide text-slate-300">Actividades aquí</h4>
         {events.length === 0 ? (
-          <p className="mt-1.5 text-xs text-slate-500">No hay actividades programadas en este lugar.</p>
+          <p className="mt-1.5 text-xs text-slate-400">No hay actividades programadas en este lugar.</p>
         ) : (
           <ul className="mt-1.5 space-y-2">
             {events.map((event) => (
@@ -74,14 +96,14 @@ export const PointCard: React.FC<PointCardProps> = ({ point, onClose }) => {
                       <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" /> EN VIVO
                     </span>
                   ) : (
-                    <span className="text-slate-400">{formatEventDate(event.startTime)}</span>
+                    <span className="text-slate-300">{formatEventDate(event.startTime)}</span>
                   )}
                   <span className="inline-flex items-center gap-1 text-amber-400">
                     <Clock className="h-3 w-3" /> {formatEventTime(event.startTime)}
                   </span>
                 </div>
                 <p className="mt-1 text-xs font-semibold text-slate-100 line-clamp-2">{event.title}</p>
-                <p className="mt-0.5 flex items-center gap-1 text-[11px] text-slate-400">
+                <p className="mt-0.5 flex items-center gap-1 text-[11px] text-slate-300">
                   <MapPin className="h-3 w-3 flex-shrink-0 text-sky-400" /> {event.specificLocation}
                 </p>
               </li>
@@ -89,13 +111,16 @@ export const PointCard: React.FC<PointCardProps> = ({ point, onClose }) => {
           </ul>
         )}
         {point.events.length > MAX_EVENTS && (
-          <p className="mt-1.5 text-[11px] text-slate-500">y {point.events.length - MAX_EVENTS} más</p>
+          <p className="mt-1.5 text-[11px] text-slate-400">y {point.events.length - MAX_EVENTS} más</p>
         )}
       </div>
 
       <div className="mt-3 flex justify-end">
-        <Link href="/" className="text-xs font-semibold text-eci-red-light hover:text-white transition-colors">
-          Ver el radar de actividades →
+        <Link
+          href={`/?edificio=${encodeURIComponent(point.code)}#radar`}
+          className="rounded text-xs font-semibold text-eci-red-light transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400"
+        >
+          Ver actividades en este lugar →
         </Link>
       </div>
     </aside>

@@ -1,14 +1,27 @@
 import React from 'react';
 import Link from 'next/link';
-import { Compass, MapPin, Sparkles, Filter } from 'lucide-react';
+import { Compass, MapPin, Sparkles, Filter, X } from 'lucide-react';
 import { EventCard } from '../components/radar/EventCard';
 import { CampusMap } from '../components/map/CampusMap';
-import { createDemoEvents } from '../lib/map/demo-data';
+import { DEMO_BUILDINGS, DEMO_SPORTS, createDemoEvents } from '../lib/map/demo-data';
 
 // Eventos de demostración para el piloto inicial
 const DEMO_EVENTS = createDemoEvents();
 
-export default function HomePage() {
+interface HomePageProps {
+  searchParams?: Promise<{ edificio?: string }>;
+}
+
+export default async function HomePage({ searchParams }: HomePageProps) {
+  const params = (await searchParams) ?? {};
+  const buildingFilter = params.edificio?.trim() || null;
+  const matchedPlace = buildingFilter
+    ? [...DEMO_BUILDINGS, ...DEMO_SPORTS].find((p) => p.code === buildingFilter || p.id === buildingFilter)
+    : null;
+  const visibleEvents = buildingFilter
+    ? DEMO_EVENTS.filter((e) => e.buildingId === buildingFilter)
+    : DEMO_EVENTS;
+
   const categories = ['Todos', 'En Vivo', 'Académico', 'Deportivo', 'Cultural', 'Semilleros'];
 
   return (
@@ -78,20 +91,41 @@ export default function HomePage() {
       </div>
 
       {/* Feed del Radar de Eventos */}
-      <section className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
+      <section id="radar" className="space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Compass className="h-5 w-5 text-eci-red-light" />
             <h2 className="text-lg font-bold text-white">Radar de Actividades</h2>
+            {buildingFilter && (
+              <Link
+                href="/#radar"
+                className="inline-flex items-center gap-1.5 rounded-full border border-eci-red/40 bg-eci-red/15 px-3 py-1 text-xs font-semibold text-slate-100 hover:bg-eci-red/25"
+                aria-label="Quitar filtro de edificio"
+              >
+                <span>{matchedPlace ? `${matchedPlace.name} (${buildingFilter})` : buildingFilter}</span>
+                <X className="h-3.5 w-3.5" />
+              </Link>
+            )}
           </div>
-          <span className="text-xs text-slate-400">3 eventos encontrados</span>
+          <span className="text-xs text-slate-400">
+            {visibleEvents.length} {visibleEvents.length === 1 ? 'evento encontrado' : 'eventos encontrados'}
+          </span>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {DEMO_EVENTS.map((event) => (
-            <EventCard key={event.id} event={event} />
-          ))}
-        </div>
+        {visibleEvents.length === 0 ? (
+          <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 text-center text-sm text-slate-300">
+            No hay actividades programadas en este lugar por ahora.{' '}
+            <Link href="/#radar" className="font-semibold text-eci-red-light hover:text-white">
+              Ver todas las actividades →
+            </Link>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {visibleEvents.map((event) => (
+              <EventCard key={event.id} event={event} />
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );
