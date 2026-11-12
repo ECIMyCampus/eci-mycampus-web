@@ -1,51 +1,149 @@
-import { ApiError, CampusEvent, Building, EventRegistration, Faculty, SportsFacility } from '../types';
+import {
+  ApiError as ApiErrorBody,
+  AuthUser,
+  Building,
+  CampusEvent,
+  EventRegistration,
+  Faculty,
+  MyRegistration,
+  RegisterInput,
+  SportsFacility,
+} from '../types';
 
 const API_BASE = '/api/v1';
 
-/** Extrae el mensaje del ErrorResponseDTO estándar del backend. */
-async function toApiError(res: Response, fallback: string): Promise<Error> {
-  const errorData: Partial<ApiError> = await res.json().catch(() => ({}));
-  return new Error(errorData.mensaje || fallback);
+/** Error de una llamada a la API, con el mensaje ya listo para mostrar a la persona. */
+export class ApiRequestError extends Error {
+  /** Código HTTP. `0` si ni siquiera hubo respuesta (sin conexión). */
+  readonly status: number;
+  /** Errores por campo que devuelve el backend en `detalles`. */
+  readonly details: { campo: string; mensaje: string }[];
+
+  constructor(message: string, status: number, details: { campo: string; mensaje: string }[] = []) {
+    super(message);
+    this.name = 'ApiRequestError';
+    this.status = status;
+    this.details = details;
+  }
+}
+
+const NETWORK_ERROR = 'No pudimos conectar con el servidor. Revisa tu conexión e inténtalo de nuevo.';
+
+type Listener = () => void;
+const unauthorizedListeners = new Set<Listener>();
+
+/**
+ * Avisa cuando una acción que exige sesión recibe 401: la sesión venció o se cerró en otra pestaña.
+ * Devuelve la función para dejar de escuchar.
+ */
+export function onUnauthorized(listener: Listener): () => void {
+  unauthorizedListeners.add(listener);
+  return () => {
+    unauthorizedListeners.delete(listener);
+  };
+}
+
+interface RequestOptions {
+  method?: 'GET' | 'POST' | 'DELETE';
+  body?: unknown;
+  /** Mensaje si el backend no explica el error. */
+  fallback: string;
+  /** La acción exige sesión: un 401 significa que venció, y se avisa a quien escucha. */
+  authed?: boolean;
+}
+
+/** Hace la llamada y traduce el contrato de error del backend (`{ mensaje, detalles }`) a `ApiRequestError`. */
+async function request<T>(path: string, { method, body, fallback, authed = false }: RequestOptions): Promise<T> {
+  const init: RequestInit | undefined =
+    method || body !== undefined
+      ? {
+          method: method ?? 'POST',
+          ...(body !== undefined && { headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }),
+        }
+      : undefined;
+
+  let res: Response;
+  try {
+    res = init ? await fetch(`${API_BASE}${path}`, init) : await fetch(`${API_BASE}${path}`);
+  } catch {
+    throw new ApiRequestError(NETWORK_ERROR, 0);
+  }
+
+  if (!res.ok) {
+    if (res.status === 401 && authed) unauthorizedListeners.forEach((listener) => listener());
+    const errorData: Partial<ApiErrorBody> = await res.json().catch(() => ({}));
+    throw new ApiRequestError(errorData.mensaje || fallback, res.status, errorData.detalles ?? []);
+  }
+
+  if (res.status === 204) return undefined as T;
+  return res.json();
 }
 
 export const api = {
-  // Radar y Eventos
+  // Cuenta y sesión (la sesión viaja en una cookie HttpOnly: el JavaScript nunca ve el token)
+  login(email: string, password: string): Promise<{ user: AuthUser }> {
+    return request('/auth/login', { body: { email, password }, fallback: 'No pudimos iniciar sesión' });
+  },
+
+  register(input: RegisterInput): Promise<{ message: string }> {
+    return request('/auth/register', { body: input, fallback: 'No pudimos crear tu cuenta' });
+  },
+
+  /** `401` aquí es lo normal para un visitante: no se trata como sesión vencida. */
+  getMe(): Promise<AuthUser> {
+    return request('/auth/me', { fallback: 'No pudimos consultar tu perfil' });
+  },
+
+  logout(): Promise<void> {
+    return request('/auth/logout', { method: 'POST', fallback: 'No pudimos cerrar la sesión' });
+  },
+
+  // Radar y eventos
   async getRadarEvents(params?: { category?: string; facultyId?: string }): Promise<CampusEvent[]> {
     const query = new URLSearchParams();
     if (params?.category) query.set('category', params.category);
     if (params?.facultyId) query.set('facultyId', params.facultyId);
 
-    const res = await fetch(`${API_BASE}/events/radar?${query.toString()}`);
-    if (!res.ok) throw await toApiError(res, 'Error al consultar eventos del Radar');
-    return res.json();
+    return request(`/events/radar?${query.toString()}`, { fallback: 'Error al consultar eventos del Radar' });
   },
 
-  /** Requiere sesión: el events-service responde 401 sin token Bearer. */
-  async registerToEvent(eventId: string, token: string): Promise<EventRegistration> {
-    const res = await fetch(`${API_BASE}/events/${eventId}/register`, {
+  getEvent(eventId: string): Promise<CampusEvent> {
+    return request(`/events/${encodeURIComponent(eventId)}`, { fallback: 'No pudimos cargar la actividad' });
+  },
+
+  /** Requiere sesión. */
+  registerToEvent(eventId: string): Promise<EventRegistration> {
+    return request(`/events/${encodeURIComponent(eventId)}/register`, {
       method: 'POST',
-      headers: { Authorization: `Bearer ${token}` },
+      fallback: 'Error al inscribirse al evento',
+      authed: true,
     });
-    if (!res.ok) throw await toApiError(res, 'Error al inscribirse al evento');
-    return res.json();
   },
 
-  // Campus y Edificios
-  async getBuildings(): Promise<Building[]> {
-    const res = await fetch(`${API_BASE}/campus/buildings`);
-    if (!res.ok) throw await toApiError(res, 'Error al consultar edificios');
-    return res.json();
+  /** Requiere sesión. Devuelve el cupo al evento. */
+  cancelRegistration(eventId: string): Promise<EventRegistration> {
+    return request(`/events/${encodeURIComponent(eventId)}/register`, {
+      method: 'DELETE',
+      fallback: 'No pudimos cancelar tu inscripción',
+      authed: true,
+    });
   },
 
-  async getSportsFacilities(): Promise<SportsFacility[]> {
-    const res = await fetch(`${API_BASE}/campus/sports`);
-    if (!res.ok) throw await toApiError(res, 'Error al consultar escenarios deportivos');
-    return res.json();
+  /** Requiere sesión. Mis inscripciones vigentes, de la más próxima a la más lejana. */
+  getMyRegistrations(): Promise<MyRegistration[]> {
+    return request('/events/mine/registrations', { fallback: 'No pudimos cargar tu agenda', authed: true });
   },
 
-  async getFaculties(): Promise<Faculty[]> {
-    const res = await fetch(`${API_BASE}/campus/faculties`);
-    if (!res.ok) throw await toApiError(res, 'Error al consultar facultades');
-    return res.json();
+  // Campus y edificios
+  getBuildings(): Promise<Building[]> {
+    return request('/campus/buildings', { fallback: 'Error al consultar edificios' });
+  },
+
+  getSportsFacilities(): Promise<SportsFacility[]> {
+    return request('/campus/sports', { fallback: 'Error al consultar escenarios deportivos' });
+  },
+
+  getFaculties(): Promise<Faculty[]> {
+    return request('/campus/faculties', { fallback: 'Error al consultar facultades' });
   },
 };

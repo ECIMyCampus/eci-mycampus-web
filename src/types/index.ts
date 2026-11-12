@@ -31,6 +31,8 @@ export interface CampusEvent {
   endTime: string;
   originalEndTime: string;
   status: EventStatus;
+  accessType?: 'LIBRE' | 'REGISTRO_PREVIO' | 'EXCLUSIVO_FACULTAD';
+  rejectionReason?: string | null;
   temporalStatus?: TemporalStatus;
   isLive?: boolean;
   isPublic: boolean;
@@ -85,13 +87,35 @@ export interface Faculty {
   hexColor: string;
 }
 
-export interface UserSession {
+export type UserRole = 'INVITADO' | 'ESTUDIANTE' | 'DOCENTE' | 'ENTRENADOR' | 'MODERADOR' | 'ADMIN';
+
+/** Persona con sesión iniciada: lo que devuelve `GET /auth/me`. */
+export interface AuthUser {
   id: string;
   email: string;
-  role: 'INVITADO' | 'ESTUDIANTE' | 'DOCENTE' | 'ENTRENADOR' | 'MODERADOR' | 'ADMIN';
+  role: UserRole;
   fullName: string;
-  facultyId?: string | null;
-  isAuthorizedOrganizer?: boolean;
+  facultyId: string | null;
+  isAuthorizedOrganizer: boolean;
+  createdAt: string;
+  academicProgram: string | null;
+  interests: string[];
+  avatarUrl: string | null;
+}
+
+/** Datos del formulario de registro. El backend exige correo institucional y Habeas Data. */
+export interface RegisterInput {
+  email: string;
+  password: string;
+  fullName: string;
+  facultyId?: string;
+  academicProgram?: string;
+  habeasDataAccepted: true;
+}
+
+/** Una inscripción vigente con su evento: una fila de la agenda. */
+export interface MyRegistration extends EventRegistration {
+  event: CampusEvent;
 }
 
 export interface EventRegistration {
