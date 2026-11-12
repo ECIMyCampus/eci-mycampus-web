@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { Navbar } from '../components/layout/Navbar';
 import { BottomNav } from '../components/layout/BottomNav';
+import { SessionProvider } from '../lib/session/session';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
 
@@ -32,10 +33,12 @@ export default function RootLayout({
   return (
     <html lang="es" className={`dark ${inter.variable}`}>
       <body className="flex min-h-dvh flex-col bg-canvas font-sans text-ink antialiased">
-        <Navbar />
-        {/* El espacio inferior deja libre la barra de navegación del celular. */}
-        <main className="flex-1 pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0">{children}</main>
-        <BottomNav />
+        <SessionProvider>
+          <Navbar />
+          {/* El espacio inferior deja libre la barra de navegación del celular. */}
+          <main className="flex-1 pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0">{children}</main>
+          <BottomNav />
+        </SessionProvider>
       </body>
     </html>
   );
