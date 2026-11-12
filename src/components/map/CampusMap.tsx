@@ -3,7 +3,8 @@
 import 'mapbox-gl/dist/mapbox-gl.css';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { Map as MapboxMap, Marker } from 'mapbox-gl';
-import { Building2, Check, Copy, Maximize2, Move, Radio, RotateCcw, Trophy, TriangleAlert } from 'lucide-react';
+import { AnimatePresence } from 'motion/react';
+import { TriangleAlert } from 'lucide-react';
 import { CAMPUS_CENTER } from '../../lib/map/demo-data';
 import {
   CampusMapData,
@@ -15,15 +16,12 @@ import {
 } from '../../lib/map/map-service';
 import { resolveMapboxToken } from '../../lib/map/token';
 import { cn } from '../../lib/utils';
+import { EmptyState } from '../ui/Card';
+import { CalibrationPanel } from './CalibrationPanel';
+import { MapView } from './map-config';
+import { LiveStatus, MapLegend, ViewSwitch } from './MapControls';
+import { PlaceList } from './PlaceList';
 import { PointCard } from './PointCard';
-
-type MapView = 'normal' | 'satellite' | '3d';
-
-const VIEWS: { value: MapView; label: string }[] = [
-  { value: 'normal', label: 'Normal' },
-  { value: 'satellite', label: 'Satélite' },
-  { value: '3d', label: 'Vista 3D' },
-];
 
 /** Textos de los controles de Mapbox en español. */
 const MAP_LOCALE = {
@@ -72,13 +70,6 @@ const ICONS: Record<CampusPoint['kind'], string> = {
     '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>',
 };
 
-const FILTERS: { value: PointFilter; label: string }[] = [
-  { value: 'TODOS', label: 'Todos' },
-  { value: 'EDIFICIO', label: 'Edificios' },
-  { value: 'DEPORTIVO', label: 'Deportes' },
-  { value: 'EN_VIVO', label: 'En vivo' },
-];
-
 const prefersReducedMotion = () =>
   typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -112,12 +103,6 @@ function tuneDarkStyle(map: MapboxMap) {
       // Una capa que no admite el ajuste se deja como viene.
     }
   }
-}
-
-/** Tabla de coordenadas lista para pegar en demo-data.ts. */
-function formatCoordinates(points: CampusPoint[]): string {
-  const rows = points.map((p) => `  '${p.code}': [${p.coordinates[0]}, ${p.coordinates[1]}],`);
-  return ['export const POINT_COORDINATES: Record<string, [number, number]> = {', ...rows, '};'].join('\n');
 }
 
 /** El pin es un botón con nombre accesible; el nombre aparece como mini tarjeta al pasar el mouse. */
@@ -173,8 +158,6 @@ export const CampusMap: React.FC<CampusMapProps> = ({ variant = 'full', showList
   // sobre la vista satelital y el mapa entrega las coordenadas para copiarlas.
   const [calibrating, setCalibrating] = useState(false);
   const [overrides, setOverrides] = useState<Record<string, [number, number]>>({});
-  const [copied, setCopied] = useState(false);
-  const [failedThumbnails, setFailedThumbnails] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     if (process.env.NODE_ENV === 'production') return;
@@ -422,186 +405,59 @@ export const CampusMap: React.FC<CampusMapProps> = ({ variant = 'full', showList
 
   if (!token || tokenRejected) {
     return (
-      <div
+      <EmptyState
         role="alert"
-        className={cn('flex w-full flex-col items-center justify-center gap-3 rounded-2xl border border-amber-500/30 bg-slate-900 p-6 text-center', height)}
-      >
-        <TriangleAlert className="h-8 w-8 text-amber-400" />
-        <h3 className="text-base font-bold text-white">
-          {tokenRejected ? 'Mapbox rechazó el token del mapa' : 'Falta el token de Mapbox para mostrar el mapa'}
-        </h3>
-        <p className="max-w-md text-xs leading-relaxed text-slate-300">
-          {tokenRejected
+        icon={<TriangleAlert className="h-6 w-6" aria-hidden="true" />}
+        className={cn('justify-center', height)}
+        title={tokenRejected ? 'Mapbox rechazó el token del mapa' : 'Falta el token de Mapbox para mostrar el mapa'}
+        description={
+          tokenRejected
             ? 'Revisa que el token público sea válido y que sus restricciones de URL incluyan este dominio.'
-            : 'Crea un token público (empieza por pk.) en tu cuenta de Mapbox y agrégalo en el archivo .env.local como NEXT_PUBLIC_MAPBOX_TOKEN. Luego reinicia el servidor.'}
-        </p>
-      </div>
+            : 'Crea un token público (empieza por pk.) en tu cuenta de Mapbox y agrégalo en el archivo .env.local como NEXT_PUBLIC_MAPBOX_TOKEN. Luego reinicia el servidor.'
+        }
+      />
     );
   }
-
-  const copyCoordinates = () => {
-    navigator.clipboard?.writeText(formatCoordinates(points)).then(() => {
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 2000);
-    });
-  };
 
   return (
     <div className={cn(showList && 'grid gap-4 lg:grid-cols-[1fr_260px]')}>
       <div className="min-w-0 space-y-3">
-      <div className={cn('relative w-full overflow-hidden rounded-2xl border border-slate-800 bg-[#0B132B]', height)}>
-        <div ref={containerRef} className="h-full w-full" aria-label="Mapa interactivo del campus de la Escuela" />
+        <div className={cn('relative w-full overflow-hidden rounded-card border border-line bg-canvas', height)}>
+          <div ref={containerRef} className="h-full w-full" aria-label="Mapa interactivo del campus de la Escuela" />
 
-        {(!tilesLoaded || !data) && (
-          <div role="status" className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
-            <span className="rounded-full border border-slate-700 bg-slate-900/90 px-3 py-1.5 text-xs font-medium text-slate-200">
-              {!data ? 'Cargando datos del campus…' : 'Cargando mapa…'}
-            </span>
-          </div>
-        )}
+          {(!tilesLoaded || !data) && (
+            <div role="status" className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
+              <span className="rounded-full border border-line-strong bg-canvas/85 px-3 py-1.5 text-xs font-medium text-ink backdrop-blur-md">
+                {!data ? 'Cargando datos del campus…' : 'Cargando mapa…'}
+              </span>
+            </div>
+          )}
 
-        {/* Estado en tiempo real y vista */}
-        <div className="pointer-events-none absolute left-3 top-3 z-20 flex max-w-[calc(100%-4.5rem)] flex-wrap items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-700 bg-slate-900/90 px-2.5 py-1 text-[11px] font-semibold text-slate-200 backdrop-blur-md">
-            <span className={cn('h-1.5 w-1.5 rounded-full', liveTotal > 0 ? 'campus-live-dot bg-emerald-400' : 'bg-slate-500')} />
-            {liveTotal > 0 ? `${liveTotal} en vivo` : 'Sin actividad en vivo'}
-            {data?.source === 'demo' && <span className="font-normal text-amber-300">· datos de ejemplo</span>}
-          </span>
-          <div className="pointer-events-auto inline-flex rounded-full border border-slate-700 bg-slate-900/90 p-0.5 text-[11px] font-semibold backdrop-blur-md" role="group" aria-label="Vista del mapa">
-            {VIEWS.map((option) => (
-              <button
-                key={option.value}
-                onClick={() => setView(option.value)}
-                aria-pressed={view === option.value}
-                className={cn('rounded-full px-3 py-1 transition-colors', view === option.value ? 'bg-eci-red text-white' : 'text-slate-300 hover:text-white')}
-              >
-                {option.label}
-              </button>
-            ))}
+          <div className="pointer-events-none absolute left-3 top-3 z-20 flex max-w-[calc(100%-4.5rem)] flex-wrap items-center gap-2">
+            <LiveStatus liveTotal={liveTotal} demo={data?.source === 'demo'} />
+            <div className="pointer-events-auto">
+              <ViewSwitch view={view} onChange={setView} />
+            </div>
           </div>
+
+          <MapLegend
+            filter={filter}
+            onFilter={setFilter}
+            onFitAll={() => fitAll(true)}
+            rotated={rotated}
+            onStraighten={() => mapRef.current?.resetNorth()}
+          />
+
+          <AnimatePresence>
+            {selectedPoint && <PointCard key={selectedPoint.id} point={selectedPoint} onClose={() => setSelectedId(null)} />}
+          </AnimatePresence>
         </div>
 
-        {/* Leyenda y filtro */}
-        <div className="absolute bottom-10 left-3 z-20 max-w-[calc(100%-4rem)] rounded-xl border border-slate-700 bg-slate-900/90 p-2 backdrop-blur-md">
-          <div className="mb-1.5 flex items-center gap-3 px-1 text-[11px] text-slate-300">
-            <span className="inline-flex items-center gap-1"><Building2 className="h-3.5 w-3.5 text-eci-red-light" /> Edificio</span>
-            <span className="inline-flex items-center gap-1"><Trophy className="h-3.5 w-3.5 text-amber-400" /> Deportes</span>
-            <span className="inline-flex items-center gap-1"><Radio className="h-3.5 w-3.5 text-emerald-400" /> En vivo</span>
-          </div>
-          <div className="flex flex-wrap gap-1" role="group" aria-label="Filtrar puntos del mapa">
-            {FILTERS.map((option) => (
-              <button
-                key={option.value}
-                onClick={() => setFilter(option.value)}
-                aria-pressed={filter === option.value}
-                className={cn(
-                  'rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors',
-                  filter === option.value ? 'bg-eci-red text-white' : 'bg-slate-800 text-slate-300 hover:text-white',
-                )}
-              >
-                {option.label}
-              </button>
-            ))}
-            <button
-              onClick={() => fitAll(true)}
-              className="inline-flex items-center gap-1 rounded-full bg-slate-800 px-2.5 py-1 text-[11px] font-medium text-slate-300 hover:text-white"
-            >
-              <Maximize2 className="h-3 w-3" /> Ver todo
-            </button>
-            {rotated && (
-              <button
-                onClick={() => mapRef.current?.resetNorth()}
-                className="inline-flex items-center gap-1 rounded-full bg-slate-800 px-2.5 py-1 text-[11px] font-medium text-slate-300 hover:text-white"
-              >
-                <RotateCcw className="h-3 w-3" /> Enderezar
-              </button>
-            )}
-          </div>
-        </div>
-
-        {selectedPoint && <PointCard point={selectedPoint} onClose={() => setSelectedId(null)} />}
-      </div>
-
-      {calibrating && (
-        <section className="rounded-2xl border border-amber-500/40 bg-slate-900 p-4" aria-label="Calibración de coordenadas">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <h3 className="flex items-center gap-2 text-sm font-bold text-amber-300">
-              <Move className="h-4 w-4" /> Modo calibración
-            </h3>
-            <button
-              onClick={copyCoordinates}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-eci-red px-3 py-1.5 text-xs font-semibold text-white hover:bg-eci-red-light"
-            >
-              {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
-              {copied ? 'Copiado' : 'Copiar coordenadas'}
-            </button>
-          </div>
-          <p className="mt-1 text-xs text-slate-300">
-            Arrastra cada pin hasta su edificio. Cuando termines, copia la tabla y pégala en
-            <code className="mx-1 rounded bg-slate-800 px-1">src/lib/map/demo-data.ts</code>
-            en lugar de POINT_COORDINATES. Movidos: {Object.keys(overrides).length} de {points.length}.
-          </p>
-          <pre className="mt-3 overflow-x-auto rounded-xl bg-slate-950 p-3 text-[11px] leading-relaxed text-slate-200">{formatCoordinates(points)}</pre>
-        </section>
-      )}
+        {calibrating && <CalibrationPanel points={points} movedCount={Object.keys(overrides).length} />}
       </div>
 
       {showList && (
-        <ul className="flex gap-2 overflow-x-auto pb-1 lg:max-h-[650px] lg:flex-col lg:overflow-y-auto lg:overflow-x-visible lg:pb-0" aria-label="Lugares del campus">
-          {!data && (
-            <li role="status" className="rounded-xl border border-slate-800 bg-slate-900/60 p-3 text-xs text-slate-300">
-              Cargando lugares del campus…
-            </li>
-          )}
-          {listPoints.map((point) => {
-            const showThumb = Boolean(point.imageUrl) && !failedThumbnails[point.id];
-            return (
-              <li key={point.id} className="flex-shrink-0">
-                <button
-                  type="button"
-                  onClick={() => setSelectedId(point.id)}
-                  onMouseEnter={() => setHoveredId(point.id)}
-                  onMouseLeave={() => setHoveredId(null)}
-                  onFocus={() => setHoveredId(point.id)}
-                  onBlur={() => setHoveredId(null)}
-                  className={cn(
-                    'flex w-56 items-center gap-3 rounded-xl border p-2.5 text-left transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400 lg:w-full',
-                    point.id === selectedId ? 'border-eci-red-light bg-slate-900' : 'border-slate-800 bg-slate-900/60 hover:border-slate-700',
-                  )}
-                >
-                  {showThumb && point.imageUrl ? (
-                    <img
-                      src={point.imageUrl}
-                      alt=""
-                      loading="lazy"
-                      onError={() => setFailedThumbnails((prev) => ({ ...prev, [point.id]: true }))}
-                      className="h-9 w-9 flex-shrink-0 rounded-lg object-cover"
-                    />
-                  ) : (
-                    <span className={cn('flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full', point.kind === 'EDIFICIO' ? 'bg-eci-red/20 text-eci-red-light' : 'bg-amber-500/15 text-amber-400')}>
-                      {point.kind === 'EDIFICIO' ? <Building2 className="h-4 w-4" /> : <Trophy className="h-4 w-4" />}
-                    </span>
-                  )}
-                  <span className="min-w-0">
-                    <span className="block truncate text-xs font-semibold text-slate-100">{point.name}</span>
-                    <span className={cn('block text-[11px]', point.liveCount > 0 ? 'text-emerald-400' : 'text-slate-300')}>
-                      {point.liveCount > 0
-                        ? `${point.liveCount} en vivo`
-                        : point.events.length > 0
-                          ? `${point.events.length} ${point.events.length === 1 ? 'próxima' : 'próximas'}`
-                          : 'Sin actividades'}
-                    </span>
-                  </span>
-                </button>
-              </li>
-            );
-          })}
-          {data && listPoints.length === 0 && (
-            <li className="rounded-xl border border-slate-800 bg-slate-900/60 p-3 text-xs text-slate-300">
-              No hay lugares para este filtro.
-            </li>
-          )}
-        </ul>
+        <PlaceList points={listPoints} selectedId={selectedId} loading={!data} onSelect={setSelectedId} onHover={setHoveredId} />
       )}
     </div>
   );

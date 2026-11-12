@@ -93,13 +93,13 @@
   box-shadow: 0 4px 12px rgb(0 0 0 / 0.45);
 }
 
-/* Escenario deportivo: círculo ámbar con borde punteado. */
+/* Escenario deportivo: círculo claro con borde punteado. Se distingue por la forma, no por el color. */
 .campus-pin--sports {
-  background: #f59e0b;
-  color: #1e293b;
-  border: 2px dashed #1e293b;
+  background: #e4e4e7;
+  color: #18181b;
+  border: 2px dashed #52525b;
   border-radius: 50%;
-  box-shadow: 0 0 0 2px #f59e0b, 0 4px 12px rgb(0 0 0 / 0.45);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.45);
 }
 
 /* El pin no se escala con transform: Mapbox usa esa propiedad para ubicarlo. */

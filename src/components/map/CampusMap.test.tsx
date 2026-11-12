@@ -219,7 +219,8 @@ describe('CampusMap', () => {
     ).toBe('/?edificio=BLQ-F#radar');
 
     fireEvent.click(within(dialog).getByRole('button', { name: 'Cerrar ficha' }));
-    expect(screen.queryByRole('dialog')).toBeNull();
+    // La ficha sale con una animación corta: desaparece cuando termina.
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
 
     // Vuelve a abrir y cierra con la tecla Escape.
     fireEvent.click(pin);
