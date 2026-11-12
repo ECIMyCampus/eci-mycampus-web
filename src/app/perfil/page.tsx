@@ -1,7 +1,7 @@
-import { ComingSoon } from '../../components/ui/ComingSoon';
+import { ProfileView } from '../../components/auth/ProfileView';
 
 export const metadata = { title: 'Perfil | ECI-MyCampus' };
 
-export default function Page() {
-  return <ComingSoon title="Perfil" description="Aquí podrás ver y editar tus datos." />;
+export default function ProfilePage() {
+  return <ProfileView />;
 }
