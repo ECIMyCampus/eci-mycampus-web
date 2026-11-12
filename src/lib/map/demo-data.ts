@@ -5,9 +5,10 @@ export const CAMPUS_CENTER: [number, number] = [-74.0444, 4.783];
 
 /**
  * Ubicación de cada punto del campus, por código, como [longitud, latitud].
- * El backend todavía no guarda coordenadas: cuando las tenga, este mapa se reemplaza
- * por el dato del servicio.
- * Ubicadas a mano sobre la vista satelital con el modo calibración (/mapa?calibrar).
+ * Es el respaldo del mapa: si el backend entrega latitude/longitude, mandan esas.
+ * Los bloques A-F, la biblioteca, el coliseo y la cancha se ubicaron a mano con el modo
+ * calibración (/mapa?calibrar); el resto sale de los rótulos del mapa base (OpenStreetMap).
+ * Debe coincidir con el catálogo de prisma/seed.ts del backend.
  */
 export const POINT_COORDINATES: Record<string, [number, number]> = {
   'BLQ-A': [-74.04252, 4.78282],
@@ -16,12 +17,20 @@ export const POINT_COORDINATES: Record<string, [number, number]> = {
   'BLQ-D': [-74.04345, 4.78329],
   'BLQ-E': [-74.04354, 4.78266],
   'BLQ-F': [-74.04334, 4.78364],
+  'BLQ-G': [-74.04272, 4.78343],
+  'BLQ-H': [-74.04498, 4.78173],
+  'BLQ-I': [-74.04437, 4.78177],
   'BIB-LLR': [-74.04284, 4.783],
+  'AUL-MAX': [-74.04253, 4.78208],
+  'LAB-L2': [-74.04471, 4.78382],
+  'LAB-L3': [-74.04555, 4.78377],
+  CEA: [-74.04507, 4.78354],
+  'CAF-DIA': [-74.04464, 4.7833],
   'COL-OTO': [-74.04632, 4.78317],
   'CAN-FUT': [-74.04564, 4.78308],
 };
 
-const building = (code: string, name: string, description: string): Building => ({
+const building = (code: string, name: string, description: string | null = null): Building => ({
   id: code,
   code,
   name,
@@ -40,6 +49,14 @@ export const DEMO_BUILDINGS: Building[] = [
   building('BLQ-E', 'Bloque E', 'Ingeniería Industrial, Economía, Administración y Cafetería Central.'),
   building('BLQ-F', 'Bloque F', 'Centro de Innovación y Desarrollo (I+D+i), Robótica y Posgrados.'),
   building('BIB-LLR', 'Biblioteca Jorge Álvarez Lleras', 'Salas de estudio individual y grupal, hemeroteca y auditorio.'),
+  building('BLQ-G', 'Bloque G'),
+  building('BLQ-H', 'Bloque H'),
+  building('BLQ-I', 'Bloque I'),
+  building('AUL-MAX', 'Aula Máxima', 'Auditorio principal de la Escuela.'),
+  building('LAB-L2', 'Laboratorios L2'),
+  building('LAB-L3', 'Laboratorios L3'),
+  building('CEA', 'Centro de Estudios Astronómicos'),
+  building('CAF-DIA', 'Cafetería Dialimentos'),
 ];
 
 export const DEMO_SPORTS: SportsFacility[] = [
