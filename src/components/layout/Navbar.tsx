@@ -2,57 +2,49 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Compass, MapPin, Calendar, User } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { User } from 'lucide-react';
+import { cn } from '../../lib/utils';
+import { Button } from '../ui/Button';
+import { NAV_ITEMS, isActivePath } from './nav-items';
 
 export const Navbar: React.FC = () => {
+  const pathname = usePathname();
+
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-slate-800 bg-slate-900/90 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
-        <Link href="/" className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-eci-red text-white font-bold text-lg shadow-lg shadow-eci-red/20">
+    <header className="sticky top-0 z-40 w-full border-b border-line bg-canvas/80 backdrop-blur-md">
+      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
+        <Link href="/" className="flex items-center gap-2.5 rounded-control" aria-label="ECI MyCampus, inicio">
+          <span className="flex h-8 w-8 items-center justify-center rounded-control bg-accent text-xs font-bold text-white">
             ECI
-          </div>
-          <div>
-            <span className="block font-bold text-slate-100 leading-tight">MyCampus</span>
-            <span className="block text-[10px] text-slate-400">Escuela Colombiana de Ingeniería</span>
-          </div>
+          </span>
+          <span className="text-sm font-semibold text-ink">MyCampus</span>
         </Link>
 
-        {/* Enlaces para Desktop */}
-        <nav className="hidden md:flex items-center gap-6">
-          <Link
-            href="/"
-            className="flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-white transition-colors"
-          >
-            <Compass className="h-4 w-4 text-eci-red-light" />
-            Radar en Vivo
-          </Link>
-          <Link
-            href="/mapa"
-            className="flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-white transition-colors"
-          >
-            <MapPin className="h-4 w-4 text-sky-400" />
-            Mapa del Campus
-          </Link>
-          <Link
-            href="/mis-eventos"
-            className="flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-white transition-colors"
-          >
-            <Calendar className="h-4 w-4 text-amber-400" />
-            Mi Agenda
-          </Link>
+        {/* Navegación de escritorio. En celular la reemplaza la barra inferior. */}
+        <nav className="hidden items-center gap-1 md:flex" aria-label="Principal">
+          {NAV_ITEMS.filter((item) => item.href !== '/perfil').map((item) => {
+            const active = isActivePath(pathname, item.href);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                aria-current={active ? 'page' : undefined}
+                className={cn(
+                  'rounded-control px-3 py-1.5 text-sm font-medium transition-colors duration-fast ease-out',
+                  active ? 'bg-surface-raised text-ink' : 'text-ink-muted hover:text-ink',
+                )}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
         </nav>
 
-        {/* Botón de Acceso */}
-        <div className="flex items-center gap-3">
-          <Link
-            href="/login"
-            className="inline-flex h-10 items-center justify-center rounded-lg bg-slate-800 px-4 text-sm font-semibold text-slate-200 hover:bg-slate-700 hover:text-white transition-all border border-slate-700 min-h-touch min-w-touch"
-          >
-            <User className="mr-2 h-4 w-4" />
-            Iniciar Sesión
-          </Link>
-        </div>
+        <Button href="/login" variant="secondary" size="sm">
+          <User className="h-4 w-4" aria-hidden="true" />
+          Iniciar sesión
+        </Button>
       </div>
     </header>
   );

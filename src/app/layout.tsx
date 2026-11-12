@@ -1,7 +1,10 @@
 import type { Metadata, Viewport } from 'next';
+import { Inter } from 'next/font/google';
 import './globals.css';
 import { Navbar } from '../components/layout/Navbar';
 import { BottomNav } from '../components/layout/BottomNav';
+
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
 
 export const metadata: Metadata = {
   title: 'ECI-MyCampus | Escuela Colombiana de Ingeniería Julio Garavito',
@@ -14,11 +17,11 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#8B0000',
+  themeColor: '#0a0a0b',
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
+  // Permite que el contenido llegue bajo la muesca; las barras respetan la zona segura.
+  viewportFit: 'cover',
 };
 
 export default function RootLayout({
@@ -27,10 +30,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es" className="dark">
-      <body className="min-h-screen bg-slate-950 text-slate-100 antialiased font-sans flex flex-col pb-16 md:pb-0">
+    <html lang="es" className={`dark ${inter.variable}`}>
+      <body className="flex min-h-dvh flex-col bg-canvas font-sans text-ink antialiased">
         <Navbar />
-        <main className="flex-1">{children}</main>
+        {/* El espacio inferior deja libre la barra de navegación del celular. */}
+        <main className="flex-1 pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0">{children}</main>
         <BottomNav />
       </body>
     </html>
