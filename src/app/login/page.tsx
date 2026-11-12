@@ -1,7 +1,13 @@
-import { ComingSoon } from '../../components/ui/ComingSoon';
+import { Suspense } from 'react';
+import { LoginForm } from '../../components/auth/LoginForm';
 
 export const metadata = { title: 'Iniciar sesión | ECI-MyCampus' };
 
-export default function Page() {
-  return <ComingSoon title="Iniciar sesión" description="El acceso con tu cuenta institucional estará disponible pronto." />;
+export default function LoginPage() {
+  // useSearchParams (el destino al que volver) exige un límite de Suspense para prerenderizar.
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
+  );
 }
