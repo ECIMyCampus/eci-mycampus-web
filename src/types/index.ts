@@ -26,6 +26,8 @@ export interface CampusEvent {
   organizerId: string;
   organizerName: string;
   buildingId: string;
+  /** Nombre legible del edificio (el radar lo incluye). */
+  buildingName?: string | null;
   specificLocation: string;
   startTime: string;
   endTime: string;
@@ -43,6 +45,19 @@ export interface CampusEvent {
   imageUrl?: string | null;
   registrationsCount?: number;
   favoritesCount?: number;
+  tags?: string[];
+  modality?: 'PRESENCIAL' | 'VIRTUAL' | 'HIBRIDA' | string;
+  isFeatured?: boolean;
+  paymentInstructions?: string | null;
+  cancellationReason?: string | null;
+}
+
+/** Respuesta paginada de `GET /radar/`. */
+export interface RadarPage {
+  data: CampusEvent[];
+  pagination: { page: number; limit: number; total: number; totalPages: number };
+  activeEventsCount: number;
+  upcomingEventsCount: number;
 }
 
 export interface Building {
@@ -97,10 +112,12 @@ export interface AuthUser {
   fullName: string;
   facultyId: string | null;
   isAuthorizedOrganizer: boolean;
+  isEmailVerified?: boolean;
   createdAt: string;
-  academicProgram: string | null;
-  interests: string[];
-  avatarUrl: string | null;
+  /** Los trae `GET /users/me`, no `/auth/me`. */
+  academicProgram?: string | null;
+  interests?: string[];
+  avatarUrl?: string | null;
 }
 
 /** Datos del formulario de registro. El backend exige correo institucional y Habeas Data. */
@@ -113,17 +130,19 @@ export interface RegisterInput {
   habeasDataAccepted: true;
 }
 
-/** Una inscripción vigente con su evento: una fila de la agenda. */
-export interface MyRegistration extends EventRegistration {
-  event: CampusEvent;
-}
-
+/** Una reserva de cupo. En la agenda (`/registrations/itinerary`) trae los datos del evento. */
 export interface EventRegistration {
   id: string;
   eventId: string;
   userId: string;
-  status: 'CONFIRMADA' | 'CANCELADA';
+  status: 'CONFIRMADA' | 'CANCELADA' | 'ASISTIO';
   registeredAt: string;
+  cancelledAt: string | null;
+  eventTitle?: string;
+  startTime?: string;
+  endTime?: string;
+  buildingId?: string;
+  specificLocation?: string;
 }
 
 /** Contrato estándar de error de los microservicios (ErrorResponseDTO). */

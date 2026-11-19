@@ -129,7 +129,7 @@ export async function loadCampusMapData(): Promise<CampusMapData> {
   try {
     const [buildings, sports] = await Promise.all([api.getBuildings(), api.getSportsFacilities()]);
     // Si solo falla el radar, el mapa se muestra igual, sin eventos.
-    const events = await api.getRadarEvents().catch(() => [] as CampusEvent[]);
+    const events = await api.getRadar({ limit: 50 }).then((page) => page.data).catch(() => [] as CampusEvent[]);
     const points = buildPoints(buildings, sports, events);
     if (points.length === 0) throw new Error('El backend no devolvió puntos ubicables');
     return { points, source: 'api' };

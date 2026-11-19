@@ -64,7 +64,7 @@ export function ProfileView() {
   const rows: { label: string; value: string | null }[] = [
     { label: 'Correo', value: user.email },
     { label: 'Facultad', value: faculty ?? null },
-    { label: 'Carrera o programa', value: user.academicProgram },
+    { label: 'Carrera o programa', value: user.academicProgram ?? null },
     { label: 'Miembro desde', value: memberSince(user.createdAt) },
   ];
 
@@ -94,7 +94,7 @@ export function ProfileView() {
               <dd className="text-sm text-ink [overflow-wrap:anywhere] sm:text-right">{row.value}</dd>
             </div>
           ))}
-        {user.interests.length > 0 && (
+        {user.interests && user.interests.length > 0 && (
           <div className="space-y-2 px-4 py-3">
             <p className="text-sm text-ink-muted">Intereses</p>
             <div className="flex flex-wrap gap-1.5">

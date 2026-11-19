@@ -81,7 +81,7 @@ describe('carga de datos del mapa', () => {
     const fetchMock = vi.fn(async (url: string) => {
       if (url.includes('/campus/buildings')) return jsonResponse(200, [{ ...DEMO_BUILDINGS[2], id: 'uuid-c' }]);
       if (url.includes('/campus/sports')) return jsonResponse(200, []);
-      return jsonResponse(200, [{ ...createDemoEvents()[0], buildingId: 'uuid-c' }]);
+      return jsonResponse(200, { data: [{ ...createDemoEvents()[0], buildingId: 'uuid-c' }] });
     });
     vi.stubGlobal('fetch', fetchMock);
 

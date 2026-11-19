@@ -72,7 +72,7 @@ describe('carga del radar', () => {
     vi.stubGlobal(
       'fetch',
       vi.fn(async (url: string) => {
-        if (url.includes('/events/radar')) return jsonResponse(200, []);
+        if (url.includes('/radar/')) return jsonResponse(200, { data: [] });
         if (url.includes('/campus/buildings')) return jsonResponse(200, DEMO_BUILDINGS);
         return jsonResponse(200, DEMO_SPORTS);
       }),
@@ -89,7 +89,7 @@ describe('carga del radar', () => {
     vi.stubGlobal(
       'fetch',
       vi.fn(async (url: string) => {
-        if (url.includes('/events/radar')) return jsonResponse(200, createDemoEvents());
+        if (url.includes('/radar/')) return jsonResponse(200, { data: createDemoEvents() });
         return jsonResponse(500, { mensaje: 'fallo' });
       }),
     );

@@ -4,7 +4,7 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useS
 import { api, onUnauthorized } from '../api';
 import { AuthUser, RegisterInput } from '../../types';
 
-/** `loading`: todavía no sabemos si hay sesión (la primera consulta a /auth/me no ha terminado). */
+/** `loading`: todavía no sabemos si hay sesión (la restauración al abrir la app no ha terminado). */
 export type SessionStatus = 'loading' | 'authenticated' | 'anonymous';
 
 interface SessionValue {
@@ -19,8 +19,8 @@ interface SessionValue {
 const SessionContext = createContext<SessionValue | null>(null);
 
 /**
- * Estado de sesión de toda la aplicación. La sesión vive en una cookie HttpOnly que el navegador
- * envía solo: aquí nunca se ve ni se guarda el token, solo los datos de la persona.
+ * Estado de sesión de toda la aplicación. El token de acceso vive solo en memoria (`token-store`);
+ * al abrir la app se recupera con la cookie de refresco, que el JavaScript no puede leer.
  */
 export function SessionProvider({ children }: { children: React.ReactNode }) {
   const [status, setStatus] = useState<SessionStatus>('loading');
@@ -31,26 +31,21 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
     setStatus(next ? 'authenticated' : 'anonymous');
   }, []);
 
-  // Al abrir la aplicación: ¿ya hay una sesión? Un 401 (o cualquier fallo) significa visitante.
+  // Al abrir la aplicación: ¿ya hay una sesión? Sin cookie de refresco (o vencida) es un visitante.
   useEffect(() => {
     let cancelled = false;
-    api
-      .getMe()
-      .then((me) => !cancelled && setSession(me))
-      .catch(() => !cancelled && setSession(null));
+    api.restoreSession().then((me) => !cancelled && setSession(me));
     return () => {
       cancelled = true;
     };
   }, [setSession]);
 
-  // Una acción con sesión recibió 401: venció o se cerró en otra pestaña.
+  // Una acción con sesión recibió 401 y el refresco no pudo renovarla: la sesión terminó.
   useEffect(() => onUnauthorized(() => setSession(null)), [setSession]);
 
   const login = useCallback(
     async (email: string, password: string) => {
-      await api.login(email, password);
-      // El login devuelve lo básico; el perfil completo sale de /auth/me.
-      const me = await api.getMe();
+      const { user: me } = await api.login(email, password);
       setSession(me);
       return me;
     },

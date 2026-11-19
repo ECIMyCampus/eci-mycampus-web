@@ -20,28 +20,32 @@ const ME = {
   avatarUrl: null,
 };
 
-/** Backend simulado: la sesión existe solo después de un login correcto, como con la cookie. */
+/**
+ * Backend simulado: la cookie de refresco existe tras un login correcto (o desde el inicio si
+ * `loggedIn`), y el refresco entrega un token nuevo mientras la cookie siga viva.
+ */
 function stubBackend({ loggedIn = false }: { loggedIn?: boolean } = {}) {
-  let session = loggedIn;
+  let cookie = loggedIn;
   const fetchMock = vi.fn(async (url: string, init?: RequestInit) => {
-    if (url.endsWith('/auth/me')) return session ? jsonResponse(200, ME) : jsonResponse(401, { mensaje: 'No autenticado' });
+    if (url.endsWith('/auth/refresh')) return cookie ? jsonResponse(200, { token: 'tk' }) : jsonResponse(401, { mensaje: 'Sin sesión' });
+    if (url.endsWith('/auth/me')) return jsonResponse(200, ME);
     if (url.endsWith('/auth/login')) {
-      session = true;
-      return jsonResponse(200, { user: ME });
+      cookie = true;
+      return jsonResponse(200, { token: 'tk', user: ME });
     }
     if (url.endsWith('/auth/register')) return jsonResponse(201, { message: 'ok' });
     if (url.endsWith('/auth/logout')) {
-      session = false;
-      return new Response(null, { status: 204 });
+      cookie = false;
+      return jsonResponse(200, { message: 'ok' });
     }
-    if (url.includes('/events/') && init?.method === 'POST') return jsonResponse(401, { mensaje: 'Token inválido' });
+    if (url.includes('/registrations/') && init?.method === 'POST') return jsonResponse(401, { mensaje: 'Token inválido' });
     throw new Error(`Llamada inesperada: ${url}`);
   });
   vi.stubGlobal('fetch', fetchMock);
   return {
     fetchMock,
     expireSession: () => {
-      session = false;
+      cookie = false;
     },
   };
 }
@@ -78,7 +82,7 @@ describe('SessionProvider', () => {
     vi.unstubAllGlobals();
   });
 
-  it('empieza cargando y termina como visitante si /auth/me responde 401', async () => {
+  it('empieza cargando y termina como visitante si no hay cookie de refresco', async () => {
     stubBackend();
     renderProbe();
 
@@ -118,10 +122,10 @@ describe('SessionProvider', () => {
 
     await waitFor(() => expect(screen.getByTestId('estado').textContent).toBe('authenticated'));
     const called = fetchMock.mock.calls.map(([url]) => String(url).replace('/api/v1', ''));
-    expect(called).toEqual(['/auth/me', '/auth/register', '/auth/login', '/auth/me']);
+    expect(called).toEqual(['/auth/refresh', '/auth/register', '/auth/login']);
   });
 
-  it('vuelve a visitante cuando una acción con sesión recibe 401', async () => {
+  it('vuelve a visitante cuando una acción con sesión recibe 401 y el refresco ya no sirve', async () => {
     const { expireSession } = stubBackend({ loggedIn: true });
     renderProbe();
     await waitFor(() => expect(screen.getByTestId('estado').textContent).toBe('authenticated'));

@@ -35,19 +35,20 @@ const ME = {
 
 type Handler = (init?: RequestInit) => Response | Promise<Response>;
 
-/** Backend simulado. La sesión existe solo después de un login correcto, como con la cookie. */
+/** Backend simulado. La cookie de refresco existe solo después de un login correcto. */
 function stubBackend(overrides: Record<string, Handler> = {}, { loggedIn = false } = {}) {
   let session = loggedIn;
   const handlers: Record<string, Handler> = {
-    '/auth/me': () => (session ? json(200, ME) : json(401, { mensaje: 'No autenticado' })),
+    '/auth/refresh': () => (session ? json(200, { token: 'tk' }) : json(401, { mensaje: 'Sin sesión' })),
+    '/auth/me': () => json(200, ME),
     '/auth/login': () => {
       session = true;
-      return json(200, { user: ME });
+      return json(200, { token: 'tk', user: ME });
     },
     '/auth/register': () => json(201, { message: 'ok' }),
     '/auth/logout': () => {
       session = false;
-      return new Response(null, { status: 204 });
+      return json(200, { message: 'ok' });
     },
     '/campus/faculties': () => json(200, [{ id: 'fac-1', name: 'Ingeniería de Sistemas', slug: 'sistemas', hexColor: '#000' }]),
     ...overrides,

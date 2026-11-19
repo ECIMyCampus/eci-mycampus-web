@@ -98,7 +98,7 @@ export function countLabel(count: number): string {
  */
 export async function loadRadar(): Promise<RadarData> {
   try {
-    const events = await api.getRadarEvents();
+    const events = (await api.getRadar({ limit: 50 })).data;
     // Los nombres de los lugares son un complemento: si fallan, el radar se muestra igual.
     const [buildings, sports] = await Promise.all([
       api.getBuildings().catch(() => [] as Building[]),
