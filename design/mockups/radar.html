@@ -1,0 +1,40 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Radar · mockup</title><link rel="stylesheet" href="shared.css">
+<style>
+.hero{padding:var(--s6) 0 var(--s4)}
+.hero h1{font-size:28px;line-height:1.15;font-weight:600}
+.hero p{margin-top:var(--s2)}
+.count{display:flex;gap:var(--s4);margin-top:var(--s3);font-size:14px;align-items:center}
+.count b{font-weight:600;color:var(--ink)}
+.search{display:flex;align-items:center;gap:var(--s2);height:44px;padding:0 var(--s3);border-radius:var(--r-control);background:var(--surface);border:1px solid var(--line);color:var(--subtle);font-size:16px;margin-top:var(--s4)}
+.chips{display:flex;gap:var(--s2);overflow-x:auto;padding:var(--s3) 0;scrollbar-width:none}
+.more{font-size:14px;color:var(--muted);display:inline-flex;align-items:center;gap:var(--s1);min-height:44px}
+.grid{display:grid;gap:var(--s3);margin-top:var(--s2)}
+@media(min-width:768px){.grid{grid-template-columns:repeat(2,1fr);gap:var(--s4)}}
+@media(min-width:1100px){.grid{grid-template-columns:repeat(3,1fr)}.hero h1{font-size:36px}}
+.ev{padding:var(--s4);display:flex;flex-direction:column;gap:var(--s3)}
+.ev h3{font-size:16px;line-height:1.35;font-weight:600}
+.ev dl{display:grid;gap:var(--s1);font-size:14px;color:var(--muted)}
+.ev .foot{display:flex;align-items:center;justify-content:space-between;gap:var(--s3);margin-top:auto;padding-top:var(--s1)}
+.pager{display:flex;justify-content:center;gap:var(--s4);margin-top:var(--s6);align-items:center;font-size:14px;color:var(--muted)}
+</style></head><body data-nav="radar"><main class="page"><div class="wrap">
+<section class="hero"><h1>Qué pasa en el campus</h1><p class="muted">Eventos de hoy y de los próximos días.</p>
+<div class="count"><span class="row"><span class="badge live"><i></i>En vivo</span><b>3</b></span><span class="muted"><b>12</b> próximos</span></div>
+<div class="search" role="search">⌕&nbsp; Buscar evento o lugar</div></section>
+<div class="chips"><span class="chip" aria-pressed="true">Todos</span><span class="chip">En vivo</span><span class="chip">Académico</span><span class="chip">Deportivo</span><span class="chip">Cultural</span><span class="chip">Bienestar</span></div>
+<a class="more" href="#">Más filtros ▾</a>
+<div class="grid">
+<article class="card ev"><div class="row" style="justify-content:space-between"><span class="row"><span class="badge live"><i></i>En vivo</span><span class="badge">Académico</span></span><span class="sub">Gratis</span></div>
+<h3>Taller de Docker: contenedores desde cero</h3><dl><div>Bloque B · Sala B-201</div><div>7:00 – 9:00 p. m.</div></dl>
+<div class="foot"><span class="sub">5 cupos libres</span><a class="btn primary" href="evento.html">Inscribirme</a></div></article>
+<article class="card ev"><div class="row" style="justify-content:space-between"><span class="row"><span class="badge">Hoy</span><span class="badge">Deportivo</span></span><span class="sub">Gratis</span></div>
+<h3>Torneo interfacultades de fútbol sala</h3><dl><div>Coliseo Otoniel · Cancha 1</div><div>4:00 – 6:00 p. m.</div></dl>
+<div class="foot"><span class="sub">Acceso libre</span><a class="btn secondary" href="evento.html">Ver detalle</a></div></article>
+<article class="card ev"><div class="row" style="justify-content:space-between"><span class="row"><span class="badge">Jue 20 nov</span><span class="badge">Cultural</span></span><span class="sub">$ 15.000</span></div>
+<h3>Noche de música en el auditorio</h3><dl><div>Bloque F · Auditorio</div><div>6:30 – 8:30 p. m.</div></dl>
+<div class="foot"><span style="color:var(--accent-ink)" class="sub">Aforo lleno</span><a class="btn secondary" href="evento.html">Ver detalle</a></div></article>
+<article class="card ev"><div class="row" style="justify-content:space-between"><span class="row"><span class="badge">Vie 21 nov</span><span class="badge">Bienestar</span></span><span class="sub">Gratis</span></div>
+<h3>Pausa activa y manejo del estrés en época de parciales</h3><dl><div>Biblioteca Luis Carlos Rodríguez</div><div>12:00 – 1:00 p. m.</div></dl>
+<div class="foot"><span class="sub">40 cupos libres</span><a class="btn primary" href="evento.html">Inscribirme</a></div></article>
+</div>
+<div class="pager"><a class="btn secondary" href="#">Anterior</a>Página 1 de 3<a class="btn secondary" href="#">Siguiente</a></div>
+</div></main><script src="nav.js"></script></body></html>

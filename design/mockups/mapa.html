@@ -1,0 +1,19 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Mapa · mockup</title><link rel="stylesheet" href="shared.css">
+<style>
+body{overflow:hidden}.page{padding:0;height:100dvh;min-height:0;position:relative}
+.map{position:absolute;inset:0;background:radial-gradient(circle at 40% 45%,#17201b,#0d1210 70%)}
+.pin{position:absolute;width:36px;height:36px;border-radius:50%;background:var(--surface);border:2px solid var(--line-strong);display:grid;place-items:center;font-size:12px;font-weight:600}
+.pin.live{border-color:var(--live);color:var(--live)}.pin.sel{background:var(--accent);border-color:#fff;color:#fff}
+.search{position:absolute;top:var(--s4);left:var(--s4);right:var(--s4);height:44px;border-radius:var(--r-control);background:var(--surface);border:1px solid var(--line);display:flex;align-items:center;padding:0 var(--s3);color:var(--subtle)}
+.ctrl{position:absolute;right:var(--s4);bottom:280px;display:grid;gap:var(--s2)}
+.ctrl span{width:44px;height:44px;border-radius:var(--r-control);background:var(--surface);border:1px solid var(--line);display:grid;place-items:center}
+.sheet{position:absolute;left:0;right:0;bottom:56px;padding:var(--s2) var(--s4) var(--s4);background:var(--surface);border-top:1px solid var(--line);border-radius:var(--r-card) var(--r-card) 0 0}
+.grab{width:36px;height:4px;border-radius:2px;background:var(--line-strong);margin:0 auto var(--s3)}
+.sheet h2{font-size:20px;font-weight:600}
+.ev{display:flex;justify-content:space-between;align-items:center;padding:var(--s3) 0 0;border-top:1px solid var(--line);margin-top:var(--s3);font-size:14px}
+@media(min-width:768px){.sheet{left:var(--s4);right:auto;width:380px;bottom:var(--s4);border:1px solid var(--line);border-radius:var(--r-card)}.search{width:380px;right:auto}.ctrl{bottom:var(--s4)}main.page{position:fixed;inset:64px 0 0;height:auto}}
+</style></head><body data-nav="mapa"><main class="page"><div class="map">
+<span class="pin" style="left:46%;top:38%">A</span><span class="pin live" style="left:40%;top:30%">B</span><span class="pin sel" style="left:30%;top:42%">D</span><span class="pin" style="left:24%;top:55%">E</span><span class="pin" style="left:55%;top:60%">H</span>
+<div class="search">⌕&nbsp; Buscar bloque o escenario</div><div class="ctrl"><span>+</span><span>−</span><span>⌖</span></div>
+<section class="sheet"><div class="grab"></div><div class="row" style="justify-content:space-between"><h2>Bloque D</h2><span class="badge live"><i></i>1 en vivo</span></div><p class="muted" style="font-size:14px;margin-top:var(--s1)">4 pisos · Laboratorios y aulas</p>
+<div class="ev"><span>Charla de emprendimiento · 5:30 p. m.</span><a class="btn secondary" href="evento.html">Ver</a></div></section></div></main><script src="nav.js"></script></body></html>
