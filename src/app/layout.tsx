@@ -3,7 +3,9 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { Navbar } from '../components/layout/Navbar';
 import { BottomNav } from '../components/layout/BottomNav';
+import { Toaster } from 'sonner';
 import { SessionProvider } from '../lib/session/session';
+import { RegistrationsProvider } from '../lib/registrations/registrations';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
 
@@ -34,10 +36,14 @@ export default function RootLayout({
     <html lang="es" className={`dark ${inter.variable}`}>
       <body className="flex min-h-dvh flex-col bg-canvas font-sans text-ink antialiased">
         <SessionProvider>
+          <RegistrationsProvider>
           <Navbar />
           {/* El espacio inferior deja libre la barra de navegación del celular. */}
           <main className="flex-1 pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0">{children}</main>
           <BottomNav />
+          {/* Arriba al centro: no tapa la barra inferior ni los botones de acción del celular. */}
+          <Toaster theme="dark" position="top-center" closeButton />
+          </RegistrationsProvider>
         </SessionProvider>
       </body>
     </html>
