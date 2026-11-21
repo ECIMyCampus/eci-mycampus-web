@@ -73,6 +73,7 @@
       <label style="margin-bottom:6px">Color de «MyCampus»</label>
       <div class="seg" id="colSeg"></div>
     </div>
+    <div><label style="margin-bottom:6px">Cursiva</label><div class="seg" id="itSeg"></div></div>
     <div><label style="margin-bottom:6px">Posición del pin</label><div class="seg" id="posSeg"></div></div>
     <div><label style="margin-bottom:6px">Curva de la universidad al fondo</label><div class="seg" id="bgSeg"></div></div>
     <label>Tamaño del fondo<input type="range" id="bgSize" min="20" max="200" value="90"></label>
@@ -102,6 +103,10 @@
 <p class="lead">Un clic carga la pareja en el taller de arriba.</p>
 <div class="grid" id="presets"></div>
 
+<h2>Referencias de tus imágenes</h2>
+<p class="lead">Las parejas de tus capturas. Muchas son fuentes comerciales o de prueba (PP Wooland, Quaker, Akzidenz-Grotesk, Monument, Larken…), así que uso la gratuita más parecida de Google Fonts y lo indico en cada tarjeta. Si tienes los archivos con licencia, los cargo tal cual.</p>
+<div class="grid" id="presetsRef"></div>
+
 <h2>Formas del pin</h2>
 <p class="lead">Marcas mínimas para usar solas (ícono de la app, favicon, avatar del mapa).</p>
 <div class="pins" id="pinList"></div>
@@ -119,12 +124,22 @@ const FONTS = {
   'Bricolage Grotesque':[400,600,700,800],'Syne':[500,700,800],'Unbounded':[400,600,700,900],'Archivo':[400,600,700,800],'Poppins':[400,600,700,800],
   'Montserrat':[400,600,700,800],'Raleway':[400,600,700,800],'Oswald':[400,500,600,700],'Bebas Neue':[400],'Anton':[400],'Fraunces':[400,600,700,800],
   'Playfair Display':[400,600,700,800],'DM Serif Display':[400],'Instrument Serif':[400],'Caveat':[500,700],'Pacifico':[400],'Space Mono':[400,700],
-  'JetBrains Mono':[400,600,700,800],'Inter':[400,600,700,800],'Lexend':[400,600,700,800],'Red Hat Display':[400,600,700,800]
+  'JetBrains Mono':[400,600,700,800],'Inter':[400,600,700,800],'Lexend':[400,600,700,800],'Red Hat Display':[400,600,700,800],
+  'Libre Baskerville':[400,700],'Work Sans':[400,600,700,800],'Cardo':[400,700],'Josefin Sans':[300,400,600,700],'Questrial':[400],'Gloock':[400],
+  'Abril Fatface':[400],'Yeseva One':[400],'Bodoni Moda':[400,600,700,900],'Pinyon Script':[400],'Great Vibes':[400],'Allura':[400],'Mrs Saint Delafield':[400],
+  'Cormorant Garamond':[300,400,600,700],'Lilita One':[400],'League Gothic':[400],'Big Shoulders Display':[600,800,900],'Antonio':[400,700],
+  'Archivo Narrow':[400,600,700],'Italiana':[400]
 };
-const link = document.createElement('link');
-link.rel = 'stylesheet';
-link.href = 'https://fonts.googleapis.com/css2?' + Object.entries(FONTS).map(([f,w]) => `family=${f.replace(/ /g,'+')}:wght@${w.join(';')}`).join('&') + '&display=swap';
-document.head.appendChild(link);
+/* Familias con cursiva real y los grosores que la tienen. */
+const ITALICS = {'Playfair Display':[400,600,700,800],'Bodoni Moda':[400,600,700,900],'Libre Baskerville':[400,700],'Cormorant Garamond':[300,400,600,700],'Cardo':[400],'Instrument Serif':[400],'DM Serif Display':[400],'Fraunces':[400,600,700,800]};
+/* Un enlace por familia: si una falla, las demás siguen cargando. */
+Object.entries(FONTS).forEach(([f,w]) => {
+  const it = ITALICS[f];
+  const axis = it ? ':ital,wght@' + [...w.map(x => '0,' + x), ...it.map(x => '1,' + x)].join(';') : ':wght@' + w.join(';');
+  const l = document.createElement('link'); l.rel = 'stylesheet';
+  l.href = 'https://fonts.googleapis.com/css2?family=' + f.replace(/ /g,'+') + axis + '&display=swap';
+  document.head.appendChild(l);
+});
 
 const PINS = {
   ninguno:{label:'Sin pin'},
@@ -148,7 +163,7 @@ function pinSvg(kind, h, fill='#e4202b', ink='#fff'){
 }
 
 const COLORS = {rojo:['Rojo puro','#e4202b'],blanco:['Blanco','#ffffff'],oro:['Oro','#e3a21a'],guinda:['Guinda Manchas','#a9073e']};
-const state = {fEci:'Sora',wEci:700,fMy:'Sora',wMy:700,pin:'ninguno',col:'rojo',layout:'v',pinPos:'top',upper:'none',track:-2,size:48,bg:true,bgSize:90,bgOp:25,bgY:0};
+const state = {fEci:'Sora',wEci:700,fMy:'Sora',wMy:700,pin:'ninguno',col:'rojo',layout:'v',pinPos:'top',upper:'none',track:-2,size:48,bg:true,bgSize:90,bgOp:25,bgY:0,iEci:false,iMy:false};
 
 const BG_SRC = location.pathname.includes('_preview') ? '/brand/curva-eci.webp' : '../../public/brand/curva-eci.webp';
 function logoHTML(s, {size=s.size, light=false}={}){
@@ -159,7 +174,7 @@ function logoHTML(s, {size=s.size, light=false}={}){
   const pin = pinSvg(s.pin, Math.round(size*1.05), '#e4202b', '#fff');
   const gap = Math.round(size*.28);
   const textStyle = `font-size:${size}px;letter-spacing:${t}em;`;
-  const words = `<span style="font-family:'${s.fEci}',sans-serif;font-weight:${s.wEci};color:${eci};${textStyle}">${cap('ECI')}</span><span style="font-family:'${s.fMy}',sans-serif;font-weight:${s.wMy};color:${my};${textStyle}${s.layout==='h'?`margin-left:${Math.round(size*.18)}px`:''}">${cap('MyCampus')}</span>`;
+  const words = `<span style="font-family:'${s.fEci}',sans-serif;font-weight:${s.wEci};font-style:${s.iEci?'italic':'normal'};color:${eci};${textStyle}">${cap('ECI')}</span><span style="font-family:'${s.fMy}',sans-serif;font-weight:${s.wMy};font-style:${s.iMy?'italic':'normal'};color:${my};${textStyle}${s.layout==='h'?`margin-left:${Math.round(size*.18)}px`:''}">${cap('MyCampus')}</span>`;
   const stacked = s.layout==='v'; const top = s.pinPos==='top';
   const inner = s.layout==='h' ? `<span style="display:inline-flex;align-items:baseline">${words}</span>` : `<span style="display:inline-flex;flex-direction:column;align-items:center;text-align:center;gap:${Math.round(size*.08)}px">${words}</span>`;
   const logo = `<span class="logo" style="gap:${gap}px;${top?'flex-direction:column;align-items:center;':''}">${pin}${inner}</span>`;
@@ -185,13 +200,14 @@ function render(){
   document.getElementById('logoLight').innerHTML = logoHTML(state,{size:Math.min(state.size,34),light:true});
   document.getElementById('logoSmall').innerHTML = logoHTML(state,{size:22});
   document.getElementById('iconPin').innerHTML = state.pin==='ninguno' ? '<span style="color:var(--subtle)">—</span>' : `<span style="display:grid;place-items:center;width:64px;height:64px;border-radius:16px;background:#141417;border:1px solid #26262d">${pinSvg(state.pin,38)}</span>`;
-  document.getElementById('out').textContent = JSON.stringify({eci:`${state.fEci} ${state.wEci}`,mycampus:`${state.fMy} ${state.wMy}`,pin:state.pin,colorMyCampus:state.col,disposicion:state.layout==='h'?'horizontal':'apilado centrado',posicionPin:state.pinPos,fondoUniversidad:state.bg?{tamanoPct:state.bgSize,visibilidadPct:state.bgOp,posicionVerticalPct:state.bgY}:false,mayusculas:state.upper==='all',espaciado:state.track});
+  document.getElementById('out').textContent = JSON.stringify({eci:`${state.fEci} ${state.wEci}`,mycampus:`${state.fMy} ${state.wMy}`,pin:state.pin,colorMyCampus:state.col,disposicion:state.layout==='h'?'horizontal':'apilado centrado',posicionPin:state.pinPos,cursiva:{eci:state.iEci,mycampus:state.iMy},fondoUniversidad:state.bg?{tamanoPct:state.bgSize,visibilidadPct:state.bgOp,posicionVerticalPct:state.bgY}:false,mayusculas:state.upper==='all',espaciado:state.track});
   for(const [id,key,font] of [['wEci','wEci','fEci'],['wMy','wMy','fMy']]){
     const sel=document.getElementById(id), ws=weightsFor(state[font]);
     sel.innerHTML = ws.map(w=>`<option value="${w}" ${w===state[key]?'selected':''}>${w}</option>`).join('');
   }
   document.getElementById('fEci').value = state.fEci; document.getElementById('fMy').value = state.fMy;
   for(const k of ['bgSize','bgOp','bgY']) document.getElementById(k).value = state[k];
+  setSeg('itSeg', [['iEci','ECI'],['iMy','MyCampus']], null, k=>{state[k]=!state[k];render()}, k=>state[k]);
   setSeg('bgSeg', [[true,'Con fondo'],[false,'Sin fondo']].map(([k,l])=>[String(k),l]), String(state.bg), v=>{state.bg=v==='true';render()});
   document.getElementById('track').value = state.track; document.getElementById('size').value = state.size;
   setSeg('pinSeg', Object.entries(PINS).map(([k,v])=>[k,v.label]), state.pin, v=>{state.pin=v;render()});
@@ -201,12 +217,12 @@ function render(){
   requestAnimationFrame(()=>fit());
   setSeg('caseSeg', [['none','Como está'],['all','MAYÚSC.']], state.upper, v=>{state.upper=v;render()});
 }
-function setSeg(id,items,cur,fn){
+function setSeg(id,items,cur,fn,isOn){
   const el=document.getElementById(id); el.innerHTML='';
-  items.forEach(([k,l])=>{const b=document.createElement('button');b.type='button';b.textContent=l;b.setAttribute('aria-pressed',String(k===cur));b.onclick=()=>fn(k);el.appendChild(b)});
+  items.forEach(([k,l])=>{const b=document.createElement('button');b.type='button';b.textContent=l;b.setAttribute('aria-pressed',String(isOn?isOn(k):k===cur));b.onclick=()=>fn(k);el.appendChild(b)});
 }
 
-const names = Object.keys(FONTS);
+const names = Object.keys(FONTS).sort((a,b)=>a.localeCompare(b));
 for(const id of ['fEci','fMy']) document.getElementById(id).innerHTML = names.map(n=>`<option>${n}</option>`).join('');
 document.getElementById('fEci').onchange = e=>{state.fEci=e.target.value;state.wEci=nearest(weightsFor(state.fEci),state.wEci);render()};
 document.getElementById('fMy').onchange = e=>{state.fMy=e.target.value;state.wMy=nearest(weightsFor(state.fMy),state.wMy);render()};
@@ -231,14 +247,35 @@ const PRESETS = [
   {n:'Bricolage',d:'Una sola familia con carácter',s:{fEci:'Bricolage Grotesque',wEci:800,fMy:'Bricolage Grotesque',wMy:400,pin:'e',col:'rojo',track:-3}},
   {n:'Apilado',d:'ECI sobre MyCampus',s:{fEci:'Montserrat',wEci:800,fMy:'Montserrat',wMy:400,pin:'e',col:'rojo',track:0,size:44}}
 ];
-const pg = document.getElementById('presets');
-PRESETS.forEach((p,i)=>{
-  const st = Object.assign({},{fEci:'Sora',wEci:700,fMy:'Sora',wMy:700,pin:'e',col:'rojo',layout:'v',pinPos:'top',upper:'none',track:-2,size:48,bg:true,bgSize:90,bgOp:25,bgY:0},p.s,{pin:'ninguno'});
-  const b = document.createElement('button'); b.type='button'; b.className='card';
-  b.innerHTML = `<div class="cv">${logoHTML(st,{size:28})}</div><div><b>${i+1}. ${p.n}</b><br><small>${p.d}</small></div>`;
-  b.onclick=()=>{Object.assign(state,{layout:'v',pinPos:'top',upper:'none',size:48},p.s,{pin:'ninguno'});render();scrollTo({top:0,behavior:'smooth'})};
-  pg.appendChild(b);
-});
+const REFS = [
+  {n:'Wooland + Bloggern',d:'Ref: PP Wooland + Bloggern Sans (comerciales). Aquí: Fraunces + Josefin Sans',s:{fEci:'Fraunces',wEci:400,fMy:'Josefin Sans',wMy:400,track:4}},
+  {n:'Bigilla + Berlin',d:'Ref: Bigilla Bold + Berlin Sans. Aquí: Gloock + Archivo Narrow',s:{fEci:'Gloock',wEci:400,fMy:'Archivo Narrow',wMy:700,track:2}},
+  {n:'Catcalling + Milliard',d:'Ref: Catcalling Demo + Milliard. Aquí: Pinyon Script + Josefin Sans',s:{fEci:'Pinyon Script',wEci:400,fMy:'Josefin Sans',wMy:300,track:10}},
+  {n:'Quaker + Century Gothic',d:'Ref: Quaker + Century Gothic. Aquí: Lilita One + Questrial',s:{fEci:'Lilita One',wEci:400,fMy:'Questrial',wMy:400,track:0}},
+  {n:'Viola + Cardo',d:'Ref: Viola + Cardo. Aquí: Italiana + Cardo',s:{fEci:'Italiana',wEci:400,fMy:'Cardo',wMy:400,track:4}},
+  {n:'Times Condensed + Akzidenz',d:'Ref: Times New Roman Condensed + Akzidenz-Grotesk. Aquí: Instrument Serif + Archivo',s:{fEci:'Instrument Serif',wEci:400,fMy:'Archivo',wMy:600,track:-1,size:56}},
+  {n:'Lavoria + August',d:'Ref: Lavoria Classy + August. Aquí: Yeseva One + Cormorant Garamond cursiva',s:{fEci:'Yeseva One',wEci:400,fMy:'Cormorant Garamond',wMy:700,iMy:true,track:0}},
+  {n:'Cy Grotesk + Monument',d:'Ref: Cy Grotesk Key + Monument. Aquí: Space Grotesk + Unbounded',s:{fEci:'Space Grotesk',wEci:500,fMy:'Unbounded',wMy:700,track:-2}},
+  {n:'Libre Baskerville + Work Sans',d:'Ref: la misma pareja (ambas gratuitas en Google Fonts)',s:{fEci:'Libre Baskerville',wEci:700,fMy:'Work Sans',wMy:600,track:-1}},
+  {n:'SCR-N Five + Larken',d:'Ref: SCR-N Five + Larken. Aquí: Space Mono + Fraunces',s:{fEci:'Space Mono',wEci:700,fMy:'Fraunces',wMy:400,track:-2}},
+  {n:'Amoresa + Perandory',d:'Ref: Amoresa + Perandory Semicondensed. Aquí: Mrs Saint Delafield + Antonio',s:{fEci:'Mrs Saint Delafield',wEci:400,fMy:'Antonio',wMy:700,track:2,size:56}},
+  {n:'Font Pairing',d:'Ref: serif cursiva fuerte + sans. Aquí: Playfair Display cursiva + Work Sans',s:{fEci:'Playfair Display',wEci:800,iEci:true,fMy:'Work Sans',wMy:600,track:-2}},
+  {n:'Milk & Honey',d:'Ref: condensada negra. Aquí: Anton + League Gothic',s:{fEci:'Anton',wEci:400,fMy:'League Gothic',wMy:400,track:2,size:56}},
+  {n:'Broken Heart',d:'Ref: serif romana cursiva de contraste alto. Aquí: Bodoni Moda cursiva + Inter',s:{fEci:'Bodoni Moda',wEci:700,iEci:true,fMy:'Inter',wMy:600,track:-1}},
+  {n:'Weird',d:'Ref: serif negra de gran contraste. Aquí: Playfair Display 800 + Archivo Narrow',s:{fEci:'Playfair Display',wEci:800,fMy:'Archivo Narrow',wMy:700,track:-1}}
+];
+const BASE = {fEci:'Sora',wEci:700,fMy:'Sora',wMy:700,pin:'ninguno',col:'rojo',layout:'v',pinPos:'top',upper:'none',track:-2,size:48,bg:true,bgSize:90,bgOp:25,bgY:0,iEci:false,iMy:false};
+function cards(list, container){
+  list.forEach((p,i)=>{
+    const st = Object.assign({}, BASE, p.s, {pin:'ninguno'});
+    const b = document.createElement('button'); b.type='button'; b.className='card';
+    b.innerHTML = '<div class="cv">' + logoHTML(st,{size:28}) + '</div><div><b>' + (i+1) + '. ' + p.n + '</b><br><small>' + p.d + '</small></div>';
+    b.onclick = () => { Object.assign(state, BASE, p.s, {pin:'ninguno'}); render(); scrollTo({top:0,behavior:'smooth'}); };
+    container.appendChild(b);
+  });
+}
+cards(PRESETS, document.getElementById('presets'));
+cards(REFS, document.getElementById('presetsRef'));
 
 const pl = document.getElementById('pinList');
 Object.entries(PINS).filter(([k])=>k!=='ninguno').forEach(([k,v])=>{
