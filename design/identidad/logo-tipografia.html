@@ -25,12 +25,14 @@
   .seg{display:flex;flex-wrap:wrap;gap:6px}
   .seg button{background:var(--raised);color:var(--muted);border:1px solid var(--line-strong);border-radius:99px;padding:6px 12px;font:600 13px system-ui;cursor:pointer}
   .seg button[aria-pressed=true]{background:var(--ink);color:var(--canvas);border-color:var(--ink)}
-  .stage{background:var(--canvas);border:1px solid var(--line);border-radius:var(--r);display:grid;place-items:center;min-height:200px;padding:28px 16px}
+  .stage{overflow:hidden;background:var(--canvas);border:1px solid var(--line);border-radius:var(--r);display:grid;place-items:center;min-height:200px;padding:28px 16px}
   .stage.light{background:#f5f5f7}
   .preview{display:grid;gap:12px}
   .minis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
   .out{font:12px/1.5 ui-monospace,Consolas,monospace;color:var(--muted);background:var(--raised);border-radius:10px;padding:10px;word-break:break-word}
   .logo{display:inline-flex;align-items:center;white-space:nowrap;line-height:1}
+  .lw{position:relative;display:inline-grid;place-items:center}
+  .lw .bgu{position:absolute;left:50%;top:50%;height:auto;pointer-events:none;user-select:none}
   .logo.stack{flex-direction:column;align-items:flex-start}
   .grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));margin-top:16px}
   .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;cursor:pointer;text-align:left;color:inherit;font:inherit;display:grid;gap:10px;transition:border-color .15s,transform .15s}
@@ -72,6 +74,10 @@
       <div class="seg" id="colSeg"></div>
     </div>
     <div><label style="margin-bottom:6px">Posición del pin</label><div class="seg" id="posSeg"></div></div>
+    <div><label style="margin-bottom:6px">Logo de la universidad al fondo</label><div class="seg" id="bgSeg"></div></div>
+    <label>Tamaño del fondo<input type="range" id="bgSize" min="40" max="300" value="100"></label>
+    <label>Visibilidad del fondo<input type="range" id="bgOp" min="3" max="60" value="16"></label>
+    <label>Posición vertical del fondo<input type="range" id="bgY" min="-60" max="60" value="0"></label>
     <div class="row2">
       <div><label style="margin-bottom:6px">Disposición</label><div class="seg" id="layoutSeg"></div></div>
       <div><label style="margin-bottom:6px">Mayúsculas</label><div class="seg" id="caseSeg"></div></div>
@@ -142,8 +148,9 @@ function pinSvg(kind, h, fill='#e4202b', ink='#fff'){
 }
 
 const COLORS = {rojo:['Rojo puro','#e4202b'],blanco:['Blanco','#ffffff'],oro:['Oro','#e3a21a'],guinda:['Guinda Manchas','#a9073e']};
-const state = {fEci:'Sora',wEci:700,fMy:'Sora',wMy:700,pin:'e',col:'rojo',layout:'v',pinPos:'top',upper:'none',track:-2,size:48};
+const state = {fEci:'Sora',wEci:700,fMy:'Sora',wMy:700,pin:'ninguno',col:'rojo',layout:'v',pinPos:'top',upper:'none',track:-2,size:48,bg:true,bgSize:100,bgOp:16,bgY:0};
 
+const BG_SRC = location.pathname.includes('_preview') ? '/brand/logo-eci-blanco.png' : '../../public/brand/logo-eci-blanco.png';
 function logoHTML(s, {size=s.size, light=false}={}){
   const eci = light ? '#111' : '#fff';
   const my = s.col==='blanco' && light ? '#111' : COLORS[s.col][1];
@@ -155,7 +162,10 @@ function logoHTML(s, {size=s.size, light=false}={}){
   const words = `<span style="font-family:'${s.fEci}',sans-serif;font-weight:${s.wEci};color:${eci};${textStyle}">${cap('ECI')}</span><span style="font-family:'${s.fMy}',sans-serif;font-weight:${s.wMy};color:${my};${textStyle}${s.layout==='h'?`margin-left:${Math.round(size*.18)}px`:''}">${cap('MyCampus')}</span>`;
   const stacked = s.layout==='v'; const top = s.pinPos==='top';
   const inner = s.layout==='h' ? `<span style="display:inline-flex;align-items:baseline">${words}</span>` : `<span style="display:inline-flex;flex-direction:column;align-items:center;text-align:center;gap:${Math.round(size*.08)}px">${words}</span>`;
-  return `<span class="logo" style="gap:${gap}px;${top?'flex-direction:column;align-items:center;':''}">${pin}${inner}</span>`;
+  const logo = `<span class="logo" style="gap:${gap}px;${top?'flex-direction:column;align-items:center;':''}">${pin}${inner}</span>`;
+  if(!s.bg) return logo;
+  const bg = `<img class="bgu" alt="" src="${BG_SRC}" style="width:${s.bgSize}%;opacity:${s.bgOp/100};transform:translate(-50%,calc(-50% + ${s.bgY}%));${light?'filter:invert(1);':''}">`;
+  return `<span class="lw">${bg}${logo}</span>`;
 }
 
 /* Reduce el logo para que quepa en su recuadro. */
@@ -175,12 +185,14 @@ function render(){
   document.getElementById('logoLight').innerHTML = logoHTML(state,{size:Math.min(state.size,34),light:true});
   document.getElementById('logoSmall').innerHTML = logoHTML(state,{size:22});
   document.getElementById('iconPin').innerHTML = state.pin==='ninguno' ? '<span style="color:var(--subtle)">—</span>' : `<span style="display:grid;place-items:center;width:64px;height:64px;border-radius:16px;background:#141417;border:1px solid #26262d">${pinSvg(state.pin,38)}</span>`;
-  document.getElementById('out').textContent = JSON.stringify({eci:`${state.fEci} ${state.wEci}`,mycampus:`${state.fMy} ${state.wMy}`,pin:state.pin,colorMyCampus:state.col,disposicion:state.layout==='h'?'horizontal':'apilado centrado',posicionPin:state.pinPos,mayusculas:state.upper==='all',espaciado:state.track});
+  document.getElementById('out').textContent = JSON.stringify({eci:`${state.fEci} ${state.wEci}`,mycampus:`${state.fMy} ${state.wMy}`,pin:state.pin,colorMyCampus:state.col,disposicion:state.layout==='h'?'horizontal':'apilado centrado',posicionPin:state.pinPos,fondoUniversidad:state.bg?{tamanoPct:state.bgSize,visibilidadPct:state.bgOp,posicionVerticalPct:state.bgY}:false,mayusculas:state.upper==='all',espaciado:state.track});
   for(const [id,key,font] of [['wEci','wEci','fEci'],['wMy','wMy','fMy']]){
     const sel=document.getElementById(id), ws=weightsFor(state[font]);
     sel.innerHTML = ws.map(w=>`<option value="${w}" ${w===state[key]?'selected':''}>${w}</option>`).join('');
   }
   document.getElementById('fEci').value = state.fEci; document.getElementById('fMy').value = state.fMy;
+  for(const k of ['bgSize','bgOp','bgY']) document.getElementById(k).value = state[k];
+  setSeg('bgSeg', [[true,'Con fondo'],[false,'Sin fondo']].map(([k,l])=>[String(k),l]), String(state.bg), v=>{state.bg=v==='true';render()});
   document.getElementById('track').value = state.track; document.getElementById('size').value = state.size;
   setSeg('pinSeg', Object.entries(PINS).map(([k,v])=>[k,v.label]), state.pin, v=>{state.pin=v;render()});
   setSeg('colSeg', Object.entries(COLORS).map(([k,v])=>[k,v[0]]), state.col, v=>{state.col=v;render()});
@@ -200,6 +212,7 @@ document.getElementById('fEci').onchange = e=>{state.fEci=e.target.value;state.w
 document.getElementById('fMy').onchange = e=>{state.fMy=e.target.value;state.wMy=nearest(weightsFor(state.fMy),state.wMy);render()};
 document.getElementById('wEci').onchange = e=>{state.wEci=+e.target.value;render()};
 document.getElementById('wMy').onchange = e=>{state.wMy=+e.target.value;render()};
+for(const k of ['bgSize','bgOp','bgY']) document.getElementById(k).oninput = e=>{state[k]=+e.target.value;render()};
 document.getElementById('track').oninput = e=>{state.track=+e.target.value;render()};
 document.getElementById('size').oninput = e=>{state.size=+e.target.value;render()};
 document.getElementById('copy').onclick = async ()=>{const t=document.getElementById('out').textContent;try{await navigator.clipboard.writeText(t);document.getElementById('copy').textContent='Copiado'}catch{document.getElementById('copy').textContent='Selecciona y copia el texto de arriba'}setTimeout(()=>document.getElementById('copy').textContent='Copiar configuración',1800)};
@@ -220,10 +233,10 @@ const PRESETS = [
 ];
 const pg = document.getElementById('presets');
 PRESETS.forEach((p,i)=>{
-  const st = Object.assign({},{fEci:'Sora',wEci:700,fMy:'Sora',wMy:700,pin:'e',col:'rojo',layout:'v',pinPos:'top',upper:'none',track:-2,size:48},p.s);
+  const st = Object.assign({},{fEci:'Sora',wEci:700,fMy:'Sora',wMy:700,pin:'e',col:'rojo',layout:'v',pinPos:'top',upper:'none',track:-2,size:48,bg:true,bgSize:100,bgOp:16,bgY:0},p.s,{pin:'ninguno'});
   const b = document.createElement('button'); b.type='button'; b.className='card';
   b.innerHTML = `<div class="cv">${logoHTML(st,{size:28})}</div><div><b>${i+1}. ${p.n}</b><br><small>${p.d}</small></div>`;
-  b.onclick=()=>{Object.assign(state,{layout:'v',pinPos:'top',upper:'none',size:48},p.s);render();scrollTo({top:0,behavior:'smooth'})};
+  b.onclick=()=>{Object.assign(state,{layout:'v',pinPos:'top',upper:'none',size:48},p.s,{pin:'ninguno'});render();scrollTo({top:0,behavior:'smooth'})};
   pg.appendChild(b);
 });
 
