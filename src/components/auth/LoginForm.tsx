@@ -83,12 +83,17 @@ export function LoginForm() {
       }
     >
       <MicrosoftButton returnTo={returnTo} />
-      <div className="my-5 flex items-center gap-3 text-xs text-ink-subtle" aria-hidden="true">
-        <span className="h-px flex-1 bg-line" />
-        o con tu correo
-        <span className="h-px flex-1 bg-line" />
-      </div>
-      <form onSubmit={onSubmit} noValidate className="space-y-4">
+      <Button href="/" variant="secondary" className="mt-3 w-full">
+        Entrar como invitado
+      </Button>
+      <p className="mt-2 text-center text-xs leading-relaxed text-ink-subtle">
+        Como invitado puedes ver el radar y el mapa. Para inscribirte necesitas tu cuenta institucional.
+      </p>
+      <details className="group mt-5 border-t border-line pt-4" open={Boolean(formError) || submitted}>
+        <summary className="cursor-pointer list-none text-center text-sm text-ink-muted hover:text-ink">
+          Usar correo y contraseña
+        </summary>
+      <form onSubmit={onSubmit} noValidate className="mt-4 space-y-4">
         <TextField
           label="Correo"
           name="email"
@@ -120,6 +125,7 @@ export function LoginForm() {
           {submitting ? 'Entrando…' : 'Entrar'}
         </Button>
       </form>
+      </details>
     </AuthShell>
   );
 }

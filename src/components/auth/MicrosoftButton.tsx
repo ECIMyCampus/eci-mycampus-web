@@ -9,7 +9,7 @@ const MICROSOFT_LOGIN_URL = process.env.NEXT_PUBLIC_MICROSOFT_LOGIN_URL;
 /** Logo de Microsoft: cuatro cuadros con sus colores oficiales. */
 function MicrosoftLogo() {
   return (
-    <svg aria-hidden="true" width="21" height="21" viewBox="0 0 21 21" className="shrink-0">
+    <svg aria-hidden="true" width="24" height="24" viewBox="0 0 21 21" className="shrink-0">
       <rect x="1" y="1" width="9" height="9" fill="#F25022" />
       <rect x="11" y="1" width="9" height="9" fill="#7FBA00" />
       <rect x="1" y="11" width="9" height="9" fill="#00A4EF" />
@@ -33,7 +33,7 @@ export function MicrosoftButton({ returnTo }: { returnTo?: string | null }) {
     <button
       type="button"
       onClick={onClick}
-      className="flex h-11 w-full items-center justify-center gap-3 rounded-control border border-[#8C8C8C] bg-white px-4 text-[15px] font-semibold text-[#5E5E5E] transition-[background-color,transform] duration-150 ease-out hover:bg-[#f3f3f3] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-ink"
+      className="flex h-14 w-full items-center justify-center gap-3 rounded-control border border-[#8C8C8C] bg-white px-4 text-base font-semibold text-[#5E5E5E] transition-[background-color,transform] duration-150 ease-out hover:bg-[#f3f3f3] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-ink"
     >
       <MicrosoftLogo />
       Iniciar sesión con Microsoft

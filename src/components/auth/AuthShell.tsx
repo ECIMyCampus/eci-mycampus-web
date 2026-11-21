@@ -9,6 +9,8 @@ interface AuthShellProps {
   children: React.ReactNode;
   /** Enlace a la pantalla hermana ("¿No tienes cuenta?..."). */
   footer?: React.ReactNode;
+  /** Muestra al pie el acceso de invitado (la pantalla de entrada lo pone dentro de la tarjeta). */
+  showGuest?: boolean;
 }
 
 /**
@@ -16,7 +18,7 @@ interface AuthShellProps {
  * contorno animado del edificio E a la derecha. En celular la animación pasa arriba, como banda corta.
  * Ocupa toda la pantalla, sin las barras de navegación.
  */
-export function AuthShell({ title, description, children, footer }: AuthShellProps) {
+export function AuthShell({ title, description, children, footer, showGuest = true }: AuthShellProps) {
   return (
     <div className="fixed inset-0 z-[60] overflow-y-auto bg-canvas lg:overflow-hidden">
       <div className="grid min-h-full lg:h-full lg:grid-cols-2">
@@ -26,6 +28,7 @@ export function AuthShell({ title, description, children, footer }: AuthShellPro
             <p className="mt-1.5 text-sm text-ink-muted">{description}</p>
             <Card className="mt-6 p-5 sm:p-6">{children}</Card>
             {footer && <p className="mt-5 text-center text-sm text-ink-muted">{footer}</p>}
+            {showGuest && (
             <div className="mt-6 border-t border-line pt-6 text-center">
               <Button href="/" variant="ghost" className="w-full">
                 Entrar como invitado
@@ -34,6 +37,7 @@ export function AuthShell({ title, description, children, footer }: AuthShellPro
                 Como invitado puedes ver el radar y el mapa. Para inscribirte necesitas tu cuenta institucional.
               </p>
             </div>
+            )}
           </div>
         </section>
 
