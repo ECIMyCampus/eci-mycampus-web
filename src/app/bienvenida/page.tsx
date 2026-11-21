@@ -1,7 +1,6 @@
-import { Welcome } from '../../components/brand/Welcome';
+import { redirect } from 'next/navigation';
 
-export const metadata = { title: 'Bienvenida | ECI-MyCampus' };
-
+/** La bienvenida se fusionó con el inicio de sesión. */
 export default function Page() {
-  return <Welcome />;
+  redirect('/login');
 }
