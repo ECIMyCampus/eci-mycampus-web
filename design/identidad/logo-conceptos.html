@@ -6,7 +6,7 @@
 <title>Conceptos de logo · ECI MyCampus</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Space+Grotesk:wght@400;500;700&family=Outfit:wght@400;600;800&family=Playfair+Display:wght@700;800&family=Manrope:wght@400;700;800&family=Inter:wght@400;500;600;700&family=Bricolage+Grotesque:wght@400;800&family=Space+Mono:wght@700&display=swap">
 <style>
-  :root{--canvas:#0b0b0d;--surface:#141417;--raised:#1b1b20;--line:#26262d;--line-strong:#3a3a44;--ink:#f5f5f7;--muted:#a6a6b2;--subtle:#6f6f7c;--guinda:#a9073e;--soft:#eb5c8a;--oro:#e3a21a;--live:#34d399;--r:14px}
+  :root{--canvas:#0b0b0d;--surface:#141417;--raised:#1b1b20;--line:#26262d;--line-strong:#3a3a44;--ink:#f5f5f7;--muted:#a6a6b2;--subtle:#6f6f7c;--guinda:#a51d24;--soft:#f26e74;--oro:#e3a21a;--live:#34d399;--r:14px}
   *{box-sizing:border-box;margin:0}
   body{background:var(--canvas);color:var(--ink);font:400 15px/1.6 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
   .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
@@ -31,7 +31,7 @@
   .row{display:flex;gap:10px;flex-wrap:wrap}
   .tile{flex:1 1 120px;background:var(--canvas);border:1px solid var(--line);border-radius:12px;display:flex;align-items:center;justify-content:center;gap:10px;min-height:84px;padding:10px}
   .tile.light{background:#f5f5f7}
-  .icon{display:grid;place-items:center;background:var(--guinda);border-radius:22%}
+  .icon{display:grid;place-items:center;background:#e4202b;border-radius:22%}
   .lock{display:inline-flex;align-items:center;gap:.28em;white-space:nowrap;line-height:1}
   .why dt{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--soft);margin-top:12px}
   .why dt:first-child{margin-top:0}
@@ -51,7 +51,7 @@
 <header>
   <p class="eyebrow">Manual de identidad · logo</p>
   <h1>Seis ideas para el logo</h1>
-  <p class="lead">Cada idea parte de algo que es cierto de ECI MyCampus (lo que pasa ahora, el lugar, la agenda, Manchas) y no de un dibujo literal del campus. Cada una se prueba a cuatro tamaños, en oscuro, en claro y como ícono de app.</p>
+  <p class="lead">Todas van en rojo puro (#E4202B), el rojo de la marca. Cada idea parte de algo que es cierto de ECI MyCampus (lo que pasa ahora, el lugar, la agenda, Manchas) y no de un dibujo literal del campus. Cada una se prueba a cuatro tamaños, en oscuro, en claro y como ícono de app.</p>
 </header>
 
 <div class="defs">
@@ -89,7 +89,7 @@
 </div>
 
 <script>
-const G='#a9073e', S='#eb5c8a', O='#e3a21a';
+const G='#e4202b', S='#e4202b', O='#e3a21a'; /* G y S: rojo puro del logo */
 /* Cada símbolo recibe: main (color principal), acc (acento), neg (color de los huecos o del contraste). viewBox 64x64. */
 const SYMS = [
 { id:'A', name:'Aquí y ahora', rec:false,
@@ -137,7 +137,7 @@ sel.onchange = render;
 
 const sym = (s,size,m=G,a=O,n='#fff') => `<svg width="${size}" height="${size}" viewBox="0 0 64 64" aria-hidden="true" style="flex:none">${s.svg(m,a,n)}</svg>`;
 const word = (size,light=false)=>{const p=PAIRS[sel.value];return `<span style="font-size:${size}px;letter-spacing:-.02em;display:inline-flex;gap:.2em;align-items:baseline"><span style="font-family:'${p.a[0]}';font-weight:${p.a[1]};color:${light?'#111':'#fff'}">ECI</span><span style="font-family:'${p.b[0]}';font-weight:${p.b[1]};color:${light?G:S}">MyCampus</span></span>`};
-const lockup = (s,size,light=false)=>`<span class="lock" style="gap:${size*.3}px">${sym(s,size*1.25,light?G:S,O,light?'#fff':'#0b0b0d')}${word(size,light)}</span>`;
+const lockup = (s,size,light=false)=>`<span class="lock" style="gap:${size*.3}px">${sym(s,size*1.25,G,O,light?'#fff':'#0b0b0d')}${word(size,light)}</span>`;
 
 function render(){
   const box = document.getElementById('concepts'); box.innerHTML='';
@@ -153,7 +153,7 @@ function render(){
           <div class="tile">${sym(s,48,S)}${sym(s,32,S)}${sym(s,16,S)}</div>
         </div>
         <div class="row">
-          <div class="tile"><span class="icon" style="width:64px;height:64px">${sym(s,44,'#fff','#e3a21a','#a9073e')}</span><span class="icon" style="width:32px;height:32px">${sym(s,22,'#fff','#e3a21a','#a9073e')}</span></div>
+          <div class="tile"><span class="icon" style="width:64px;height:64px">${sym(s,44,'#fff','#ffd24a','#e4202b')}</span><span class="icon" style="width:32px;height:32px">${sym(s,22,'#fff','#ffd24a','#e4202b')}</span></div>
           <div class="tile light">${sym(s,48,G,O,'#fff')}${lockup(s,18,true)}</div>
         </div>
       </div>
