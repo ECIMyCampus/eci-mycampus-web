@@ -16,6 +16,8 @@ export const BottomNav: React.FC = () => {
   const pathname = usePathname();
   const { status } = useSession();
 
+  if (pathname === '/bienvenida') return null;
+
   const items = NAV_ITEMS.map((item) => (item.href === '/perfil' && status === 'anonymous' ? SIGN_IN_ITEM : item));
 
   return (
