@@ -208,7 +208,7 @@ function logoHTML(s, {size=s.size, light=false}={}){
   const pin = pinSvg(s.pin, Math.round(size*1.05), '#e4202b', '#fff');
   const gap = Math.round(size*.28);
   const k = (s.stretch||100)/100;
-  const lh = s.layout==='v' ? 0.78 : 1;
+  const lh = 1;
   const over = s.layout==='o';
   const eciSize = (over ? size*1.9 : size) * (s.eciMul||100)/100;
   /* Letras nítidas sobre el dibujo del fondo: un borde duro del color del fondo recorta las líneas alrededor de cada letra, sin difuminado. */
