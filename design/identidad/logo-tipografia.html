@@ -74,9 +74,9 @@
       <div class="seg" id="colSeg"></div>
     </div>
     <div><label style="margin-bottom:6px">Posición del pin</label><div class="seg" id="posSeg"></div></div>
-    <div><label style="margin-bottom:6px">Logo de la universidad al fondo</label><div class="seg" id="bgSeg"></div></div>
-    <label>Tamaño del fondo<input type="range" id="bgSize" min="40" max="300" value="100"></label>
-    <label>Visibilidad del fondo<input type="range" id="bgOp" min="3" max="60" value="16"></label>
+    <div><label style="margin-bottom:6px">Curva de la universidad al fondo</label><div class="seg" id="bgSeg"></div></div>
+    <label>Tamaño del fondo<input type="range" id="bgSize" min="20" max="200" value="90"></label>
+    <label>Visibilidad del fondo<input type="range" id="bgOp" min="3" max="60" value="25"></label>
     <label>Posición vertical del fondo<input type="range" id="bgY" min="-60" max="60" value="0"></label>
     <div class="row2">
       <div><label style="margin-bottom:6px">Disposición</label><div class="seg" id="layoutSeg"></div></div>
@@ -148,9 +148,9 @@ function pinSvg(kind, h, fill='#e4202b', ink='#fff'){
 }
 
 const COLORS = {rojo:['Rojo puro','#e4202b'],blanco:['Blanco','#ffffff'],oro:['Oro','#e3a21a'],guinda:['Guinda Manchas','#a9073e']};
-const state = {fEci:'Sora',wEci:700,fMy:'Sora',wMy:700,pin:'ninguno',col:'rojo',layout:'v',pinPos:'top',upper:'none',track:-2,size:48,bg:true,bgSize:100,bgOp:16,bgY:0};
+const state = {fEci:'Sora',wEci:700,fMy:'Sora',wMy:700,pin:'ninguno',col:'rojo',layout:'v',pinPos:'top',upper:'none',track:-2,size:48,bg:true,bgSize:90,bgOp:25,bgY:0};
 
-const BG_SRC = location.pathname.includes('_preview') ? '/brand/logo-eci-blanco.png' : '../../public/brand/logo-eci-blanco.png';
+const BG_SRC = location.pathname.includes('_preview') ? '/brand/curva-eci.webp' : '../../public/brand/curva-eci.webp';
 function logoHTML(s, {size=s.size, light=false}={}){
   const eci = light ? '#111' : '#fff';
   const my = s.col==='blanco' && light ? '#111' : COLORS[s.col][1];
@@ -233,7 +233,7 @@ const PRESETS = [
 ];
 const pg = document.getElementById('presets');
 PRESETS.forEach((p,i)=>{
-  const st = Object.assign({},{fEci:'Sora',wEci:700,fMy:'Sora',wMy:700,pin:'e',col:'rojo',layout:'v',pinPos:'top',upper:'none',track:-2,size:48,bg:true,bgSize:100,bgOp:16,bgY:0},p.s,{pin:'ninguno'});
+  const st = Object.assign({},{fEci:'Sora',wEci:700,fMy:'Sora',wMy:700,pin:'e',col:'rojo',layout:'v',pinPos:'top',upper:'none',track:-2,size:48,bg:true,bgSize:90,bgOp:25,bgY:0},p.s,{pin:'ninguno'});
   const b = document.createElement('button'); b.type='button'; b.className='card';
   b.innerHTML = `<div class="cv">${logoHTML(st,{size:28})}</div><div><b>${i+1}. ${p.n}</b><br><small>${p.d}</small></div>`;
   b.onclick=()=>{Object.assign(state,{layout:'v',pinPos:'top',upper:'none',size:48},p.s,{pin:'ninguno'});render();scrollTo({top:0,behavior:'smooth'})};
