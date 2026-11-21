@@ -213,3 +213,43 @@
     opacity: 0;
   }
 }
+
+/* ---------- Contorno del edificio con luz que recorre (pantalla de bienvenida) ---------- */
+.led-outline,
+.led-outline::after {
+  -webkit-mask: url('/brand/edificio-e-lineas.webp') 70% center / cover no-repeat;
+  mask: url('/brand/edificio-e-lineas.webp') 70% center / cover no-repeat;
+}
+
+/* Capa base: el dibujo en rojo tenue. */
+.led-outline {
+  position: absolute;
+  inset: 0;
+  background: rgb(var(--accent) / 0.55);
+}
+
+/* Capa de luz: una franja clara que recorre las líneas, como un LED. */
+.led-outline::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 38%, rgb(var(--accent-ink)) 50%, transparent 62%) 0 0 / 300% 100%;
+  animation: led-sweep 7s linear infinite;
+}
+
+@keyframes led-sweep {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .led-outline::after {
+    animation: none;
+    background-position: 50% 0;
+    opacity: 0.5;
+  }
+}
