@@ -15,7 +15,7 @@ interface WordmarkProps {
  */
 export function Wordmark({ className, background = false }: WordmarkProps) {
   return (
-    <span className={cn('relative inline-grid place-items-center font-display leading-[0.78] tracking-[-0.03em]', className)}>
+    <span className={cn('relative inline-grid place-items-center font-display tracking-[-0.03em]', className)}>
       {background && (
         <Image
           src="/brand/curva-eci.webp"
@@ -26,7 +26,8 @@ export function Wordmark({ className, background = false }: WordmarkProps) {
           className="pointer-events-none absolute left-1/2 top-1/2 h-auto w-[90%] max-w-none -translate-x-1/2 -translate-y-1/2 opacity-25"
         />
       )}
-      <span className="relative flex flex-col items-center text-center">
+      {/* El interlineado va en línea: tailwind-merge descarta `leading-*` cuando el tamaño llega con `text-[..]`. */}
+      <span className="relative flex flex-col items-center text-center" style={{ lineHeight: 1 }}>
         <span className="font-extrabold text-ink">ECI</span>
         <span className="font-normal text-logo-red">MyCampus</span>
       </span>
