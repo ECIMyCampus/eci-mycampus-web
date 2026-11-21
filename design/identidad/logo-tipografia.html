@@ -74,6 +74,9 @@
       <div class="seg" id="colSeg"></div>
     </div>
     <div><label style="margin-bottom:6px">Cursiva</label><div class="seg" id="itSeg"></div></div>
+    <div><label style="margin-bottom:6px">Estilo de «ECI»</label><div class="seg" id="outSeg"></div></div>
+    <label>Inicial de «MyCampus» en otra tipografía<select id="fInit"></select></label>
+    <label>Tamaño de la inicial<input type="range" id="initScale" min="100" max="300" value="170"></label>
     <div><label style="margin-bottom:6px">Posición del pin</label><div class="seg" id="posSeg"></div></div>
     <div><label style="margin-bottom:6px">Curva de la universidad al fondo</label><div class="seg" id="bgSeg"></div></div>
     <label>Tamaño del fondo<input type="range" id="bgSize" min="20" max="200" value="90"></label>
@@ -116,6 +119,10 @@
 <p class="lead">POWER Real, Money On My Mind y Fight Club comparten una idea: una palabra grande en serif de contraste alto y otra en cursiva que la cruza. Aquí «ECI» es la serif (se puede estirar en alto) y «MyCampus» la que cruza. Usa la disposición «Superpuesto» para ajustar cuánto se cruzan.</p>
 <div class="grid" id="presetsPoster"></div>
 
+<h2>Estilo póster, segunda tanda</h2>
+<p class="lead">Design Success, Pairing Styles, Beauty Design y Stroke Beauty. Aquí aparecen dos recursos nuevos: «ECI» en contorno (Stroke) y la inicial de «MyCampus» en otra tipografía, como la B en script de Beauty.</p>
+<div class="grid" id="presetsPoster2"></div>
+
 <h2>Formas del pin</h2>
 <p class="lead">Marcas mínimas para usar solas (ícono de la app, favicon, avatar del mapa).</p>
 <div class="pins" id="pinList"></div>
@@ -137,7 +144,8 @@ const FONTS = {
   'Libre Baskerville':[400,700],'Work Sans':[400,600,700,800],'Cardo':[400,700],'Josefin Sans':[300,400,600,700],'Questrial':[400],'Gloock':[400],
   'Abril Fatface':[400],'Yeseva One':[400],'Bodoni Moda':[400,600,700,900],'Pinyon Script':[400],'Great Vibes':[400],'Allura':[400],'Mrs Saint Delafield':[400],
   'Cormorant Garamond':[300,400,600,700],'Lilita One':[400],'League Gothic':[400],'Big Shoulders Display':[600,800,900],'Antonio':[400,700],
-  'Archivo Narrow':[400,600,700],'Italiana':[400]
+  'Archivo Narrow':[400,600,700],'Italiana':[400],
+  'Jost':[400,500,700],'Yellowtail':[400],'Kaushan Script':[400],'Arimo':[400,700]
 };
 /* Familias con cursiva real y los grosores que la tienen. */
 const ITALICS = {'Playfair Display':[400,600,700,800],'Bodoni Moda':[400,600,700,900],'Libre Baskerville':[400,700],'Cormorant Garamond':[300,400,600,700],'Cardo':[400],'Instrument Serif':[400],'DM Serif Display':[400],'Fraunces':[400,600,700,800]};
@@ -172,7 +180,7 @@ function pinSvg(kind, h, fill='#e4202b', ink='#fff'){
 }
 
 const COLORS = {rojo:['Rojo puro','#e4202b'],blanco:['Blanco','#ffffff'],oro:['Oro','#e3a21a'],guinda:['Guinda Manchas','#a9073e']};
-const state = {fEci:'Sora',wEci:700,fMy:'Sora',wMy:700,pin:'ninguno',col:'rojo',layout:'v',pinPos:'top',upper:'none',track:-2,size:48,bg:true,bgSize:90,bgOp:25,bgY:0,iEci:false,iMy:false,stretch:100,ovY:40,ovSize:100};
+const state = {fEci:'Sora',wEci:700,fMy:'Sora',wMy:700,pin:'ninguno',col:'rojo',layout:'v',pinPos:'top',upper:'none',track:-2,size:48,bg:true,bgSize:90,bgOp:25,bgY:0,iEci:false,iMy:false,stretch:100,ovY:40,ovSize:100,outEci:false,fInit:'',initScale:170};
 
 const BG_SRC = location.pathname.includes('_preview') ? '/brand/curva-eci.webp' : '../../public/brand/curva-eci.webp';
 function logoHTML(s, {size=s.size, light=false}={}){
@@ -185,12 +193,14 @@ function logoHTML(s, {size=s.size, light=false}={}){
   const k = (s.stretch||100)/100;
   const over = s.layout==='o';
   const eciSize = over ? size*1.9 : size;
-  const eciCss = "font-family:'"+s.fEci+"',sans-serif;font-weight:"+s.wEci+";font-style:"+(s.iEci?'italic':'normal')+";color:"+eci+";font-size:"+eciSize+"px;letter-spacing:"+t+"em;line-height:1;display:inline-block;transform:scaleY("+k+");margin:"+((k-1)*eciSize*.5)+"px 0;"+(over?'grid-area:1/1;':'');
+  const eciCss = "font-family:'"+s.fEci+"',sans-serif;font-weight:"+s.wEci+";font-style:"+(s.iEci?'italic':'normal')+";"+(s.outEci?"color:transparent;-webkit-text-stroke:"+Math.max(1.5,eciSize*.03)+"px "+eci+";":"color:"+eci+";")+"font-size:"+eciSize+"px;letter-spacing:"+t+"em;line-height:1;display:inline-block;transform:scaleY("+k+");margin:"+((k-1)*eciSize*.5)+"px 0;"+(over?'grid-area:1/1;':'');
   const halo = light ? '#f5f5f7' : '#0b0b0d';
   const myCss = "font-family:'"+s.fMy+"',sans-serif;font-weight:"+s.wMy+";font-style:"+(s.iMy?'italic':'normal')+";color:"+my+";letter-spacing:"+t+"em;line-height:1;" +
     (over ? "font-size:"+(size*1.5*(s.ovSize||100)/100)+"px;grid-area:1/1;align-self:end;justify-self:center;position:relative;z-index:2;transform:translateY("+(s.ovY||0)+"%);text-shadow:0 0 .1em "+halo+",0 0 .2em "+halo+";white-space:nowrap;"
           : "font-size:"+size+"px;" + (s.layout==='h' ? "margin-left:"+Math.round(size*.18)+"px;" : ""));
-  const words = '<span style="'+eciCss+'">'+cap('ECI')+'</span><span style="'+myCss+'">'+cap('MyCampus')+'</span>';
+  const rest = cap('MyCampus');
+  const myWord = s.fInit ? '<span style="font-family:\''+s.fInit+'\',cursive;font-weight:400;font-style:normal;font-size:'+s.initScale+'%;line-height:0">'+rest.charAt(0)+'</span>'+rest.slice(1) : rest;
+  const words = '<span style="'+eciCss+'">'+cap('ECI')+'</span><span style="'+myCss+'">'+myWord+'</span>';
   const top = s.pinPos==='top';
   const inner = over
     ? '<span style="display:inline-grid;place-items:center;text-align:center;padding-bottom:'+Math.round(size*.5)+'px">'+words+'</span>'
@@ -220,7 +230,7 @@ function render(){
   document.getElementById('logoLight').innerHTML = logoHTML(state,{size:Math.min(state.size,34),light:true});
   document.getElementById('logoSmall').innerHTML = logoHTML(state,{size:22});
   document.getElementById('iconPin').innerHTML = state.pin==='ninguno' ? '<span style="color:var(--subtle)">—</span>' : `<span style="display:grid;place-items:center;width:64px;height:64px;border-radius:16px;background:#141417;border:1px solid #26262d">${pinSvg(state.pin,38)}</span>`;
-  document.getElementById('out').textContent = JSON.stringify({eci:`${state.fEci} ${state.wEci}`,mycampus:`${state.fMy} ${state.wMy}`,pin:state.pin,colorMyCampus:state.col,disposicion:({h:'horizontal',v:'apilado centrado',o:'superpuesto'})[state.layout],posicionPin:state.pinPos,estirarECI:state.stretch,superposicion:state.layout==='o'?{abajoPct:state.ovY,tamanoMyCampusPct:state.ovSize}:null,cursiva:{eci:state.iEci,mycampus:state.iMy},fondoUniversidad:state.bg?{tamanoPct:state.bgSize,visibilidadPct:state.bgOp,posicionVerticalPct:state.bgY}:false,mayusculas:state.upper==='all',espaciado:state.track});
+  document.getElementById('out').textContent = JSON.stringify({eci:`${state.fEci} ${state.wEci}`,mycampus:`${state.fMy} ${state.wMy}`,pin:state.pin,colorMyCampus:state.col,disposicion:({h:'horizontal',v:'apilado centrado',o:'superpuesto'})[state.layout],posicionPin:state.pinPos,contornoECI:state.outEci,inicialMyCampus:state.fInit?{fuente:state.fInit,tamanoPct:state.initScale}:null,estirarECI:state.stretch,superposicion:state.layout==='o'?{abajoPct:state.ovY,tamanoMyCampusPct:state.ovSize}:null,cursiva:{eci:state.iEci,mycampus:state.iMy},fondoUniversidad:state.bg?{tamanoPct:state.bgSize,visibilidadPct:state.bgOp,posicionVerticalPct:state.bgY}:false,mayusculas:state.upper==='all',espaciado:state.track});
   for(const [id,key,font] of [['wEci','wEci','fEci'],['wMy','wMy','fMy']]){
     const sel=document.getElementById(id), ws=weightsFor(state[font]);
     sel.innerHTML = ws.map(w=>`<option value="${w}" ${w===state[key]?'selected':''}>${w}</option>`).join('');
@@ -228,6 +238,8 @@ function render(){
   document.getElementById('fEci').value = state.fEci; document.getElementById('fMy').value = state.fMy;
   for(const k of ['bgSize','bgOp','bgY']) document.getElementById(k).value = state[k];
   setSeg('itSeg', [['iEci','ECI'],['iMy','MyCampus']], null, k=>{state[k]=!state[k];render()}, k=>state[k]);
+  setSeg('outSeg', [['fill','Relleno'],['out','Contorno']], state.outEci?'out':'fill', v=>{state.outEci=v==='out';render()});
+  document.getElementById('fInit').value = state.fInit; document.getElementById('initScale').value = state.initScale;
   setSeg('bgSeg', [[true,'Con fondo'],[false,'Sin fondo']].map(([k,l])=>[String(k),l]), String(state.bg), v=>{state.bg=v==='true';render()});
   document.getElementById('track').value = state.track; document.getElementById('size').value = state.size;
   setSeg('pinSeg', Object.entries(PINS).map(([k,v])=>[k,v.label]), state.pin, v=>{state.pin=v;render()});
@@ -246,6 +258,9 @@ function setSeg(id,items,cur,fn,isOn){
 
 const names = Object.keys(FONTS).sort((a,b)=>a.localeCompare(b));
 for(const id of ['fEci','fMy']) document.getElementById(id).innerHTML = names.map(n=>`<option>${n}</option>`).join('');
+document.getElementById('fInit').innerHTML = '<option value="">Ninguna</option>' + names.map(n=>`<option>${n}</option>`).join('');
+document.getElementById('fInit').onchange = e=>{state.fInit=e.target.value;render()};
+document.getElementById('initScale').oninput = e=>{state.initScale=+e.target.value;render()};
 document.getElementById('fEci').onchange = e=>{state.fEci=e.target.value;state.wEci=nearest(weightsFor(state.fEci),state.wEci);render()};
 document.getElementById('fMy').onchange = e=>{state.fMy=e.target.value;state.wMy=nearest(weightsFor(state.fMy),state.wMy);render()};
 document.getElementById('wEci').onchange = e=>{state.wEci=+e.target.value;render()};
@@ -287,13 +302,19 @@ const REFS = [
   {n:'Broken Heart',d:'Ref: serif romana cursiva de contraste alto. Aquí: Bodoni Moda cursiva + Inter',s:{fEci:'Bodoni Moda',wEci:700,iEci:true,fMy:'Inter',wMy:600,track:-1}},
   {n:'Weird',d:'Ref: serif negra de gran contraste. Aquí: Playfair Display 800 + Archivo Narrow',s:{fEci:'Playfair Display',wEci:800,fMy:'Archivo Narrow',wMy:700,track:-1}}
 ];
-const BASE = {fEci:'Sora',wEci:700,fMy:'Sora',wMy:700,pin:'ninguno',col:'rojo',layout:'v',pinPos:'top',upper:'none',track:-2,size:48,bg:true,bgSize:90,bgOp:25,bgY:0,iEci:false,iMy:false,stretch:100,ovY:40,ovSize:100};
+const BASE = {fEci:'Sora',wEci:700,fMy:'Sora',wMy:700,pin:'ninguno',col:'rojo',layout:'v',pinPos:'top',upper:'none',track:-2,size:48,bg:true,bgSize:90,bgOp:25,bgY:0,iEci:false,iMy:false,stretch:100,ovY:40,ovSize:100,outEci:false,fInit:'',initScale:170};
 const POSTER = [
   {n:'Power Real',d:'Ref: POWER Real. Serif alta estirada + script cruzando. Bodoni Moda + Pinyon Script',s:{layout:'o',fEci:'Bodoni Moda',wEci:700,fMy:'Pinyon Script',wMy:400,stretch:170,ovY:45,ovSize:115,track:-3,size:40}},
   {n:'Money On My Mind',d:'Ref: serif negra en mayúsculas + script pequeño. Playfair Display 800 + Pinyon Script',s:{layout:'o',fEci:'Playfair Display',wEci:800,fMy:'Pinyon Script',wMy:400,stretch:100,ovY:70,ovSize:80,track:-2,size:44}},
   {n:'Fight Club',d:'Ref: Didone ancha de contraste alto. Bodoni Moda espaciada + Cormorant cursiva',s:{layout:'o',fEci:'Bodoni Moda',wEci:400,fMy:'Cormorant Garamond',wMy:700,iMy:true,stretch:100,ovY:55,ovSize:90,track:6,size:46}},
   {n:'Cruzado alto',d:'Gloock estirada + Great Vibes',s:{layout:'o',fEci:'Gloock',wEci:400,fMy:'Great Vibes',wMy:400,stretch:150,ovY:50,ovSize:105,track:-2,size:40}},
   {n:'Cruzado negro',d:'Abril Fatface + Allura',s:{layout:'o',fEci:'Abril Fatface',wEci:400,fMy:'Allura',wMy:400,stretch:120,ovY:55,ovSize:110,track:-2,size:42}}
+];
+const POSTER2 = [
+  {n:'Design Success',d:'Ref: Essornes + Parlare. Serif cursiva de contraste alto + script. Bodoni Moda cursiva + Great Vibes',s:{layout:'o',fEci:'Bodoni Moda',wEci:700,iEci:true,fMy:'Great Vibes',wMy:400,stretch:100,ovY:55,ovSize:115,track:-2,size:44}},
+  {n:'Pairing Styles',d:'Ref: Futura + Sloop. Geométrica ancha + script. Jost 700 + Yellowtail',s:{layout:'o',fEci:'Jost',wEci:700,fMy:'Yellowtail',wMy:400,stretch:100,ovY:50,ovSize:105,track:6,size:44}},
+  {n:'Beauty Design',d:'Ref: Bickham Script + Helvetica. Sans en mayúsculas con la M en script. Arimo + Great Vibes',s:{layout:'v',fEci:'Arimo',wEci:700,fMy:'Arimo',wMy:700,fInit:'Great Vibes',initScale:200,upper:'all',track:2,size:44}},
+  {n:'Stroke Beauty',d:'Ref: Bebas Neue + Gelato Luxe. ECI en contorno + script cruzando. Bebas Neue + Kaushan Script',s:{layout:'o',fEci:'Bebas Neue',wEci:400,outEci:true,fMy:'Kaushan Script',wMy:400,stretch:120,ovY:50,ovSize:95,track:3,size:46}}
 ];
 function cards(list, container){
   list.forEach((p,i)=>{
@@ -307,6 +328,7 @@ function cards(list, container){
 cards(PRESETS, document.getElementById('presets'));
 cards(REFS, document.getElementById('presetsRef'));
 cards(POSTER, document.getElementById('presetsPoster'));
+cards(POSTER2, document.getElementById('presetsPoster2'));
 
 const pl = document.getElementById('pinList');
 Object.entries(PINS).filter(([k])=>k!=='ninguno').forEach(([k,v])=>{
