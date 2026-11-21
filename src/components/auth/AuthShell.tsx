@@ -1,7 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
 import { Button } from '../ui/Button';
-import { Card } from '../ui/Card';
 import { Wordmark } from '../brand/Wordmark';
 
 interface AuthShellProps {
@@ -23,11 +22,11 @@ export function AuthShell({ title, description, children, footer, showGuest = tr
   return (
     <div className="fixed inset-0 z-[60] overflow-y-auto bg-canvas lg:overflow-hidden">
       <div className="grid min-h-full lg:h-full lg:grid-cols-2">
-        <section className="order-2 flex flex-col justify-start px-4 py-8 sm:px-12 lg:order-1 lg:justify-center lg:overflow-y-auto lg:py-12">
-          <div className="mx-auto w-full max-w-md">
+        <section className="order-2 flex flex-col justify-start px-4 py-8 sm:px-12 lg:order-1 lg:overflow-y-auto lg:py-12">
+          <div className="mx-auto w-full max-w-md lg:my-auto">
             <h1 className="text-2xl font-semibold text-ink sm:text-3xl">{title}</h1>
             <p className="mt-1.5 text-sm text-ink-muted">{description}</p>
-            <Card className="mt-6 p-5 sm:p-6">{children}</Card>
+            <div className="mt-8">{children}</div>
             {footer && <p className="mt-5 text-center text-sm text-ink-muted">{footer}</p>}
             {showGuest && (
             <div className="mt-6 border-t border-line pt-6 text-center">
