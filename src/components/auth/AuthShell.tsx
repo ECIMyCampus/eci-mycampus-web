@@ -2,6 +2,8 @@ import React from 'react';
 import Image from 'next/image';
 import { Button } from '../ui/Button';
 import { Wordmark } from '../brand/Wordmark';
+import { cn } from '../../lib/utils';
+import { manchasOutlineClass, manchasSize, manchasSrc } from '../../lib/brand/manchas';
 
 interface AuthShellProps {
   title: string;
@@ -50,12 +52,12 @@ export function AuthShell({ title, description, children, footer, showGuest = tr
             </div>
           </div>
           <Image
-            src="/brand/manchas/saludo-1.webp"
+            src={manchasSrc('saludo-1')}
             alt=""
             aria-hidden="true"
-            width={188}
-            height={392}
-            className="sticker-outline mascot-rise pointer-events-none absolute bottom-0 right-4 h-40 w-auto select-none sm:fixed sm:right-10 lg:hidden"
+            width={manchasSize('saludo-1').width}
+            height={manchasSize('saludo-1').height}
+            className={cn(manchasOutlineClass, 'mascot-rise pointer-events-none absolute bottom-0 right-4 h-40 w-auto select-none sm:fixed sm:right-10 lg:hidden')}
           />
         </section>
 
@@ -68,12 +70,12 @@ export function AuthShell({ title, description, children, footer, showGuest = tr
           </div>
           {/* Manchas saluda desde la esquina de esta mitad. */}
           <Image
-            src="/brand/manchas/saludo-1.webp"
+            src={manchasSrc('saludo-1')}
             alt="Manchas, la mascota, saludando"
-            width={188}
-            height={392}
+            width={manchasSize('saludo-1').width}
+            height={manchasSize('saludo-1').height}
             priority
-            className="sticker-outline mascot-rise pointer-events-none absolute bottom-0 right-8 hidden h-[min(36vh,340px)] w-auto select-none lg:block"
+            className={cn(manchasOutlineClass, 'mascot-rise pointer-events-none absolute bottom-0 right-8 hidden h-[min(36vh,340px)] w-auto select-none lg:block')}
           />
         </aside>
       </div>
