@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manual de identidad · ECI MyCampus</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas:#0b0b0d; --surface:#141417; --raised:#1b1b20; --line:#26262d; --line-strong:#3a3a44;
+    --ink:#f5f5f7; --muted:#a6a6b2; --subtle:#6f6f7c;
+    --guinda:#a9073e; --guinda-deep:#7e0223; --guinda-soft:#eb5c8a; --oro:#e3a21a; --live:#34d399;
+    --r:14px;
+  }
+  *{box-sizing:border-box;margin:0}
+  body{background:var(--canvas);color:var(--ink);font:400 16px/1.6 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+  header.top{padding:64px 0 40px;border-bottom:1px solid var(--line)}
+  header.top p{color:var(--muted);max-width:56ch;margin-top:12px}
+  nav.toc{position:sticky;top:0;z-index:5;background:rgb(11 11 13/.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  nav.toc .wrap{display:flex;gap:4px;overflow-x:auto;padding-block:8px}
+  nav.toc a{color:var(--muted);text-decoration:none;font-size:14px;padding:6px 12px;border-radius:99px;white-space:nowrap}
+  nav.toc a:hover{background:var(--raised);color:var(--ink)}
+  section{padding:64px 0;border-bottom:1px solid var(--line)}
+  .eyebrow{font-size:13px;color:var(--guinda-soft);font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+  h1,h2,h3{font-family:Sora,Inter,sans-serif;letter-spacing:-.02em;line-height:1.15}
+  h1{font-size:clamp(34px,6vw,56px);margin-top:8px}
+  h2{font-size:clamp(26px,4vw,36px);margin:6px 0 10px}
+  h3{font-size:18px;margin-bottom:6px}
+  .lead{color:var(--muted);max-width:60ch}
+  .grid{display:grid;gap:16px;margin-top:28px}
+  .g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+  .g3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+  .card.stage{display:grid;place-items:center;min-height:190px;background:var(--canvas)}
+  .tag{display:inline-block;font-size:12px;font-weight:600;color:var(--muted);border:1px solid var(--line-strong);border-radius:99px;padding:2px 10px;margin-bottom:10px}
+  .tag.pick{color:var(--oro);border-color:rgb(227 162 26/.5)}
+  .note{color:var(--muted);font-size:14px;margin-top:10px}
+  .logo{white-space:nowrap;display:flex;align-items:center;gap:12px;font-family:Sora,sans-serif;font-weight:700;letter-spacing:-.03em;font-size:26px;line-height:1}
+  .logo .my{color:var(--guinda-soft)}
+  .logo small{font:500 11px/1 Inter;letter-spacing:.14em;color:var(--muted);display:block;margin-top:6px;text-transform:uppercase}
+  .swatches{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:24px}
+  .sw{border-radius:var(--r);overflow:hidden;border:1px solid var(--line)}
+  .sw i{display:block;height:84px}
+  .sw div{padding:10px 12px;background:var(--surface);font-size:13px}
+  .sw b{display:block;font-size:14px}
+  .sw span{color:var(--muted);font-variant-numeric:tabular-nums}
+  table{width:100%;border-collapse:collapse;font-size:14px;margin-top:16px}
+  td,th{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left}
+  th{color:var(--muted);font-weight:500}
+  .ok{color:var(--live)} .no{color:#f87171}
+  .type-row{display:grid;grid-template-columns:120px 1fr;gap:16px;align-items:baseline;padding:14px 0;border-bottom:1px solid var(--line)}
+  .type-row small{color:var(--subtle);font-size:12px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;border-radius:12px;font:600 14px Inter;border:1px solid transparent;cursor:pointer}
+  .btn.p{background:var(--guinda);color:#fff}.btn.s{background:var(--raised);border-color:var(--line-strong);color:var(--ink)}.btn.g{color:var(--muted)}
+  .chip{display:inline-flex;padding:6px 12px;border-radius:99px;border:1px solid var(--line-strong);font-size:13px;color:var(--muted)}
+  .chip.on{background:var(--ink);color:var(--canvas);border-color:var(--ink)}
+  .livedot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--live);box-shadow:0 0 0 0 rgb(52 211 153/.6);animation:pulse 2s ease-out infinite;margin-right:6px}
+  @keyframes pulse{70%{box-shadow:0 0 0 8px rgb(52 211 153/0)}100%{box-shadow:0 0 0 0 rgb(52 211 153/0)}}
+  .radii{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px}
+  .radii div{width:96px;height:64px;background:var(--raised);border:1px solid var(--line-strong);display:grid;place-items:center;font-size:12px;color:var(--muted)}
+  .space{display:flex;align-items:flex-end;gap:10px;margin-top:14px;flex-wrap:wrap}
+  .space div{background:var(--guinda);border-radius:4px;display:grid;place-items:end center;color:#fff;font-size:11px;padding-bottom:2px}
+  .mascots{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap}
+  .mascots img{height:200px;width:auto}
+  .bubble{background:var(--raised);border:1px solid var(--line-strong);border-radius:16px 16px 16px 4px;padding:12px 14px;font-size:14px;max-width:34ch}
+  .bubble.me{background:var(--guinda);border-color:transparent;border-radius:16px 16px 4px 16px;margin-left:auto}
+  .chat{display:flex;flex-direction:column;gap:10px}
+  .avatar{width:44px;height:44px;border-radius:50%;object-fit:cover;object-position:50% 22%;background:var(--raised);border:1px solid var(--line-strong)}
+  .led{position:relative;height:150px;border-radius:var(--r);overflow:hidden;background:var(--canvas);border:1px solid var(--line)}
+  .led::before,.led::after{content:"";position:absolute;inset:0;-webkit-mask:url('../../public/brand/edificio-e-lineas.webp') 70% center/cover no-repeat;mask:url('../../public/brand/edificio-e-lineas.webp') 70% center/cover no-repeat}
+  .led::before{background:rgb(255 255 255/.28)}
+  .led::after{background:linear-gradient(105deg,transparent 38%,#fff 50%,transparent 62%) 0 0/300% 100%;animation:sweep 7s linear infinite}
+  @keyframes sweep{from{background-position:100% 0}to{background-position:-100% 0}}
+  .do,.dont{font-size:14px;padding-left:22px;position:relative;margin-top:8px}
+  .do::before{content:"✓";position:absolute;left:0;color:var(--live)}
+  .dont::before{content:"✕";position:absolute;left:0;color:#f87171}
+  footer{padding:40px 0;color:var(--subtle);font-size:14px}
+  @media (prefers-reduced-motion:reduce){.led::after{animation:none;background-position:50% 0;opacity:.5}.livedot{animation:none}}
+  @media (max-width:560px){.type-row{grid-template-columns:1fr;gap:4px}}
+</style>
+</head>
+<body>
+
+<header class="top"><div class="wrap">
+  <p class="eyebrow">Manual de identidad · borrador v1</p>
+  <h1>ECI MyCampus</h1>
+  <p>Lo que pasa en el campus, en tiempo real. Este manual fija marca, color, tipografía, forma, movimiento y voz. La interfaz sale de aquí: los valores de esta página son los de la app.</p>
+</div></header>
+
+<nav class="toc"><div class="wrap">
+  <a href="#marca">Marca</a><a href="#color">Color</a><a href="#tipografia">Tipografía</a><a href="#forma">Espaciado y forma</a><a href="#componentes">Componentes</a><a href="#movimiento">Movimiento</a><a href="#manchas">Manchas y voz</a>
+</div></nav>
+
+<!-- ============ MARCA ============ -->
+<section id="marca"><div class="wrap">
+  <p class="eyebrow">01 · Marca</p>
+  <h2>El logo</h2>
+  <p class="lead">El nombre siempre se escribe «ECI MyCampus». Tres rutas para rediseñar el logo; elige una y la afino. Las tres comparten la tipografía Sora y el guinda de la mascota.</p>
+
+  <div class="grid g3">
+    <div class="card">
+      <span class="tag">A · Tipográfico</span>
+      <div class="card stage" style="min-height:150px">
+        <div class="logo" style="font-size:34px"><span>ECI <span class="my">MyCampus</span></span></div>
+      </div>
+      <p class="note">Solo palabra. Sobrio y fácil de usar en cualquier tamaño. «My» no se separa; todo «MyCampus» va en el color de marca.</p>
+    </div>
+    <div class="card">
+      <span class="tag pick">B · Pin con E (recomendado)</span>
+      <div class="card stage" style="min-height:150px">
+        <div class="logo">
+          <svg width="34" height="40" viewBox="0 0 48 56" aria-hidden="true"><path fill="#a9073e" d="M24 0C10.7 0 0 10.4 0 23.3c0 16 24 32.7 24 32.7s24-16.7 24-32.7C48 10.4 37.3 0 24 0z"/><g fill="#fff"><rect x="14" y="12" width="5" height="22" rx="1"/><rect x="14" y="12" width="19" height="5" rx="1"/><rect x="14" y="21.5" width="15" height="5" rx="1"/><rect x="14" y="29" width="19" height="5" rx="1"/></g></svg>
+          <span>ECI <span class="my">MyCampus</span></span>
+        </div>
+      </div>
+      <p class="note">El pin es el mapa y el radar; la E es el Bloque E, el edificio de la animación. Sirve como ícono de la app por sí solo.</p>
+    </div>
+    <div class="card">
+      <span class="tag">C · Ventanas del edificio</span>
+      <div class="card stage" style="min-height:150px">
+        <div class="logo">
+          <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="10" fill="#a9073e"/><g fill="#fff"><rect x="9" y="9" width="9" height="9" rx="1.5"/><rect x="22" y="9" width="9" height="9" rx="1.5" opacity=".55"/><rect x="9" y="22" width="9" height="9" rx="1.5" opacity=".55"/></g><circle cx="26.5" cy="26.5" r="4.5" fill="#e3a21a"/></svg>
+          <span>ECI <span class="my">MyCampus</span></span>
+        </div>
+      </div>
+      <p class="note">Cuadrícula de ventanas con una «encendida» en oro: lo que está pasando ahora. Más abstracto, menos literal.</p>
+    </div>
+  </div>
+
+  <div class="grid g2" style="margin-top:32px">
+    <div class="card">
+      <h3>Con el logo de la universidad</h3>
+      <div class="card stage" style="margin-top:12px"><img src="../../public/brand/logo-eci-blanco.png" alt="Escuela Colombiana de Ingeniería Julio Garavito" width="180"></div>
+      <p class="note">El logo de la Escuela va aparte y sin tocarse: no se recolorea, no se estira, no se pone dentro del logo de MyCampus. Lleva su propio espacio libre de la mitad de su altura. Si la Escuela tiene versión vectorial (SVG), conviene pedirla.</p>
+    </div>
+    <div class="card">
+      <h3>El edificio E, en movimiento</h3>
+      <div class="led" style="margin-top:12px"></div>
+      <p class="note">Contorno blanco con una luz que lo recorre cada 7 s. Es el recurso gráfico principal: pantallas de entrada, fondos de portada. Siempre en blanco sobre fondo oscuro; con «reducir movimiento» queda quieto.</p>
+    </div>
+  </div>
+
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card">
+      <h3>Uso correcto</h3>
+      <p class="do">Fondo oscuro de la paleta, logo en blanco y guinda claro.</p>
+      <p class="do">Espacio libre alrededor igual a la altura de la «E».</p>
+      <p class="do">Tamaño mínimo: 24 px de alto el pin; 96 px de ancho la palabra.</p>
+    </div>
+    <div class="card">
+      <h3>Uso incorrecto</h3>
+      <p class="dont">Cambiar los colores, rotar, estirar o añadir sombras.</p>
+      <p class="dont">Poner el logo sobre fotos sin oscurecer el fondo.</p>
+      <p class="dont">Escribirlo «Ecimycampus», «ECI-MyCampus» o «Eci MyCampus».</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- ============ COLOR ============ -->
+<section id="color"><div class="wrap">
+  <p class="eyebrow">02 · Color</p>
+  <h2>Guinda, oro y noche</h2>
+  <p class="lead">El color de marca sale del chaleco de Manchas: guinda. El oro viene de su pelaje y se usa muy poco. Todo lo demás es neutro oscuro para que el contenido (eventos, mapa) sea lo que destaque.</p>
+
+  <h3 style="margin-top:28px">Marca</h3>
+  <div class="swatches">
+    <div class="sw"><i style="background:#a9073e"></i><div><b>Guinda</b><span>#A9073E</span><br>Botones, acento principal</div></div>
+    <div class="sw"><i style="background:#7e0223"></i><div><b>Guinda profundo</b><span>#7E0223</span><br>Pulsado, sombras de marca</div></div>
+    <div class="sw"><i style="background:#eb5c8a"></i><div><b>Guinda claro</b><span>#EB5C8A</span><br>Texto y enlaces sobre oscuro</div></div>
+    <div class="sw"><i style="background:#e3a21a"></i><div><b>Oro</b><span>#E3A21A</span><br>Destacados, 1 por pantalla</div></div>
+  </div>
+
+  <h3 style="margin-top:28px">Neutros (modo oscuro)</h3>
+  <div class="swatches">
+    <div class="sw"><i style="background:#0b0b0d"></i><div><b>Noche</b><span>#0B0B0D</span><br>Fondo de la app</div></div>
+    <div class="sw"><i style="background:#141417"></i><div><b>Superficie</b><span>#141417</span><br>Tarjetas</div></div>
+    <div class="sw"><i style="background:#1b1b20"></i><div><b>Superficie elevada</b><span>#1B1B20</span><br>Campos, menús</div></div>
+    <div class="sw"><i style="background:#26262d"></i><div><b>Línea</b><span>#26262D</span><br>Bordes</div></div>
+    <div class="sw"><i style="background:#f5f5f7"></i><div><b>Tinta</b><span>#F5F5F7</span><br>Texto principal</div></div>
+    <div class="sw"><i style="background:#a6a6b2"></i><div><b>Tinta suave</b><span>#A6A6B2</span><br>Texto secundario</div></div>
+  </div>
+
+  <h3 style="margin-top:28px">Estado</h3>
+  <div class="swatches">
+    <div class="sw"><i style="background:#34d399"></i><div><b>En vivo</b><span>#34D399</span><br>Solo para «ocurriendo ahora»</div></div>
+    <div class="sw"><i style="background:#f87171"></i><div><b>Error</b><span>#F87171</span><br>Errores y avisos graves</div></div>
+  </div>
+
+  <h3 style="margin-top:28px">Contraste medido (mínimo AA: 4.5 en texto)</h3>
+  <table id="contrast"><thead><tr><th>Combinación</th><th>Razón</th><th>Resultado</th></tr></thead><tbody></tbody></table>
+  <p class="note">Por eso el guinda sólido es para fondos de botón con texto blanco, y el guinda claro es el que se usa como texto sobre oscuro.</p>
+
+  <div class="grid g2" style="margin-top:24px">
+    <div class="card"><h3>Proporción</h3><p class="note" style="margin-top:0">90 % neutros · 8 % guinda · 2 % oro y verde. Si todo es guinda, nada destaca.</p></div>
+    <div class="card"><h3>Modo claro (después)</h3><p class="note" style="margin-top:0">Los nombres de los colores son por función (superficie, tinta), no por tono, para que el modo claro sea cambiar valores y no rediseñar.</p></div>
+  </div>
+</div></section>
+
+<!-- ============ TIPOGRAFÍA ============ -->
+<section id="tipografia"><div class="wrap">
+  <p class="eyebrow">03 · Tipografía</p>
+  <h2>Sora para hablar, Inter para leer</h2>
+  <p class="lead">Dos familias. Sora (geométrica, con carácter técnico) para el logo y los títulos grandes. Inter para todo lo demás: es muy legible en pantallas pequeñas y trae tildes y «ñ» bien resueltas.</p>
+
+  <div class="card" style="margin-top:24px">
+    <div class="type-row"><div>Display<br><small>Sora 700 · 40/44</small></div><div style="font:700 40px/1.1 Sora;letter-spacing:-.03em">Qué pasa en el campus</div></div>
+    <div class="type-row"><div>Título<br><small>Sora 600 · 24/30</small></div><div style="font:600 24px/1.25 Sora;letter-spacing:-.02em">Conferencia de Inteligencia Artificial</div></div>
+    <div class="type-row"><div>Subtítulo<br><small>Inter 600 · 18/26</small></div><div style="font:600 18px/1.45 Inter">Auditorio Central · Bloque E</div></div>
+    <div class="type-row"><div>Cuerpo<br><small>Inter 400 · 16/26</small></div><div style="max-width:60ch">Inscríbete con un toque. Si no puedes asistir, cancela hasta 2 horas antes y tu cupo queda libre para otra persona.</div></div>
+    <div class="type-row"><div>Apoyo<br><small>Inter 400 · 14/20</small></div><div style="font-size:14px;color:var(--muted)">Cupos disponibles: 42 de 120</div></div>
+    <div class="type-row"><div>Etiqueta<br><small>Inter 600 · 12 · mayúsculas</small></div><div style="font:600 12px Inter;letter-spacing:.06em;text-transform:uppercase;color:var(--guinda-soft)">En vivo ahora</div></div>
+  </div>
+  <div class="grid g2">
+    <div class="card"><h3>Reglas</h3>
+      <p class="do">Máximo dos pesos por pantalla.</p>
+      <p class="do">Cifras tabulares en horas, cupos y contadores.</p>
+      <p class="do">Líneas de texto de 45 a 70 caracteres.</p>
+      <p class="dont">Sora en párrafos largos ni en botones.</p>
+    </div>
+    <div class="card"><h3>Carga</h3><p class="note" style="margin-top:0">Ambas se cargan con <code>next/font</code>, sin pedir nada a Google en el navegador y sin salto de texto al cargar.</p></div>
+  </div>
+</div></section>
+
+<!-- ============ FORMA ============ -->
+<section id="forma"><div class="wrap">
+  <p class="eyebrow">04 · Espaciado y forma</p>
+  <h2>Una escala, pocas formas</h2>
+  <div class="grid g2">
+    <div class="card"><h3>Espaciado (base 4 px)</h3>
+      <div class="space"><div style="width:32px;height:4px">4</div><div style="width:32px;height:8px">8</div><div style="width:32px;height:12px">12</div><div style="width:32px;height:16px">16</div><div style="width:32px;height:24px">24</div><div style="width:32px;height:32px">32</div><div style="width:32px;height:48px">48</div><div style="width:32px;height:64px">64</div></div>
+      <p class="note">Dentro de un grupo, 8–12. Entre grupos, 24–32. Entre secciones, 48–64.</p></div>
+    <div class="card"><h3>Radios</h3>
+      <div class="radii"><div style="border-radius:8px">8 · chip pequeño</div><div style="border-radius:12px">12 · control</div><div style="border-radius:16px">16 · tarjeta</div><div style="border-radius:99px">pastilla</div></div>
+      <p class="note">Sin sombras: la profundidad la dan el color de superficie y el borde de 1 px.</p></div>
+    <div class="card"><h3>Áreas táctiles</h3><p class="note" style="margin-top:0">Mínimo 44 × 44 px en todo lo que se toca. Barra inferior en celular a 56 px.</p></div>
+    <div class="card"><h3>Rejilla</h3><p class="note" style="margin-top:0">Contenido a 1080 px de ancho máximo, márgenes de 16 px en celular y 24 px en escritorio.</p></div>
+  </div>
+</div></section>
+
+<!-- ============ COMPONENTES ============ -->
+<section id="componentes"><div class="wrap">
+  <p class="eyebrow">05 · Componentes</p>
+  <h2>Piezas base</h2>
+  <div class="grid g2">
+    <div class="card"><h3>Botones</h3><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px"><span class="btn p">Inscribirme</span><span class="btn s">Ver en el mapa</span><span class="btn g">Cancelar</span></div>
+      <p class="note">Una sola acción principal (guinda) por tarjeta o pantalla.</p></div>
+    <div class="card"><h3>Filtros</h3><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><span class="chip on">Todos</span><span class="chip"><span class="livedot"></span>En vivo</span><span class="chip">Académico</span><span class="chip">Deportes</span></div></div>
+    <div class="card" style="grid-column:1/-1"><h3>Tarjeta de evento</h3>
+      <div class="card" style="background:var(--raised);margin-top:12px;display:grid;gap:8px;max-width:440px">
+        <span style="font:600 12px Inter;letter-spacing:.06em;text-transform:uppercase;color:var(--guinda-soft)"><span class="livedot"></span>En vivo · termina 4:00 p. m.</span>
+        <div style="font:600 20px/1.25 Sora;letter-spacing:-.02em">Conferencia de Inteligencia Artificial</div>
+        <div style="color:var(--muted);font-size:14px">Auditorio Central · Bloque E · 42 cupos</div>
+        <span class="btn p" style="justify-self:start">Inscribirme</span></div></div>
+  </div>
+</div></section>
+
+<!-- ============ MOVIMIENTO ============ -->
+<section id="movimiento"><div class="wrap">
+  <p class="eyebrow">06 · Movimiento</p>
+  <h2>Rápido, discreto y con propósito</h2>
+  <div class="grid g3">
+    <div class="card"><h3>Duraciones</h3><p class="note" style="margin-top:0">Pulsar: 120–150 ms · Entrar/salir: 200–250 ms · Pantallas: 300 ms. Curva de salida suave <code>cubic-bezier(0.23, 1, 0.32, 1)</code>.</p></div>
+    <div class="card"><h3>Qué se anima</h3><p class="note" style="margin-top:0">Opacidad y desplazamiento corto. El botón se hunde al pulsarlo (escala 0.98). El punto «en vivo» late.</p></div>
+    <div class="card"><h3>Qué no</h3><p class="note" style="margin-top:0">Nada decorativo en listas ni al teclear. Con «reducir movimiento», todo queda estático salvo cambios de estado.</p></div>
+  </div>
+</div></section>
+
+<!-- ============ MANCHAS ============ -->
+<section id="manchas"><div class="wrap">
+  <p class="eyebrow">07 · Manchas y voz</p>
+  <h2>Manchas, la mascota que ayuda</h2>
+  <p class="lead">Aparece en el login, los estados vacíos, los errores y como avatar del asistente que resuelve dudas e información del campus. Habla en primera persona, con frases cortas.</p>
+
+  <div class="card stage" style="margin-top:24px;padding:28px 12px">
+    <div class="mascots">
+      <img src="../../public/brand/manchas/neutro.webp" alt="Manchas de pie">
+      <img src="../../public/brand/manchas/saludo.webp" alt="Manchas saludando">
+      <img src="../../public/brand/manchas/senalando.webp" alt="Manchas señalando">
+      <img src="../../public/brand/manchas/celebrando.webp" alt="Manchas celebrando">
+      <img src="../../public/brand/manchas/pensando.webp" alt="Manchas pensando">
+      <img src="../../public/brand/manchas/duda.webp" alt="Manchas con duda">
+    </div>
+  </div>
+
+  <div class="grid g3">
+    <div class="card"><h3>Qué pose, cuándo</h3>
+      <table><tr><td>Saludo</td><td>Login, bienvenida</td></tr><tr><td>Señalando</td><td>Ayuda, guía al mapa</td></tr><tr><td>Celebrando</td><td>Inscripción lograda</td></tr><tr><td>Pensando</td><td>Buscando, cargando</td></tr><tr><td>Duda</td><td>Error, sin resultados</td></tr><tr><td>Cabeza</td><td>Avatar del asistente</td></tr></table></div>
+    <div class="card"><h3>Asistente</h3>
+      <div class="chat" style="margin-top:12px">
+        <div style="display:flex;gap:10px;align-items:flex-end"><img class="avatar" src="../../public/brand/manchas/cabeza.webp" alt=""><div class="bubble">¡Hola! Soy Manchas. Pregúntame por eventos, salones o cómo llegar.</div></div>
+        <div class="bubble me">¿Qué hay hoy en el Bloque E?</div>
+        <div style="display:flex;gap:10px;align-items:flex-end"><img class="avatar" src="../../public/brand/manchas/cabeza.webp" alt=""><div class="bubble">Te encontré 3 actividades. La próxima empieza en 40 minutos.</div></div>
+      </div></div>
+    <div class="card"><h3>Cómo habla</h3>
+      <p class="do">Primera persona y tuteo: «Te guardé un cupo».</p>
+      <p class="do">Frases de 12 palabras o menos. Dice qué pasó y qué sigue.</p>
+      <p class="do">Cálido y claro; el humor, poco y nunca en un error grave.</p>
+      <p class="dont">Culpar a la persona: «Ingresaste mal la clave».</p>
+      <p class="dont">Prometer lo que no sabe: si no tiene el dato, lo dice y ofrece a quién preguntar.</p>
+      <table style="margin-top:12px"><tr><th>En vez de</th><th>Manchas dice</th></tr><tr><td>Error 409</td><td>Ya estás inscrito en este evento.</td></tr><tr><td>Sin resultados</td><td>No encontré nada con eso. ¿Probamos otra búsqueda?</td></tr><tr><td>Cupo agotado</td><td>Se llenó. Te aviso si se libera un cupo.</td></tr></table></div>
+  </div>
+  <p class="note">Nota de producto: el asistente necesita un servicio de IA en el backend con los datos reales del campus. Hoy no existe; por ahora Manchas solo es la cara y la voz de los mensajes de la app.</p>
+</div></section>
+
+<footer><div class="wrap">Borrador v1 · los valores de esta página son los de la app. Cuando se apruebe, se pasan a los tokens de la interfaz.</div></footer>
+
+<script>
+  const lum = (h) => { const [r,g,b] = [1,3,5].map(i => parseInt(h.slice(i,i+2),16)/255).map(c => c<=.03928 ? c/12.92 : ((c+.055)/1.055)**2.4); return .2126*r+.7152*g+.0722*b; };
+  const ratio = (a,b) => { const [x,y] = [lum(a),lum(b)].sort((m,n)=>n-m); return (x+.05)/(y+.05); };
+  const rows = [
+    ['Tinta sobre Noche','#f5f5f7','#0b0b0d'],['Tinta suave sobre Noche','#a6a6b2','#0b0b0d'],['Tinta suave sobre Superficie','#a6a6b2','#141417'],
+    ['Guinda claro sobre Noche (texto)','#eb5c8a','#0b0b0d'],['Guinda claro sobre Superficie','#eb5c8a','#141417'],['Blanco sobre Guinda (botón)','#ffffff','#a9073e'],
+    ['Guinda sobre Noche (texto)','#a9073e','#0b0b0d'],['Oro sobre Noche','#e3a21a','#0b0b0d'],['En vivo sobre Noche','#34d399','#0b0b0d'],['Error sobre Noche','#f87171','#0b0b0d']
+  ];
+  document.querySelector('#contrast tbody').innerHTML = rows.map(([n,f,b]) => { const r = ratio(f,b); const ok = r >= 4.5; return `<tr><td>${n}</td><td>${r.toFixed(2)} : 1</td><td class="${ok?'ok':'no'}">${ok?'Cumple AA':'No para texto'}</td></tr>`; }).join('');
+</script>
+</body>
+</html>
