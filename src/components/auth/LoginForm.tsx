@@ -71,6 +71,7 @@ export function LoginForm() {
 
   return (
     <AuthShell
+      showGuest={false}
       title="Iniciar sesión"
       description="Entra con tu cuenta para inscribirte a actividades y ver tu agenda."
       footer={
