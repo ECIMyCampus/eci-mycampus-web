@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Conceptos de logo · ECI MyCampus</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Space+Grotesk:wght@400;500;700&family=Outfit:wght@400;600;800&family=Playfair+Display:wght@700;800&family=Manrope:wght@400;700;800&family=Inter:wght@400;500;600;700&family=Bricolage+Grotesque:wght@400;800&family=Space+Mono:wght@700&display=swap">
+<style>
+  :root{--canvas:#0b0b0d;--surface:#141417;--raised:#1b1b20;--line:#26262d;--line-strong:#3a3a44;--ink:#f5f5f7;--muted:#a6a6b2;--subtle:#6f6f7c;--guinda:#a9073e;--soft:#eb5c8a;--oro:#e3a21a;--live:#34d399;--r:14px}
+  *{box-sizing:border-box;margin:0}
+  body{background:var(--canvas);color:var(--ink);font:400 15px/1.6 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+  h1,h2,h3{font-family:Sora,Inter,sans-serif;letter-spacing:-.02em;line-height:1.15}
+  h1{font-size:clamp(28px,4.5vw,42px)} h2{font-size:24px;margin:52px 0 8px} h3{font-size:18px}
+  header{padding:48px 0 12px}
+  .eyebrow{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--soft)}
+  .lead{color:var(--muted);max-width:68ch;margin-top:10px}
+  .defs{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));margin-top:22px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+  .card h3{font-size:15px;margin-bottom:6px;font-family:Inter;letter-spacing:0;font-weight:600}
+  .card p{color:var(--muted);font-size:14px}
+  .tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:22px}
+  select{background:var(--raised);color:var(--ink);border:1px solid var(--line-strong);border-radius:10px;padding:9px 10px;font:inherit;font-size:14px}
+  .concepts{display:grid;gap:16px;margin-top:18px}
+  .concept{display:grid;gap:18px;grid-template-columns:minmax(0,1fr);background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+  @media(min-width:880px){.concept{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}}
+  .concept.rec{border-color:rgb(227 162 26/.55)}
+  .badge{display:inline-block;font-size:12px;font-weight:700;color:var(--oro);border:1px solid rgb(227 162 26/.5);border-radius:99px;padding:2px 10px;margin-left:8px;vertical-align:middle}
+  .show{display:grid;gap:10px}
+  .big{background:var(--canvas);border:1px solid var(--line);border-radius:12px;display:grid;place-items:center;min-height:150px;padding:16px}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  .tile{flex:1 1 120px;background:var(--canvas);border:1px solid var(--line);border-radius:12px;display:flex;align-items:center;justify-content:center;gap:10px;min-height:84px;padding:10px}
+  .tile.light{background:#f5f5f7}
+  .icon{display:grid;place-items:center;background:var(--guinda);border-radius:22%}
+  .lock{display:inline-flex;align-items:center;gap:.28em;white-space:nowrap;line-height:1}
+  .why dt{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--soft);margin-top:12px}
+  .why dt:first-child{margin-top:0}
+  .why dd{color:var(--muted);font-size:14px;margin-left:0}
+  table{width:100%;border-collapse:collapse;font-size:14px;margin-top:14px}
+  th,td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:center}
+  th:first-child,td:first-child{text-align:left}
+  th{color:var(--muted);font-weight:500;font-size:13px}
+  td b{color:var(--oro)}
+  .map{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));margin-top:16px}
+  .map .card p{margin-top:4px}
+  footer{padding:36px 0;color:var(--subtle);font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <p class="eyebrow">Manual de identidad · logo</p>
+  <h1>Seis ideas para el logo</h1>
+  <p class="lead">Cada idea parte de algo que es cierto de ECI MyCampus (lo que pasa ahora, el lugar, la agenda, Manchas) y no de un dibujo literal del campus. Cada una se prueba a cuatro tamaños, en oscuro, en claro y como ícono de app.</p>
+</header>
+
+<div class="defs">
+  <div class="card"><h3>Logotipo</h3><p>El título completo «ECI MyCampus» escrito con dos tipografías: una para «ECI» y otra para «MyCampus». Va en encabezados, documentos y la pantalla de entrada.</p></div>
+  <div class="card"><h3>Logo (símbolo)</h3><p>La marca sola, sin letras. Va donde no cabe el nombre: ícono de la app, favicon, avatar, el punto en el mapa.</p></div>
+  <div class="card"><h3>Lockup</h3><p>Símbolo y logotipo juntos, con una proporción fija. Es la versión principal cuando hay espacio.</p></div>
+</div>
+
+<div class="tools">
+  <label for="pair" style="color:var(--muted);font-size:14px">Logotipo de prueba:</label>
+  <select id="pair"></select>
+  <span style="color:var(--subtle);font-size:13px">(el logotipo definitivo lo afinamos en el taller de tipografía)</span>
+</div>
+
+<h2>Las ideas</h2>
+<div class="concepts" id="concepts"></div>
+
+<h2>Comparación</h2>
+<p class="lead">Calificación de 1 a 5 con mi criterio; discútela, no es una medida objetiva. Los cinco criterios son los que pediste.</p>
+<div class="card" style="margin-top:14px;overflow-x:auto"><table id="matrix"></table></div>
+
+<h2>Lo que aplicamos de UX y UI en todo el producto</h2>
+<p class="lead">De tu lista, esto es lo que aplica a ECI MyCampus. Lo propio del comercio (precio, reseñas, cantidad, carrito) no aplica tal cual, pero su equivalente sí: inscribirse a un evento es el «agregar al carrito» de esta app.</p>
+<div class="map">
+  <div class="card"><h3>Jerarquía visual</h3><p>Una sola acción principal por pantalla o tarjeta, en guinda. Título, hora y lugar en ese orden; todo lo demás en tinta suave.</p></div>
+  <div class="card"><h3>Espaciado, alineación y tipografía</h3><p>Escala de 4 px, márgenes iguales, texto alineado a la izquierda, dos tipografías y máximo dos pesos por pantalla.</p></div>
+  <div class="card"><h3>CTA móvil y fricción</h3><p>«Inscribirme» en una barra fija abajo, al alcance del pulgar, a un toque. Sin formularios intermedios: si falta sesión, se pide y se vuelve al mismo evento.</p></div>
+  <div class="card"><h3>Información del evento</h3><p>Como la ficha de producto: lo decisivo arriba (cuándo, dónde, cupos), la política de cancelación a la vista («hasta 2 horas antes»), el resto más abajo.</p></div>
+  <div class="card"><h3>Imágenes</h3><p>Fotos reales de cada evento o lugar, con el mismo encuadre y tratamiento; si no hay, un fondo de marca y no una foto de stock.</p></div>
+  <div class="card"><h3>Sistema escalable</h3><p>Todo sale de tokens (color, espacio, radio, movimiento). Un cambio en el manual se refleja en toda la app, y el modo claro será cambiar valores.</p></div>
+  <div class="card"><h3>Bonito vs. sólido</h3><p>Un estado por cada situación real: cargando, vacío, error, sin conexión, límite de intentos. Manchas acompaña esos momentos; no son pantallas olvidadas.</p></div>
+</div>
+
+<footer>Borrador para decidir. Las ideas se dibujan en código (SVG) para que escalen sin perder nitidez.</footer>
+</div>
+
+<script>
+const G='#a9073e', S='#eb5c8a', O='#e3a21a';
+/* Cada símbolo recibe: main (color principal), acc (acento), neg (color de los huecos o del contraste). viewBox 64x64. */
+const SYMS = [
+{ id:'A', name:'Aquí y ahora', rec:false,
+  svg:(m,a,n)=>`<path d="M32 4C19 4 9 14 9 26.4c0 15 23 33.6 23 33.6s23-18.6 23-33.6C55 14 45 4 32 4z" fill="${m}"/><circle cx="32" cy="26" r="14" fill="none" stroke="${n}" stroke-opacity=".6" stroke-width="2.4"/><circle cx="32" cy="26" r="6.5" fill="${a}"/>`,
+  idea:'Un pin cuyo centro late: la señal «en vivo» de la app.',
+  why:['Qué representa','Dónde y cuándo: el lugar (pin) y lo que está pasando ahora (el punto con onda, el mismo que marca «en vivo» en las tarjetas).','Por qué sirve','El símbolo y el indicador de la interfaz son la misma forma, así que la marca se repite en toda la app sin esfuerzo.','Riesgo','Los pines son comunes en mapas. Lo distintivo es la onda con el punto dorado.'],
+  sc:[5,4,5,2,5] },
+{ id:'B', name:'Pin-burbuja', rec:true,
+  svg:(m,a,n)=>`<path d="M32 6a26 26 0 0 1 26 26 26 26 0 0 1-26 26H6V32A26 26 0 0 1 32 6z" fill="${m}"/><circle cx="32" cy="32" r="9" fill="${n}"/><circle cx="32" cy="32" r="3.6" fill="${a}"/>`,
+  idea:'Un pin girado que a la vez es un globo de conversación.',
+  why:['Qué representa','Dos funciones de la app en una forma: encontrar dónde (pin) y recibir ayuda (globo de diálogo, la voz de Manchas).','Por qué sirve','Es una sola figura, de dos curvas y una esquina, que se reconoce a 16 px. La esquina cuadrada abajo a la izquierda es su rasgo único.','Riesgo','Hay que cuidar que no parezca ícono de «chat» genérico: el hueco con punto dorado lo ancla a la ubicación.'],
+  sc:[4,4,5,3,5] },
+{ id:'C', name:'Anillo C', rec:false,
+  svg:(m,a,n)=>`<path d="M47.3 46.4A21 21 0 1 1 47.3 17.6" fill="none" stroke="${m}" stroke-width="10" stroke-linecap="round"/><circle cx="32" cy="32" r="6.5" fill="${a}"/>`,
+  idea:'La C de Campus abierta, con un punto dentro: tú en el campus.',
+  why:['Qué representa','«My»: la persona (el punto) dentro de «Campus» (la C que la rodea y se abre hacia afuera, hacia lo que pasa).','Por qué sirve','Muy simple y geométrico; funciona como letra, como ícono y como indicador de carga si el anillo gira.','Riesgo','Es una C con punto: otras marcas la usan. Se vuelve propio con el color y la apertura.'],
+  sc:[5,4,5,3,4] },
+{ id:'D', name:'Mancha', rec:false,
+  svg:(m,a,n)=>`<ellipse cx="29" cy="35" rx="24" ry="20" transform="rotate(-18 29 35)" fill="${m}"/><circle cx="46" cy="20" r="10" fill="${a}" stroke="${n}" stroke-width="3"/>`,
+  idea:'Dos manchas: una grande y una pequeña dorada, como el pelaje de la mascota.',
+  why:['Qué representa','Manchas, la mascota. Una mancha grande (guinda, el chaleco) y una pequeña (oro, el pelaje).','Por qué sirve','Es la más propia de esta universidad: nadie más tiene a Manchas. Resulta cálida y fácil de dibujar a mano.','Riesgo','Menos obvia como «app de eventos»; se apoya en que la mascota ya sea conocida.'],
+  sc:[4,3,4,4,4] },
+{ id:'E', name:'Agenda-E', rec:false,
+  svg:(m,a,n)=>`<rect x="12" y="10" width="11" height="44" rx="3" fill="${m}"/><rect x="12" y="10" width="40" height="11" rx="3" fill="${m}"/><rect x="12" y="26.5" width="28" height="11" rx="3" fill="${a}"/><rect x="12" y="43" width="40" height="11" rx="3" fill="${m}"/>`,
+  idea:'Una E hecha de tres franjas de agenda; la del medio, en oro, es «ahora».',
+  why:['Qué representa','La E de Escuela, las plantas del edificio y las filas de una agenda, todo a la vez. La franja dorada es lo que ocurre ahora.','Por qué sirve','Muy sólida y legible; en blanco sobre guinda es un ícono de app contundente.','Riesgo','Se parece a otras «E». Su fuerza está en la franja dorada y en cómo se anima (la franja viaja de arriba abajo).'],
+  sc:[5,4,5,3,4] },
+{ id:'F', name:'Plano de puntos', rec:false,
+  svg:(m,a,n)=>{let s='';for(let y=0;y<3;y++)for(let x=0;x<3;x++){const hot=(x===2&&y===0);s+=`<circle cx="${14+x*18}" cy="${14+y*18}" r="6.5" fill="${hot?a:m}" ${hot?'':'fill-opacity=".85"'}/>`}return s},
+  idea:'Una cuadrícula de nueve puntos, un campus en plano, con uno encendido.',
+  why:['Qué representa','El campus como plano de ingeniería (la cuadrícula) y el evento que está pasando (el punto dorado).','Por qué sirve','Muy gráfica y modular; se puede animar encendiendo un punto distinto cada vez.','Riesgo','Parece un menú de aplicaciones o un teclado. Es la menos distintiva a tamaño pequeño.'],
+  sc:[4,3,3,3,3] }
+];
+
+const PAIRS = [
+  {n:'Sora 800 + Sora 400',a:['Sora',800],b:['Sora',400]},
+  {n:'Space Grotesk 700 + Outfit 600',a:['Space Grotesk',700],b:['Outfit',600]},
+  {n:'Playfair 800 + Manrope 700',a:['Playfair Display',800],b:['Manrope',700]},
+  {n:'Space Mono 700 + Sora 700',a:['Space Mono',700],b:['Sora',700]},
+  {n:'Bricolage 800 + Bricolage 400',a:['Bricolage Grotesque',800],b:['Bricolage Grotesque',400]}
+];
+const sel = document.getElementById('pair');
+PAIRS.forEach((p,i)=>sel.add(new Option(p.n,i)));
+sel.onchange = render;
+
+const sym = (s,size,m=G,a=O,n='#fff') => `<svg width="${size}" height="${size}" viewBox="0 0 64 64" aria-hidden="true" style="flex:none">${s.svg(m,a,n)}</svg>`;
+const word = (size,light=false)=>{const p=PAIRS[sel.value];return `<span style="font-size:${size}px;letter-spacing:-.02em;display:inline-flex;gap:.2em;align-items:baseline"><span style="font-family:'${p.a[0]}';font-weight:${p.a[1]};color:${light?'#111':'#fff'}">ECI</span><span style="font-family:'${p.b[0]}';font-weight:${p.b[1]};color:${light?G:S}">MyCampus</span></span>`};
+const lockup = (s,size,light=false)=>`<span class="lock" style="gap:${size*.3}px">${sym(s,size*1.25,light?G:S,O,light?'#fff':'#0b0b0d')}${word(size,light)}</span>`;
+
+function render(){
+  const box = document.getElementById('concepts'); box.innerHTML='';
+  SYMS.forEach(s=>{
+    const el = document.createElement('article'); el.className='concept'+(s.rec?' rec':'');
+    const why = s.why.reduce((h,t,i)=> h + (i%2===0?`<dt>${t}</dt>`:`<dd>${t}</dd>`), '');
+    el.innerHTML = `
+      <div class="show">
+        <h3>${s.id}. ${s.name}${s.rec?'<span class="badge">Mi recomendación</span>':''}</h3>
+        <div class="big">${lockup(s,34)}</div>
+        <div class="row">
+          <div class="tile">${sym(s,96,S)}</div>
+          <div class="tile">${sym(s,48,S)}${sym(s,32,S)}${sym(s,16,S)}</div>
+        </div>
+        <div class="row">
+          <div class="tile"><span class="icon" style="width:64px;height:64px">${sym(s,44,'#fff','#e3a21a','#a9073e')}</span><span class="icon" style="width:32px;height:32px">${sym(s,22,'#fff','#e3a21a','#a9073e')}</span></div>
+          <div class="tile light">${sym(s,48,G,O,'#fff')}${lockup(s,18,true)}</div>
+        </div>
+      </div>
+      <dl class="why"><p style="color:var(--ink);font-size:16px;margin-bottom:6px">${s.idea}</p>${why}</dl>`;
+    box.appendChild(el);
+  });
+  const names=['Simple','Memorable','Escalable','Original','Justificada'];
+  document.getElementById('matrix').innerHTML = '<tr><th>Idea</th>'+names.map(n=>`<th>${n}</th>`).join('')+'<th>Total</th></tr>' +
+    SYMS.map(s=>`<tr><td>${s.id}. ${s.name}</td>${s.sc.map(v=>`<td>${v}</td>`).join('')}<td><b>${s.sc.reduce((a,b)=>a+b,0)}</b> / 25</td></tr>`).join('');
+}
+render();
+document.fonts && document.fonts.ready.then(render);
+</script>
+</body>
+</html>
