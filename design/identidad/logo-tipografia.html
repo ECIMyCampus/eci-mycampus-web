@@ -134,6 +134,10 @@
 <p class="lead">Fresca (serif alta con una línea pequeña muy espaciada debajo) y New Open (palabra corta en sans arriba, script grande rojo que sube sobre ella). Para ajustarlas usa los botones − y + de tamaño de «ECI» y «MyCampus» y el espaciado de «MyCampus».</p>
 <div class="grid" id="presetsPoster3"></div>
 
+<h2>Una sola tipografía para las dos palabras</h2>
+<p class="lead">El contraste lo dan el grosor y la cursiva de la misma familia: «ECI» firme y «MyCampus» ligero o en cursiva. Ordenadas de mayor a menor recomendación.</p>
+<div class="grid" id="presetsOne"></div>
+
 <h2>Formas del pin</h2>
 <p class="lead">Marcas mínimas para usar solas (ícono de la app, favicon, avatar del mapa).</p>
 <div class="pins" id="pinList"></div>
@@ -338,6 +342,14 @@ const POSTER3 = [
   {n:'Fresca',d:'Ref: Norman + Ebony Light. Receta: Apilado · ECI Cormorant Garamond 600, tamaño 150 %, estirado 135 % · MyCampus Jost 400 en MAYÚSC., tamaño 38 %, espaciado 30',s:{layout:'v',fEci:'Cormorant Garamond',wEci:600,eciMul:150,stretch:135,fMy:'Jost',wMy:400,myMul:38,upper:'all',track:0,trackMy:30,size:48}},
   {n:'New Open',d:'Ref: New Open. Receta: Superpuesto · ECI Montserrat 800, tamaño 35 % · MyCampus Kaushan Script, tamaño 105 %, superposición 30 %',s:{layout:'o',fEci:'Montserrat',wEci:800,eciMul:35,stretch:100,fMy:'Kaushan Script',wMy:400,myMul:105,ovY:30,track:3,trackMy:0,size:46}}
 ];
+const ONE = [
+  {n:'Playfair Display (recomendada)',d:'ECI 800 recto + MyCampus 400 cursiva cruzando. Institucional y con la elegancia de tus referencias.',s:{layout:'o',fEci:'Playfair Display',wEci:800,fMy:'Playfair Display',wMy:400,iMy:true,stretch:110,ovY:50,myMul:105,track:-2,size:44}},
+  {n:'Fraunces',d:'ECI 800 + MyCampus 400 cursiva. Más cálida y redondeada, va con el tono de Manchas.',s:{layout:'o',fEci:'Fraunces',wEci:800,fMy:'Fraunces',wMy:400,iMy:true,stretch:100,ovY:50,myMul:105,track:-2,size:44}},
+  {n:'Sora',d:'ECI 800 + MyCampus 400, apilado. La opción segura y tecnológica; la mejor en tamaños pequeños.',s:{layout:'v',fEci:'Sora',wEci:800,fMy:'Sora',wMy:400,track:-3,size:48}},
+  {n:'Bricolage Grotesque',d:'ECI 800 + MyCampus 400, apilado. Con carácter propio y más original que Sora.',s:{layout:'v',fEci:'Bricolage Grotesque',wEci:800,fMy:'Bricolage Grotesque',wMy:400,track:-3,size:48}},
+  {n:'Bodoni Moda',d:'ECI 700 + MyCampus 400 cursiva. Muy de moda y editorial, pero frágil en tamaños pequeños.',s:{layout:'o',fEci:'Bodoni Moda',wEci:700,fMy:'Bodoni Moda',wMy:400,iMy:true,stretch:120,ovY:50,myMul:105,track:-2,size:44}},
+  {n:'Cormorant Garamond',d:'ECI 700 + MyCampus 400 cursiva. Elegante y fina, solo para tamaños grandes.',s:{layout:'o',fEci:'Cormorant Garamond',wEci:700,fMy:'Cormorant Garamond',wMy:400,iMy:true,stretch:120,ovY:50,myMul:110,track:0,size:46}}
+];
 function norm(ps){ const o = Object.assign({}, ps); if (o.ovSize != null && o.myMul == null) o.myMul = o.ovSize; delete o.ovSize; return o; }
 function cards(list, container){
   list.forEach((p,i)=>{
@@ -353,6 +365,7 @@ cards(REFS, document.getElementById('presetsRef'));
 cards(POSTER, document.getElementById('presetsPoster'));
 cards(POSTER2, document.getElementById('presetsPoster2'));
 cards(POSTER3, document.getElementById('presetsPoster3'));
+cards(ONE, document.getElementById('presetsOne'));
 
 const pl = document.getElementById('pinList');
 Object.entries(PINS).filter(([k])=>k!=='ninguno').forEach(([k,v])=>{
