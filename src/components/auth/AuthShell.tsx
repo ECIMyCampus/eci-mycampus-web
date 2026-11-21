@@ -38,7 +38,7 @@ export function AuthShell({ title, description, children, footer }: AuthShellPro
         </section>
 
         <aside className="relative isolate order-1 flex h-44 items-center justify-center overflow-hidden border-b border-line lg:order-2 lg:h-auto lg:border-b-0 lg:border-l">
-          {/* Dibujo de líneas del edificio E, en rojo, con una luz que lo recorre. */}
+          {/* Dibujo de líneas del edificio E, en blanco, con una luz que lo recorre. */}
           <div aria-hidden="true" className="led-outline -z-20" />
           <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-b from-canvas/30 via-canvas/50 to-canvas lg:bg-gradient-to-t" />
           <div className="flex flex-col items-center text-center">

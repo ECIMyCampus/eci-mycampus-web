@@ -221,11 +221,11 @@
   mask: url('/brand/edificio-e-lineas.webp') 70% center / cover no-repeat;
 }
 
-/* Capa base: el dibujo en rojo tenue. */
+/* Capa base: el dibujo en blanco tenue. */
 .led-outline {
   position: absolute;
   inset: 0;
-  background: rgb(var(--accent) / 0.55);
+  background: rgb(255 255 255 / 0.28);
 }
 
 /* Capa de luz: una franja clara que recorre las líneas, como un LED. */
@@ -233,7 +233,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(105deg, transparent 38%, rgb(var(--accent-ink)) 50%, transparent 62%) 0 0 / 300% 100%;
+  background: linear-gradient(105deg, transparent 38%, rgb(255 255 255) 50%, transparent 62%) 0 0 / 300% 100%;
   animation: led-sweep 7s linear infinite;
 }
 
