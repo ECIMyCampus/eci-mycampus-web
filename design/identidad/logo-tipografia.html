@@ -87,6 +87,7 @@
     <label>Tamaño del fondo<input type="range" id="bgSize" min="20" max="200" value="90"></label>
     <label>Visibilidad del fondo<input type="range" id="bgOp" min="3" max="60" value="25"></label>
     <label>Posición vertical del fondo<input type="range" id="bgY" min="-60" max="60" value="0"></label>
+    <label>Recorte del fondo alrededor de «MyCampus»<input type="range" id="cut" min="0" max="60" value="30"></label>
     <div class="row2">
       <div><label style="margin-bottom:6px">Disposición</label><div class="seg" id="layoutSeg"></div></div>
       <div><label style="margin-bottom:6px">Mayúsculas</label><div class="seg" id="caseSeg"></div></div>
@@ -195,7 +196,7 @@ function pinSvg(kind, h, fill='#e4202b', ink='#fff'){
 }
 
 const COLORS = {rojo:['Rojo puro','#e4202b'],blanco:['Blanco','#ffffff'],oro:['Oro','#e3a21a'],guinda:['Guinda Manchas','#a9073e']};
-const state = {fEci:'Sora',wEci:700,fMy:'Sora',wMy:700,pin:'ninguno',col:'rojo',layout:'v',pinPos:'top',upper:'none',track:-2,size:48,bg:true,bgSize:90,bgOp:25,bgY:0,iEci:false,iMy:false,stretch:100,ovY:40,ovSize:100,outEci:false,fInit:'',initScale:170,eciMul:100,myMul:100,trackMy:null};
+const state = {fEci:'Sora',wEci:700,fMy:'Sora',wMy:700,pin:'ninguno',col:'rojo',layout:'v',pinPos:'top',upper:'none',track:-2,size:48,bg:true,bgSize:90,bgOp:25,bgY:0,iEci:false,iMy:false,stretch:100,ovY:40,ovSize:100,outEci:false,fInit:'',initScale:170,eciMul:100,myMul:100,trackMy:null,cut:30};
 
 const BG_SRC = location.pathname.includes('_preview') ? '/brand/curva-eci.webp' : '../../public/brand/curva-eci.webp';
 function logoHTML(s, {size=s.size, light=false}={}){
@@ -211,14 +212,15 @@ function logoHTML(s, {size=s.size, light=false}={}){
   const eciSize = (over ? size*1.9 : size) * (s.eciMul||100)/100;
   /* Letras nítidas sobre el dibujo del fondo: un borde duro del color del fondo recorta las líneas alrededor de cada letra, sin difuminado. */
   const halo = light ? '#f5f5f7' : '#0b0b0d';
-  const knock = 'paint-order:stroke fill;-webkit-text-stroke:.12em ' + halo + ';';
+  const knock = 'paint-order:stroke fill;stroke-linejoin:round;-webkit-text-stroke:.12em ' + halo + ';';
+  const knockMy = 'paint-order:stroke fill;stroke-linejoin:round;-webkit-text-stroke:' + ((s.cut||0)/100) + 'em ' + halo + ';';
   const eciCss = "font-family:'"+s.fEci+"',sans-serif;font-weight:"+s.wEci+";font-style:"+(s.iEci?'italic':'normal')+";"+(s.outEci?"color:transparent;-webkit-text-stroke:"+Math.max(1.5,eciSize*.03)+"px "+eci+";":"color:"+eci+";")+"font-size:"+eciSize+"px;letter-spacing:"+t+"em;line-height:1;display:inline-block;transform:scaleY("+k+");margin:"+((k-1)*eciSize*.5)+"px 0;"+(over?'grid-area:1/1;align-self:start;':'');
   const myCss = "font-family:'"+s.fMy+"',sans-serif;font-weight:"+s.wMy+";font-style:"+(s.iMy?'italic':'normal')+";color:"+my+";letter-spacing:"+tm+"em;line-height:1;" +
     (over ? "font-size:"+(size*1.5*(s.myMul||100)/100)+"px;grid-area:1/1;align-self:end;justify-self:center;position:relative;z-index:2;transform:translateY("+(s.ovY||0)+"%);white-space:nowrap;"
           : "font-size:"+(size*(s.myMul||100)/100)+"px;" + (s.layout==='h' ? "margin-left:"+Math.round(size*.18)+"px;" : ""));
   const rest = cap('MyCampus');
   const myWord = s.fInit ? '<span style="font-family:\''+s.fInit+'\',cursive;font-weight:400;font-style:normal;font-size:'+s.initScale+'%;line-height:0">'+rest.charAt(0)+'</span>'+rest.slice(1) : rest;
-  const words = '<span style="'+eciCss+(s.bg&&!s.outEci?knock:'')+'">'+cap('ECI')+'</span><span style="'+myCss+(s.bg?knock:'')+'">'+myWord+'</span>';
+  const words = '<span style="'+eciCss+(s.bg&&!s.outEci?knock:'')+'">'+cap('ECI')+'</span><span style="'+myCss+(s.bg&&s.cut?knockMy:'')+'">'+myWord+'</span>';
   const top = s.pinPos==='top';
   const inner = over
     ? '<span style="display:inline-grid;place-items:center;text-align:center;padding-bottom:'+Math.round(size*.5)+'px">'+words+'</span>'
@@ -248,7 +250,7 @@ function render(){
   document.getElementById('logoLight').innerHTML = logoHTML(state,{size:Math.min(state.size,34),light:true});
   document.getElementById('logoSmall').innerHTML = logoHTML(state,{size:22});
   document.getElementById('iconPin').innerHTML = state.pin==='ninguno' ? '<span style="color:var(--subtle)">—</span>' : `<span style="display:grid;place-items:center;width:64px;height:64px;border-radius:16px;background:#141417;border:1px solid #26262d">${pinSvg(state.pin,38)}</span>`;
-  document.getElementById('out').textContent = JSON.stringify({eci:`${state.fEci} ${state.wEci}`,mycampus:`${state.fMy} ${state.wMy}`,pin:state.pin,colorMyCampus:state.col,disposicion:({h:'horizontal',v:'apilado centrado',o:'superpuesto'})[state.layout],posicionPin:state.pinPos,contornoECI:state.outEci,inicialMyCampus:state.fInit?{fuente:state.fInit,tamanoPct:state.initScale}:null,estirarECI:state.stretch,tamanoECIPct:state.eciMul,tamanoMyCampusPct:state.myMul,espaciadoMyCampus:state.trackMy==null?state.track:state.trackMy,superposicion:state.layout==='o'?{abajoPct:state.ovY}:null,cursiva:{eci:state.iEci,mycampus:state.iMy},fondoUniversidad:state.bg?{tamanoPct:state.bgSize,visibilidadPct:state.bgOp,posicionVerticalPct:state.bgY}:false,mayusculas:state.upper==='all',espaciado:state.track});
+  document.getElementById('out').textContent = JSON.stringify({eci:`${state.fEci} ${state.wEci}`,mycampus:`${state.fMy} ${state.wMy}`,pin:state.pin,colorMyCampus:state.col,disposicion:({h:'horizontal',v:'apilado centrado',o:'superpuesto'})[state.layout],posicionPin:state.pinPos,recorteFondoMyCampus:state.cut,contornoECI:state.outEci,inicialMyCampus:state.fInit?{fuente:state.fInit,tamanoPct:state.initScale}:null,estirarECI:state.stretch,tamanoECIPct:state.eciMul,tamanoMyCampusPct:state.myMul,espaciadoMyCampus:state.trackMy==null?state.track:state.trackMy,superposicion:state.layout==='o'?{abajoPct:state.ovY}:null,cursiva:{eci:state.iEci,mycampus:state.iMy},fondoUniversidad:state.bg?{tamanoPct:state.bgSize,visibilidadPct:state.bgOp,posicionVerticalPct:state.bgY}:false,mayusculas:state.upper==='all',espaciado:state.track});
   for(const [id,key,font] of [['wEci','wEci','fEci'],['wMy','wMy','fMy']]){
     const sel=document.getElementById(id), ws=weightsFor(state[font]);
     sel.innerHTML = ws.map(w=>`<option value="${w}" ${w===state[key]?'selected':''}>${w}</option>`).join('');
@@ -259,6 +261,7 @@ function render(){
   setSeg('outSeg', [['fill','Relleno'],['out','Contorno']], state.outEci?'out':'fill', v=>{state.outEci=v==='out';render()});
   document.getElementById('fInit').value = state.fInit; document.getElementById('initScale').value = state.initScale;
   setSeg('bgSeg', [[true,'Con fondo'],[false,'Sin fondo']].map(([k,l])=>[String(k),l]), String(state.bg), v=>{state.bg=v==='true';render()});
+  document.getElementById('cut').value = state.cut;
   document.getElementById('track').value = state.track;
   document.getElementById('trackMy').value = state.trackMy==null ? state.track : state.trackMy;
   document.querySelectorAll('.stepper output').forEach(o=>{o.textContent = state[o.parentElement.dataset.k] + '%'}); document.getElementById('size').value = state.size;
@@ -290,6 +293,7 @@ document.querySelectorAll('.stepper').forEach(el=>{
   el.querySelectorAll('button').forEach(b=>{ b.onclick = ()=>{ const k=el.dataset.k; state[k]=Math.min(300,Math.max(20,state[k]+(+b.dataset.d))); render(); }; });
 });
 document.getElementById('trackMy').oninput = e=>{state.trackMy=+e.target.value;render()};
+document.getElementById('cut').oninput = e=>{state.cut=+e.target.value;render()};
 document.getElementById('track').oninput = e=>{state.track=+e.target.value;render()};
 for(const k of ['stretch','ovY']) document.getElementById(k).oninput = e=>{state[k]=+e.target.value;render()};
 document.getElementById('size').oninput = e=>{state.size=+e.target.value;render()};
@@ -326,7 +330,7 @@ const REFS = [
   {n:'Broken Heart',d:'Ref: serif romana cursiva de contraste alto. Aquí: Bodoni Moda cursiva + Inter',s:{fEci:'Bodoni Moda',wEci:700,iEci:true,fMy:'Inter',wMy:600,track:-1}},
   {n:'Weird',d:'Ref: serif negra de gran contraste. Aquí: Playfair Display 800 + Archivo Narrow',s:{fEci:'Playfair Display',wEci:800,fMy:'Archivo Narrow',wMy:700,track:-1}}
 ];
-const BASE = {fEci:'Sora',wEci:700,fMy:'Sora',wMy:700,pin:'ninguno',col:'rojo',layout:'v',pinPos:'top',upper:'none',track:-2,size:48,bg:true,bgSize:90,bgOp:25,bgY:0,iEci:false,iMy:false,stretch:100,ovY:40,ovSize:100,outEci:false,fInit:'',initScale:170,eciMul:100,myMul:100,trackMy:null};
+const BASE = {fEci:'Sora',wEci:700,fMy:'Sora',wMy:700,pin:'ninguno',col:'rojo',layout:'v',pinPos:'top',upper:'none',track:-2,size:48,bg:true,bgSize:90,bgOp:25,bgY:0,iEci:false,iMy:false,stretch:100,ovY:40,ovSize:100,outEci:false,fInit:'',initScale:170,eciMul:100,myMul:100,trackMy:null,cut:30};
 const POSTER = [
   {n:'Power Real',d:'Ref: POWER Real. Serif alta estirada + script cruzando. Bodoni Moda + Pinyon Script',s:{layout:'o',fEci:'Bodoni Moda',wEci:700,fMy:'Pinyon Script',wMy:400,stretch:170,ovY:45,ovSize:115,track:-3,size:40}},
   {n:'Money On My Mind',d:'Ref: serif negra en mayúsculas + script pequeño. Playfair Display 800 + Pinyon Script',s:{layout:'o',fEci:'Playfair Display',wEci:800,fMy:'Pinyon Script',wMy:400,stretch:100,ovY:70,ovSize:80,track:-2,size:44}},
@@ -345,12 +349,12 @@ const POSTER3 = [
   {n:'New Open',d:'Ref: New Open. Receta: Superpuesto · ECI Montserrat 800, tamaño 35 % · MyCampus Kaushan Script, tamaño 105 %, superposición 30 %',s:{layout:'o',fEci:'Montserrat',wEci:800,eciMul:35,stretch:100,fMy:'Kaushan Script',wMy:400,myMul:105,ovY:30,track:3,trackMy:0,size:46}}
 ];
 const ONE = [
-  {n:'Playfair Display (recomendada)',d:'ECI 800 recto + MyCampus 400 cursiva cruzando. Institucional y con la elegancia de tus referencias.',s:{layout:'o',fEci:'Playfair Display',wEci:800,fMy:'Playfair Display',wMy:400,iMy:true,stretch:110,ovY:50,myMul:105,track:-2,size:44}},
-  {n:'Fraunces',d:'ECI 800 + MyCampus 400 cursiva. Más cálida y redondeada, va con el tono de Manchas.',s:{layout:'o',fEci:'Fraunces',wEci:800,fMy:'Fraunces',wMy:400,iMy:true,stretch:100,ovY:50,myMul:105,track:-2,size:44}},
+  {n:'Playfair Display (recomendada)',d:'ECI 800 recto + MyCampus 400 cursiva cruzando. Institucional y con la elegancia de tus referencias.',s:{layout:'o',fEci:'Playfair Display',wEci:800,fMy:'Playfair Display',wMy:400,iMy:true,stretch:110,ovY:75,myMul:105,track:-2,size:44}},
+  {n:'Fraunces',d:'ECI 800 + MyCampus 400 cursiva. Más cálida y redondeada, va con el tono de Manchas.',s:{layout:'o',fEci:'Fraunces',wEci:800,fMy:'Fraunces',wMy:400,iMy:true,stretch:100,ovY:75,myMul:105,track:-2,size:44}},
   {n:'Sora',d:'ECI 800 + MyCampus 400, apilado. La opción segura y tecnológica; la mejor en tamaños pequeños.',s:{layout:'v',fEci:'Sora',wEci:800,fMy:'Sora',wMy:400,track:-3,size:48}},
   {n:'Bricolage Grotesque',d:'ECI 800 + MyCampus 400, apilado. Con carácter propio y más original que Sora.',s:{layout:'v',fEci:'Bricolage Grotesque',wEci:800,fMy:'Bricolage Grotesque',wMy:400,track:-3,size:48}},
-  {n:'Bodoni Moda',d:'ECI 700 + MyCampus 400 cursiva. Muy de moda y editorial, pero frágil en tamaños pequeños.',s:{layout:'o',fEci:'Bodoni Moda',wEci:700,fMy:'Bodoni Moda',wMy:400,iMy:true,stretch:120,ovY:50,myMul:105,track:-2,size:44}},
-  {n:'Cormorant Garamond',d:'ECI 700 + MyCampus 400 cursiva. Elegante y fina, solo para tamaños grandes.',s:{layout:'o',fEci:'Cormorant Garamond',wEci:700,fMy:'Cormorant Garamond',wMy:400,iMy:true,stretch:120,ovY:50,myMul:110,track:0,size:46}}
+  {n:'Bodoni Moda',d:'ECI 700 + MyCampus 400 cursiva. Muy de moda y editorial, pero frágil en tamaños pequeños.',s:{layout:'o',fEci:'Bodoni Moda',wEci:700,fMy:'Bodoni Moda',wMy:400,iMy:true,stretch:120,ovY:75,myMul:105,track:-2,size:44}},
+  {n:'Cormorant Garamond',d:'ECI 700 + MyCampus 400 cursiva. Elegante y fina, solo para tamaños grandes.',s:{layout:'o',fEci:'Cormorant Garamond',wEci:700,fMy:'Cormorant Garamond',wMy:400,iMy:true,stretch:120,ovY:75,myMul:110,track:0,size:46}}
 ];
 function norm(ps){ const o = Object.assign({}, ps); if (o.ovSize != null && o.myMul == null) o.myMul = o.ovSize; delete o.ovSize; return o; }
 function cards(list, container){
