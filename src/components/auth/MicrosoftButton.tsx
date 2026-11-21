@@ -33,7 +33,7 @@ export function MicrosoftButton({ returnTo }: { returnTo?: string | null }) {
     <button
       type="button"
       onClick={onClick}
-      className="flex h-14 w-full items-center justify-center gap-3 rounded-control border border-[#8C8C8C] bg-white px-4 text-base font-semibold text-[#5E5E5E] transition-[background-color,transform] duration-150 ease-out hover:bg-[#f3f3f3] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-ink"
+      className="flex h-14 w-full items-center justify-center gap-3 rounded-control border border-[#5E5E5E] bg-[#2F2F2F] px-4 text-base font-semibold text-white transition-[background-color,transform] duration-150 ease-out hover:bg-[#3a3a3a] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-ink"
     >
       <MicrosoftLogo />
       Iniciar sesión con Microsoft
