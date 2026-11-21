@@ -22,7 +22,7 @@ export function AuthShell({ title, description, children, footer, showGuest = tr
   return (
     <div className="fixed inset-0 z-[60] overflow-y-auto bg-canvas lg:overflow-hidden">
       <div className="grid min-h-full lg:h-full lg:grid-cols-2">
-        <section className="order-2 flex flex-col justify-start px-4 py-8 sm:px-12 lg:order-1 lg:overflow-y-auto lg:py-12">
+        <section className="relative order-2 flex flex-col justify-start px-4 pb-44 pt-8 sm:px-12 lg:order-1 lg:overflow-y-auto lg:py-12">
           <div className="mx-auto w-full max-w-md lg:my-auto">
             <h1 className="text-2xl font-semibold text-ink sm:text-3xl">{title}</h1>
             <p className="mt-1.5 text-sm text-ink-muted">{description}</p>
@@ -49,6 +49,14 @@ export function AuthShell({ title, description, children, footer, showGuest = tr
               />
             </div>
           </div>
+          <Image
+            src="/brand/manchas/saludo-1.webp"
+            alt=""
+            aria-hidden="true"
+            width={188}
+            height={392}
+            className="sticker-outline mascot-rise pointer-events-none absolute bottom-0 right-4 h-40 w-auto select-none sm:fixed sm:right-10 lg:hidden"
+          />
         </section>
 
         <aside className="relative isolate order-1 flex h-44 items-center justify-center overflow-hidden border-b border-line lg:order-2 lg:h-auto lg:border-b-0 lg:border-l">
@@ -60,12 +68,12 @@ export function AuthShell({ title, description, children, footer, showGuest = tr
           </div>
           {/* Manchas saluda desde la esquina de esta mitad. */}
           <Image
-            src="/brand/manchas/saludo.webp"
+            src="/brand/manchas/saludo-1.webp"
             alt="Manchas, la mascota, saludando"
-            width={328}
-            height={588}
+            width={188}
+            height={392}
             priority
-            className="sticker-outline mascot-rise pointer-events-none absolute bottom-0 right-3 h-32 w-auto select-none lg:right-8 lg:h-[min(36vh,340px)]"
+            className="sticker-outline mascot-rise pointer-events-none absolute bottom-0 right-8 hidden h-[min(36vh,340px)] w-auto select-none lg:block"
           />
         </aside>
       </div>
