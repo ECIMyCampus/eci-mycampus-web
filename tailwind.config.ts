@@ -37,6 +37,8 @@ const config: Config = {
           ink: 'rgb(var(--accent-ink) / <alpha-value>)',
         },
         live: 'rgb(var(--live) / <alpha-value>)',
+        /** Rojo puro del logotipo; no se usa en la interfaz. */
+        'logo-red': 'rgb(var(--logo-red) / <alpha-value>)',
         // Marca original: se conserva para lo que aún la usa.
         eci: {
           red: {
@@ -57,6 +59,7 @@ const config: Config = {
       },
       fontFamily: {
         sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+        display: ['var(--font-sora)', 'var(--font-inter)', 'system-ui', 'sans-serif'],
       },
       borderRadius: {
         control: '0.625rem',

@@ -9,6 +9,7 @@ import { withReturnTo } from '../../lib/auth/redirect';
 import { useSession } from '../../lib/session/session';
 import { cn } from '../../lib/utils';
 import { Button } from '../ui/Button';
+import { Wordmark } from '../brand/Wordmark';
 import { NAV_ITEMS, isActivePath } from './nav-items';
 
 export const Navbar: React.FC = () => {
@@ -19,10 +20,7 @@ export const Navbar: React.FC = () => {
     <header className="sticky top-0 z-40 w-full border-b border-line bg-canvas/80 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2.5 rounded-control" aria-label="ECI MyCampus, inicio">
-          <span className="flex h-8 w-8 items-center justify-center rounded-control bg-accent text-xs font-bold text-white">
-            ECI
-          </span>
-          <span className="text-sm font-semibold text-ink">MyCampus</span>
+          <Wordmark className="text-[15px]" />
         </Link>
 
         {/* Navegación de escritorio. En celular la reemplaza la barra inferior. */}

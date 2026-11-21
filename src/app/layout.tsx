@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter } from 'next/font/google';
+import { Inter, Sora } from 'next/font/google';
 import './globals.css';
 import { Navbar } from '../components/layout/Navbar';
 import { BottomNav } from '../components/layout/BottomNav';
@@ -8,6 +8,8 @@ import { SessionProvider } from '../lib/session/session';
 import { RegistrationsProvider } from '../lib/registrations/registrations';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
+/** Tipografía del logotipo (Sora 800 para «ECI», Sora 400 para «MyCampus»). */
+const sora = Sora({ subsets: ['latin'], weight: ['400', '800'], variable: '--font-sora', display: 'swap' });
 
 export const metadata: Metadata = {
   title: 'ECI-MyCampus | Escuela Colombiana de Ingeniería Julio Garavito',
@@ -33,7 +35,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es" className={`dark ${inter.variable}`}>
+    <html lang="es" className={`dark ${inter.variable} ${sora.variable}`}>
       <body className="flex min-h-dvh flex-col bg-canvas font-sans text-ink antialiased">
         <SessionProvider>
           <RegistrationsProvider>
