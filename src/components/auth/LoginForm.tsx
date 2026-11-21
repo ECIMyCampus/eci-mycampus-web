@@ -10,6 +10,7 @@ import { useSession } from '../../lib/session/session';
 import { Button } from '../ui/Button';
 import { PasswordField, TextField } from '../ui/Field';
 import { AuthShell, FormError } from './AuthShell';
+import { MicrosoftButton } from './MicrosoftButton';
 
 const FIELDS = ['email', 'password'] as const;
 
@@ -81,6 +82,12 @@ export function LoginForm() {
         </>
       }
     >
+      <MicrosoftButton returnTo={returnTo} />
+      <div className="my-5 flex items-center gap-3 text-xs text-ink-subtle" aria-hidden="true">
+        <span className="h-px flex-1 bg-line" />
+        o con tu correo
+        <span className="h-px flex-1 bg-line" />
+      </div>
       <form onSubmit={onSubmit} noValidate className="space-y-4">
         <TextField
           label="Correo"
