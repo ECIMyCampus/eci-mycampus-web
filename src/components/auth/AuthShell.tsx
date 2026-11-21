@@ -2,6 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import { Button } from '../ui/Button';
 import { Card } from '../ui/Card';
+import { Wordmark } from '../brand/Wordmark';
 
 interface AuthShellProps {
   title: string;
@@ -22,7 +23,7 @@ export function AuthShell({ title, description, children, footer, showGuest = tr
   return (
     <div className="fixed inset-0 z-[60] overflow-y-auto bg-canvas lg:overflow-hidden">
       <div className="grid min-h-full lg:h-full lg:grid-cols-2">
-        <section className="order-2 flex flex-col justify-center px-4 py-8 sm:px-12 lg:order-1 lg:overflow-y-auto lg:py-12">
+        <section className="order-2 flex flex-col justify-start px-4 py-8 sm:px-12 lg:order-1 lg:justify-center lg:overflow-y-auto lg:py-12">
           <div className="mx-auto w-full max-w-md">
             <h1 className="text-2xl font-semibold text-ink sm:text-3xl">{title}</h1>
             <p className="mt-1.5 text-sm text-ink-muted">{description}</p>
@@ -46,18 +47,16 @@ export function AuthShell({ title, description, children, footer, showGuest = tr
           <div aria-hidden="true" className="led-outline -z-20" />
           <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-b from-canvas/30 via-canvas/50 to-canvas lg:bg-gradient-to-t" />
           <div className="flex flex-col items-center text-center">
+            <Wordmark background className="text-[30px] lg:text-[64px]" />
+            <p className="mt-4 hidden text-sm text-ink-muted lg:block">Lo que pasa en el campus, en tiempo real.</p>
             <Image
               src="/brand/logo-eci-blanco.png"
               alt="Escuela Colombiana de Ingeniería Julio Garavito"
               width={485}
               height={246}
               priority
-              className="h-auto w-28 lg:w-56"
+              className="mt-10 hidden h-auto w-36 opacity-80 lg:block"
             />
-            <p className="mt-4 text-2xl font-semibold leading-none tracking-tight text-ink lg:mt-12 lg:text-4xl">
-              ECI <span className="text-accent-ink">MyCampus</span>
-            </p>
-            <p className="mt-3 hidden text-sm text-ink-muted lg:block">Lo que pasa en el campus, en tiempo real.</p>
           </div>
         </aside>
       </div>
