@@ -209,14 +209,16 @@ function logoHTML(s, {size=s.size, light=false}={}){
   const k = (s.stretch||100)/100;
   const over = s.layout==='o';
   const eciSize = (over ? size*1.9 : size) * (s.eciMul||100)/100;
-  const eciCss = "font-family:'"+s.fEci+"',sans-serif;font-weight:"+s.wEci+";font-style:"+(s.iEci?'italic':'normal')+";"+(s.outEci?"color:transparent;-webkit-text-stroke:"+Math.max(1.5,eciSize*.03)+"px "+eci+";":"color:"+eci+";")+"font-size:"+eciSize+"px;letter-spacing:"+t+"em;line-height:1;display:inline-block;transform:scaleY("+k+");margin:"+((k-1)*eciSize*.5)+"px 0;"+(over?'grid-area:1/1;align-self:start;':'');
+  /* Letras nítidas sobre el dibujo del fondo: un borde duro del color del fondo recorta las líneas alrededor de cada letra, sin difuminado. */
   const halo = light ? '#f5f5f7' : '#0b0b0d';
+  const knock = 'paint-order:stroke fill;-webkit-text-stroke:.12em ' + halo + ';';
+  const eciCss = "font-family:'"+s.fEci+"',sans-serif;font-weight:"+s.wEci+";font-style:"+(s.iEci?'italic':'normal')+";"+(s.outEci?"color:transparent;-webkit-text-stroke:"+Math.max(1.5,eciSize*.03)+"px "+eci+";":"color:"+eci+";")+"font-size:"+eciSize+"px;letter-spacing:"+t+"em;line-height:1;display:inline-block;transform:scaleY("+k+");margin:"+((k-1)*eciSize*.5)+"px 0;"+(over?'grid-area:1/1;align-self:start;':'');
   const myCss = "font-family:'"+s.fMy+"',sans-serif;font-weight:"+s.wMy+";font-style:"+(s.iMy?'italic':'normal')+";color:"+my+";letter-spacing:"+tm+"em;line-height:1;" +
-    (over ? "font-size:"+(size*1.5*(s.myMul||100)/100)+"px;grid-area:1/1;align-self:end;justify-self:center;position:relative;z-index:2;transform:translateY("+(s.ovY||0)+"%);text-shadow:0 0 .1em "+halo+",0 0 .2em "+halo+";white-space:nowrap;"
+    (over ? "font-size:"+(size*1.5*(s.myMul||100)/100)+"px;grid-area:1/1;align-self:end;justify-self:center;position:relative;z-index:2;transform:translateY("+(s.ovY||0)+"%);white-space:nowrap;"
           : "font-size:"+(size*(s.myMul||100)/100)+"px;" + (s.layout==='h' ? "margin-left:"+Math.round(size*.18)+"px;" : ""));
   const rest = cap('MyCampus');
   const myWord = s.fInit ? '<span style="font-family:\''+s.fInit+'\',cursive;font-weight:400;font-style:normal;font-size:'+s.initScale+'%;line-height:0">'+rest.charAt(0)+'</span>'+rest.slice(1) : rest;
-  const words = '<span style="'+eciCss+'">'+cap('ECI')+'</span><span style="'+myCss+'">'+myWord+'</span>';
+  const words = '<span style="'+eciCss+(s.bg&&!s.outEci?knock:'')+'">'+cap('ECI')+'</span><span style="'+myCss+(s.bg?knock:'')+'">'+myWord+'</span>';
   const top = s.pinPos==='top';
   const inner = over
     ? '<span style="display:inline-grid;place-items:center;text-align:center;padding-bottom:'+Math.round(size*.5)+'px">'+words+'</span>'
