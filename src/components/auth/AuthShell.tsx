@@ -48,14 +48,13 @@ export function AuthShell({ title, description, children, footer, showGuest = tr
           <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-b from-canvas/30 via-canvas/50 to-canvas lg:bg-gradient-to-t" />
           <div className="flex flex-col items-center text-center">
             <Wordmark background className="text-[30px] lg:text-[64px]" />
-            <p className="mt-4 hidden text-sm text-ink-muted lg:block">Lo que pasa en el campus, en tiempo real.</p>
             <Image
               src="/brand/logo-eci-blanco.png"
               alt="Escuela Colombiana de Ingeniería Julio Garavito"
               width={485}
               height={246}
               priority
-              className="mt-10 hidden h-auto w-36 opacity-80 lg:block"
+              className="mt-12 hidden h-auto w-36 opacity-80 lg:block"
             />
           </div>
         </aside>
