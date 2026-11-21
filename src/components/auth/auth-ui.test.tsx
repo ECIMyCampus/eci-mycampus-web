@@ -269,7 +269,8 @@ describe('ProfileView', () => {
     expect(await screen.findByRole('heading', { name: 'Ana María Pérez' })).toBeTruthy();
     expect(screen.getByText('Estudiante')).toBeTruthy();
     expect(screen.getByText('ana@mail.escuelaing.edu.co')).toBeTruthy();
-    expect(screen.getByText('Ingeniería de Sistemas', { selector: 'dd' })).toBeTruthy();
+    // Programa y facultad se llaman igual en estos datos; la facultad llega cuando carga su lista.
+    await waitFor(() => expect(screen.getAllByText('Ingeniería de Sistemas', { selector: 'dd' })).toHaveLength(2));
     expect(screen.getByText(/noviembre.*2026/)).toBeTruthy();
     expect(screen.getByText('Robótica')).toBeTruthy();
   });
