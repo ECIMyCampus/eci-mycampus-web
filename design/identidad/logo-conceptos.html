@@ -136,8 +136,8 @@ PAIRS.forEach((p,i)=>sel.add(new Option(p.n,i)));
 sel.onchange = render;
 
 const sym = (s,size,m=G,a=O,n='#fff') => `<svg width="${size}" height="${size}" viewBox="0 0 64 64" aria-hidden="true" style="flex:none">${s.svg(m,a,n)}</svg>`;
-const word = (size,light=false)=>{const p=PAIRS[sel.value];return `<span style="font-size:${size}px;letter-spacing:-.02em;display:inline-flex;gap:.2em;align-items:baseline"><span style="font-family:'${p.a[0]}';font-weight:${p.a[1]};color:${light?'#111':'#fff'}">ECI</span><span style="font-family:'${p.b[0]}';font-weight:${p.b[1]};color:${light?G:S}">MyCampus</span></span>`};
-const lockup = (s,size,light=false)=>`<span class="lock" style="gap:${size*.3}px">${sym(s,size*1.25,G,O,light?'#fff':'#0b0b0d')}${word(size,light)}</span>`;
+const word = (size,light=false)=>{const p=PAIRS[sel.value];return `<span style="font-size:${size}px;letter-spacing:-.02em;display:inline-flex;flex-direction:column;gap:.06em;align-items:center;text-align:center;line-height:1"><span style="font-family:'${p.a[0]}';font-weight:${p.a[1]};color:${light?'#111':'#fff'}">ECI</span><span style="font-family:'${p.b[0]}';font-weight:${p.b[1]};color:${light?G:S}">MyCampus</span></span>`};
+const lockup = (s,size,light=false)=>`<span class="lock" style="gap:${size*.3}px">${sym(s,size*2,G,O,light?'#fff':'#0b0b0d')}${word(size,light)}</span>`;
 
 function render(){
   const box = document.getElementById('concepts'); box.innerHTML='';

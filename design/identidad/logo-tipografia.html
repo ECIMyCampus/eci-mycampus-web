@@ -142,7 +142,7 @@ function pinSvg(kind, h, fill='#e4202b', ink='#fff'){
 }
 
 const COLORS = {rojo:['Rojo puro','#e4202b'],blanco:['Blanco','#ffffff'],oro:['Oro','#e3a21a'],guinda:['Guinda Manchas','#a9073e']};
-const state = {fEci:'Sora',wEci:700,fMy:'Sora',wMy:700,pin:'e',col:'rojo',layout:'h',pinPos:'left',upper:'none',track:-2,size:48};
+const state = {fEci:'Sora',wEci:700,fMy:'Sora',wMy:700,pin:'e',col:'rojo',layout:'v',pinPos:'top',upper:'none',track:-2,size:48};
 
 function logoHTML(s, {size=s.size, light=false}={}){
   const eci = light ? '#111' : '#fff';
@@ -216,14 +216,14 @@ const PRESETS = [
   {n:'Gráfico',d:'Condensada gruesa + ligera',s:{fEci:'Anton',wEci:400,fMy:'Raleway',wMy:400,pin:'ninguno',col:'rojo',track:2}},
   {n:'Serif en MyCampus',d:'Sans firme + serif itálica-like',s:{fEci:'Archivo',wEci:800,fMy:'Fraunces',wMy:600,pin:'contorno',col:'rojo',track:-2}},
   {n:'Bricolage',d:'Una sola familia con carácter',s:{fEci:'Bricolage Grotesque',wEci:800,fMy:'Bricolage Grotesque',wMy:400,pin:'e',col:'rojo',track:-3}},
-  {n:'Apilado',d:'ECI sobre MyCampus',s:{fEci:'Montserrat',wEci:800,fMy:'Montserrat',wMy:400,pin:'e',col:'rojo',layout:'v',pinPos:'top',track:0,size:44}}
+  {n:'Apilado',d:'ECI sobre MyCampus',s:{fEci:'Montserrat',wEci:800,fMy:'Montserrat',wMy:400,pin:'e',col:'rojo',track:0,size:44}}
 ];
 const pg = document.getElementById('presets');
 PRESETS.forEach((p,i)=>{
-  const st = Object.assign({},{fEci:'Sora',wEci:700,fMy:'Sora',wMy:700,pin:'e',col:'rojo',layout:'h',pinPos:'left',upper:'none',track:-2,size:48},p.s);
+  const st = Object.assign({},{fEci:'Sora',wEci:700,fMy:'Sora',wMy:700,pin:'e',col:'rojo',layout:'v',pinPos:'top',upper:'none',track:-2,size:48},p.s);
   const b = document.createElement('button'); b.type='button'; b.className='card';
   b.innerHTML = `<div class="cv">${logoHTML(st,{size:28})}</div><div><b>${i+1}. ${p.n}</b><br><small>${p.d}</small></div>`;
-  b.onclick=()=>{Object.assign(state,{layout:'h',pinPos:'left',upper:'none',size:48},p.s);render();scrollTo({top:0,behavior:'smooth'})};
+  b.onclick=()=>{Object.assign(state,{layout:'v',pinPos:'top',upper:'none',size:48},p.s);render();scrollTo({top:0,behavior:'smooth'})};
   pg.appendChild(b);
 });
 
