@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Taller de logo y tipografía · ECI MyCampus</title>
+<style>
+  :root{--canvas:#0b0b0d;--surface:#141417;--raised:#1b1b20;--line:#26262d;--line-strong:#3a3a44;--ink:#f5f5f7;--muted:#a6a6b2;--subtle:#6f6f7c;--guinda:#a9073e;--guinda-soft:#eb5c8a;--oro:#e3a21a;--r:14px}
+  *{box-sizing:border-box;margin:0}
+  body{background:var(--canvas);color:var(--ink);font:400 15px/1.55 system-ui,'Segoe UI',sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+  header{padding:40px 0 20px}
+  h1{font-size:clamp(26px,4vw,38px);letter-spacing:-.02em;line-height:1.15}
+  h2{font-size:22px;letter-spacing:-.01em;margin:44px 0 6px}
+  p.lead{color:var(--muted);max-width:68ch;margin-top:8px}
+  .eyebrow{font-size:12px;color:var(--guinda-soft);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+  .builder{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;margin-top:20px}
+  @media(min-width:900px){.builder{grid-template-columns:340px minmax(0,1fr);align-items:start}}
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:grid;gap:12px}
+  .panel.sticky{position:sticky;top:12px}
+  label{display:grid;gap:4px;font-size:12px;color:var(--muted);font-weight:600}
+  select,input[type=range]{width:100%}
+  select{background:var(--raised);color:var(--ink);border:1px solid var(--line-strong);border-radius:10px;padding:9px 10px;font:inherit;font-size:14px}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .seg{display:flex;flex-wrap:wrap;gap:6px}
+  .seg button{background:var(--raised);color:var(--muted);border:1px solid var(--line-strong);border-radius:99px;padding:6px 12px;font:600 13px system-ui;cursor:pointer}
+  .seg button[aria-pressed=true]{background:var(--ink);color:var(--canvas);border-color:var(--ink)}
+  .stage{background:var(--canvas);border:1px solid var(--line);border-radius:var(--r);display:grid;place-items:center;min-height:200px;padding:28px 16px}
+  .stage.light{background:#f5f5f7}
+  .preview{display:grid;gap:12px}
+  .minis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+  .out{font:12px/1.5 ui-monospace,Consolas,monospace;color:var(--muted);background:var(--raised);border-radius:10px;padding:10px;word-break:break-word}
+  .logo{display:inline-flex;align-items:center;white-space:nowrap;line-height:1}
+  .logo.stack{flex-direction:column;align-items:flex-start}
+  .grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));margin-top:16px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;cursor:pointer;text-align:left;color:inherit;font:inherit;display:grid;gap:10px;transition:border-color .15s,transform .15s}
+  .card:hover{border-color:var(--line-strong)}.card:active{transform:scale(.985)}
+  .card[aria-pressed=true]{border-color:var(--oro)}
+  .card .cv{background:var(--canvas);border-radius:10px;display:grid;place-items:center;min-height:96px;padding:12px}
+  .card small{color:var(--muted);font-size:12px}
+  .card b{font-size:13px}
+  .fontgrid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));margin-top:16px}
+  .fcard .t{font-size:26px;line-height:1.15;letter-spacing:-.02em;margin-bottom:6px}
+  .fcard .b{font-family:Inter,system-ui;color:var(--muted);font-size:14px}
+  .pins{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:16px}
+  .app{display:flex;align-items:center;gap:14px}
+  footer{padding:40px 0;color:var(--subtle);font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <p class="eyebrow">Manual de identidad · taller</p>
+  <h1>Logo y tipografía</h1>
+  <p class="lead">Prueba combinaciones. Arriba armas el logo con una tipografía para «ECI» y otra para «MyCampus», con o sin pin. Más abajo hay parejas ya armadas y las opciones de títulos para la app. Cuando algo te guste, pulsa «Copiar configuración» y pégamela en el chat.</p>
+</header>
+
+<div class="builder">
+  <div class="panel sticky" id="controls">
+    <label>Tipografía de «ECI»<select id="fEci"></select></label>
+    <div class="row2">
+      <label>Grosor ECI<select id="wEci"></select></label>
+      <label>Grosor MyCampus<select id="wMy"></select></label>
+    </div>
+    <label>Tipografía de «MyCampus»<select id="fMy"></select></label>
+    <div>
+      <label style="margin-bottom:6px">Pin</label>
+      <div class="seg" id="pinSeg"></div>
+    </div>
+    <div>
+      <label style="margin-bottom:6px">Color de «MyCampus»</label>
+      <div class="seg" id="colSeg"></div>
+    </div>
+    <div class="row2">
+      <div><label style="margin-bottom:6px">Disposición</label><div class="seg" id="layoutSeg"></div></div>
+      <div><label style="margin-bottom:6px">Mayúsculas</label><div class="seg" id="caseSeg"></div></div>
+    </div>
+    <label>Espaciado de letras<input type="range" id="track" min="-6" max="12" value="-2"></label>
+    <label>Tamaño<input type="range" id="size" min="24" max="72" value="48"></label>
+    <div class="out" id="out"></div>
+    <div class="seg"><button id="copy" type="button" aria-pressed="true">Copiar configuración</button></div>
+  </div>
+
+  <div class="preview">
+    <div class="stage" id="stageDark"><span id="logoDark"></span></div>
+    <div class="minis">
+      <div class="stage light" style="min-height:120px"><span id="logoLight"></span></div>
+      <div class="stage" style="min-height:120px"><div class="app"><span id="iconPin"></span><span style="color:var(--muted);font-size:13px">Ícono de la app</span></div></div>
+      <div class="stage" style="min-height:120px;justify-items:start;padding-left:20px"><span id="logoSmall"></span></div>
+    </div>
+  </div>
+</div>
+
+<h2>Parejas ya armadas</h2>
+<p class="lead">Un clic carga la pareja en el taller de arriba.</p>
+<div class="grid" id="presets"></div>
+
+<h2>Formas del pin</h2>
+<p class="lead">Marcas mínimas para usar solas (ícono de la app, favicon, avatar del mapa).</p>
+<div class="pins" id="pinList"></div>
+
+<h2>Títulos de la app</h2>
+<p class="lead">Así se vería «Qué pasa en el campus» con cada tipografía de títulos, con Inter en el cuerpo. Pulsa una para usarla también en «ECI».</p>
+<div class="fontgrid" id="fonts"></div>
+
+<footer>Las tipografías se cargan desde Google Fonts solo para esta página de prueba; la app usará la elegida con <code>next/font</code>.</footer>
+</div>
+
+<script>
+const FONTS = {
+  'Sora':[400,600,700,800],'Space Grotesk':[400,500,700],'Outfit':[400,600,700,800],'Plus Jakarta Sans':[400,600,700,800],'Manrope':[400,600,700,800],
+  'Bricolage Grotesque':[400,600,700,800],'Syne':[500,700,800],'Unbounded':[400,600,700,900],'Archivo':[400,600,700,800],'Poppins':[400,600,700,800],
+  'Montserrat':[400,600,700,800],'Raleway':[400,600,700,800],'Oswald':[400,500,600,700],'Bebas Neue':[400],'Anton':[400],'Fraunces':[400,600,700,800],
+  'Playfair Display':[400,600,700,800],'DM Serif Display':[400],'Instrument Serif':[400],'Caveat':[500,700],'Pacifico':[400],'Space Mono':[400,700],
+  'JetBrains Mono':[400,600,700,800],'Inter':[400,600,700,800],'Lexend':[400,600,700,800],'Red Hat Display':[400,600,700,800]
+};
+const link = document.createElement('link');
+link.rel = 'stylesheet';
+link.href = 'https://fonts.googleapis.com/css2?' + Object.entries(FONTS).map(([f,w]) => `family=${f.replace(/ /g,'+')}:wght@${w.join(';')}`).join('&') + '&display=swap';
+document.head.appendChild(link);
+
+const PINS = {
+  ninguno:{label:'Sin pin'},
+  e:{label:'Pin con E'},
+  punto:{label:'Pin clásico'},
+  contorno:{label:'Pin de contorno'},
+  ventanas:{label:'Pin con ventanas'},
+  halo:{label:'Pin con ondas'}
+};
+const PIN_PATH = 'M24 0C10.7 0 0 10.4 0 23.3c0 16 24 32.7 24 32.7s24-16.7 24-32.7C48 10.4 37.3 0 24 0z';
+function pinSvg(kind, h, fill='#a9073e', ink='#fff'){
+  if(kind==='ninguno') return '';
+  const w = Math.round(h*48/56);
+  let inner = '';
+  if(kind==='e') inner = `<path d="${PIN_PATH}" fill="${fill}"/><g fill="${ink}"><rect x="14" y="12" width="5" height="22" rx="1"/><rect x="14" y="12" width="19" height="5" rx="1"/><rect x="14" y="21.5" width="15" height="5" rx="1"/><rect x="14" y="29" width="19" height="5" rx="1"/></g>`;
+  if(kind==='punto') inner = `<path d="${PIN_PATH}" fill="${fill}"/><circle cx="24" cy="23" r="8.5" fill="${ink}"/>`;
+  if(kind==='contorno') inner = `<path d="${PIN_PATH}" fill="none" stroke="${fill==='#a9073e'?'#eb5c8a':fill}" stroke-width="4" stroke-linejoin="round" transform="translate(2 2) scale(.917)"/><circle cx="24" cy="23" r="6" fill="#e3a21a"/>`;
+  if(kind==='ventanas') inner = `<path d="${PIN_PATH}" fill="${fill}"/><g fill="${ink}"><rect x="12" y="11" width="10" height="10" rx="2"/><rect x="26" y="11" width="10" height="10" rx="2" opacity=".5"/><rect x="12" y="25" width="10" height="10" rx="2" opacity=".5"/></g><rect x="26" y="25" width="10" height="10" rx="2" fill="#e3a21a"/>`;
+  if(kind==='halo') inner = `<path d="${PIN_PATH}" fill="${fill}"/><circle cx="24" cy="23" r="5" fill="${ink}"/><circle cx="24" cy="23" r="11" fill="none" stroke="${ink}" stroke-opacity=".55" stroke-width="2"/>`;
+  return `<svg width="${w}" height="${h}" viewBox="0 0 48 56" aria-hidden="true" style="flex:none">${inner}</svg>`;
+}
+
+const COLORS = {guindaclaro:['Guinda claro','#eb5c8a'],blanco:['Blanco','#ffffff'],oro:['Oro','#e3a21a'],guinda:['Guinda','#a9073e']};
+const state = {fEci:'Sora',wEci:700,fMy:'Sora',wMy:700,pin:'e',col:'guindaclaro',layout:'h',upper:'none',track:-2,size:48};
+
+function logoHTML(s, {size=s.size, light=false}={}){
+  const eci = light ? '#111' : '#fff';
+  const my = s.col==='blanco' && light ? '#111' : (light && s.col==='guindaclaro' ? '#a9073e' : COLORS[s.col][1]);
+  const t = s.track/100;
+  const cap = (txt)=> s.upper==='all' ? txt.toUpperCase() : txt;
+  const pin = pinSvg(s.pin, Math.round(size*1.05), light?'#a9073e':'#a9073e', '#fff');
+  const gap = Math.round(size*.28);
+  const textStyle = `font-size:${size}px;letter-spacing:${t}em;`;
+  const words = `<span style="font-family:'${s.fEci}',sans-serif;font-weight:${s.wEci};color:${eci};${textStyle}">${cap('ECI')}</span><span style="font-family:'${s.fMy}',sans-serif;font-weight:${s.wMy};color:${my};${textStyle}${s.layout==='h'?`margin-left:${Math.round(size*.18)}px`:''}">${cap('MyCampus')}</span>`;
+  const inner = s.layout==='h' ? `<span style="display:inline-flex;align-items:baseline">${words}</span>` : `<span style="display:inline-flex;flex-direction:column;gap:${Math.round(size*.08)}px">${words}</span>`;
+  return `<span class="logo" style="gap:${gap}px">${pin}${inner}</span>`;
+}
+
+/* Reduce el logo para que quepa en su recuadro. */
+function fit(root=document){
+  root.querySelectorAll('.stage,.cv').forEach(box=>{
+    const l=box.querySelector('.logo'); if(!l) return;
+    l.style.zoom=1;
+    const avail=box.clientWidth-32, w=l.getBoundingClientRect().width;
+    if(w>avail) l.style.zoom=(avail/w).toFixed(3);
+  });
+}
+function weightsFor(f){return FONTS[f]||[400,700]}
+function nearest(list,w){return list.reduce((a,b)=>Math.abs(b-w)<Math.abs(a-w)?b:a)}
+
+function render(){
+  document.getElementById('logoDark').innerHTML = logoHTML(state);
+  document.getElementById('logoLight').innerHTML = logoHTML(state,{size:Math.min(state.size,34),light:true});
+  document.getElementById('logoSmall').innerHTML = logoHTML(state,{size:22});
+  document.getElementById('iconPin').innerHTML = state.pin==='ninguno' ? '<span style="color:var(--subtle)">—</span>' : `<span style="display:grid;place-items:center;width:64px;height:64px;border-radius:16px;background:#141417;border:1px solid #26262d">${pinSvg(state.pin,38)}</span>`;
+  document.getElementById('out').textContent = JSON.stringify({eci:`${state.fEci} ${state.wEci}`,mycampus:`${state.fMy} ${state.wMy}`,pin:state.pin,colorMyCampus:state.col,disposicion:state.layout==='h'?'horizontal':'apilado',mayusculas:state.upper==='all',espaciado:state.track});
+  for(const [id,key,font] of [['wEci','wEci','fEci'],['wMy','wMy','fMy']]){
+    const sel=document.getElementById(id), ws=weightsFor(state[font]);
+    sel.innerHTML = ws.map(w=>`<option value="${w}" ${w===state[key]?'selected':''}>${w}</option>`).join('');
+  }
+  document.getElementById('fEci').value = state.fEci; document.getElementById('fMy').value = state.fMy;
+  document.getElementById('track').value = state.track; document.getElementById('size').value = state.size;
+  setSeg('pinSeg', Object.entries(PINS).map(([k,v])=>[k,v.label]), state.pin, v=>{state.pin=v;render()});
+  setSeg('colSeg', Object.entries(COLORS).map(([k,v])=>[k,v[0]]), state.col, v=>{state.col=v;render()});
+  setSeg('layoutSeg', [['h','En línea'],['v','Apilado']], state.layout, v=>{state.layout=v;render()});
+  requestAnimationFrame(()=>fit());
+  setSeg('caseSeg', [['none','Como está'],['all','MAYÚSC.']], state.upper, v=>{state.upper=v;render()});
+}
+function setSeg(id,items,cur,fn){
+  const el=document.getElementById(id); el.innerHTML='';
+  items.forEach(([k,l])=>{const b=document.createElement('button');b.type='button';b.textContent=l;b.setAttribute('aria-pressed',String(k===cur));b.onclick=()=>fn(k);el.appendChild(b)});
+}
+
+const names = Object.keys(FONTS);
+for(const id of ['fEci','fMy']) document.getElementById(id).innerHTML = names.map(n=>`<option>${n}</option>`).join('');
+document.getElementById('fEci').onchange = e=>{state.fEci=e.target.value;state.wEci=nearest(weightsFor(state.fEci),state.wEci);render()};
+document.getElementById('fMy').onchange = e=>{state.fMy=e.target.value;state.wMy=nearest(weightsFor(state.fMy),state.wMy);render()};
+document.getElementById('wEci').onchange = e=>{state.wEci=+e.target.value;render()};
+document.getElementById('wMy').onchange = e=>{state.wMy=+e.target.value;render()};
+document.getElementById('track').oninput = e=>{state.track=+e.target.value;render()};
+document.getElementById('size').oninput = e=>{state.size=+e.target.value;render()};
+document.getElementById('copy').onclick = async ()=>{const t=document.getElementById('out').textContent;try{await navigator.clipboard.writeText(t);document.getElementById('copy').textContent='Copiado'}catch{document.getElementById('copy').textContent='Selecciona y copia el texto de arriba'}setTimeout(()=>document.getElementById('copy').textContent='Copiar configuración',1800)};
+
+const PRESETS = [
+  {n:'Contraste de peso',d:'Mismo trazo: ECI firme, MyCampus ligero',s:{fEci:'Sora',wEci:800,fMy:'Sora',wMy:400,pin:'e',col:'guindaclaro',track:-3}},
+  {n:'Técnico y humano',d:'Geométrica + redondeada',s:{fEci:'Space Grotesk',wEci:700,fMy:'Outfit',wMy:600,pin:'punto',col:'guindaclaro',track:-2}},
+  {n:'Institucional + moderno',d:'Serif para ECI, sans para MyCampus',s:{fEci:'Playfair Display',wEci:800,fMy:'Manrope',wMy:700,pin:'contorno',col:'guindaclaro',track:0}},
+  {n:'Editorial',d:'Serif elegante + sans limpia',s:{fEci:'DM Serif Display',wEci:400,fMy:'Plus Jakarta Sans',wMy:700,pin:'ninguno',col:'oro',track:-1}},
+  {n:'Compacto',d:'Condensada en mayúsculas + sans',s:{fEci:'Oswald',wEci:700,fMy:'Poppins',wMy:600,pin:'ventanas',col:'guindaclaro',upper:'none',track:2}},
+  {n:'Ingeniería',d:'Monoespaciada para ECI, sans para MyCampus',s:{fEci:'Space Mono',wEci:700,fMy:'Sora',wMy:700,pin:'e',col:'guindaclaro',track:-2}},
+  {n:'Con personalidad',d:'Extravagante + neutra',s:{fEci:'Unbounded',wEci:700,fMy:'Inter',wMy:600,pin:'halo',col:'guindaclaro',track:-2}},
+  {n:'Cálido',d:'Redondeada + manuscrita',s:{fEci:'Outfit',wEci:800,fMy:'Caveat',wMy:700,pin:'punto',col:'oro',track:-1,size:52}},
+  {n:'Gráfico',d:'Condensada gruesa + ligera',s:{fEci:'Anton',wEci:400,fMy:'Raleway',wMy:400,pin:'ninguno',col:'guindaclaro',track:2}},
+  {n:'Serif en MyCampus',d:'Sans firme + serif itálica-like',s:{fEci:'Archivo',wEci:800,fMy:'Fraunces',wMy:600,pin:'contorno',col:'guindaclaro',track:-2}},
+  {n:'Bricolage',d:'Una sola familia con carácter',s:{fEci:'Bricolage Grotesque',wEci:800,fMy:'Bricolage Grotesque',wMy:400,pin:'e',col:'guindaclaro',track:-3}},
+  {n:'Apilado',d:'ECI sobre MyCampus',s:{fEci:'Montserrat',wEci:800,fMy:'Montserrat',wMy:400,pin:'e',col:'guindaclaro',layout:'v',track:0,size:44}}
+];
+const pg = document.getElementById('presets');
+PRESETS.forEach((p,i)=>{
+  const st = Object.assign({},{fEci:'Sora',wEci:700,fMy:'Sora',wMy:700,pin:'e',col:'guindaclaro',layout:'h',upper:'none',track:-2,size:48},p.s);
+  const b = document.createElement('button'); b.type='button'; b.className='card';
+  b.innerHTML = `<div class="cv">${logoHTML(st,{size:28})}</div><div><b>${i+1}. ${p.n}</b><br><small>${p.d}</small></div>`;
+  b.onclick=()=>{Object.assign(state,{layout:'h',upper:'none',size:48},p.s);render();scrollTo({top:0,behavior:'smooth'})};
+  pg.appendChild(b);
+});
+
+const pl = document.getElementById('pinList');
+Object.entries(PINS).filter(([k])=>k!=='ninguno').forEach(([k,v])=>{
+  const d=document.createElement('div'); d.className='card'; d.style.cursor='default';
+  d.innerHTML=`<div class="cv" style="min-height:110px">${pinSvg(k,64)}</div><b>${v.label}</b>`; pl.appendChild(d);
+});
+
+const TITLE_FONTS = ['Sora','Space Grotesk','Outfit','Plus Jakarta Sans','Manrope','Bricolage Grotesque','Syne','Unbounded','Archivo','Poppins','Montserrat','Lexend','Red Hat Display','Raleway','Fraunces','Playfair Display','Oswald'];
+const fg = document.getElementById('fonts');
+TITLE_FONTS.forEach(f=>{
+  const w = nearest(weightsFor(f),700);
+  const b=document.createElement('button'); b.type='button'; b.className='card fcard'; b.style.fontFamily=`'${f}'`;
+  b.innerHTML=`<small style="font-family:system-ui">${f} · ${w}</small><div class="t" style="font-weight:${w}">Qué pasa en el campus</div><div class="b">Inscríbete con un toque. Si no puedes asistir, cancela hasta 2 horas antes y tu cupo queda libre para otra persona.</div>`;
+  b.onclick=()=>{state.fEci=f;state.wEci=w;render();scrollTo({top:0,behavior:'smooth'})};
+  fg.appendChild(b);
+});
+
+render();
+addEventListener('resize',()=>fit());
+document.fonts && document.fonts.ready.then(()=>{render();fit();});
+setTimeout(fit,400);
+</script>
+</body>
+</html>
