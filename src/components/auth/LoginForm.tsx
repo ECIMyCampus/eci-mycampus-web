@@ -11,7 +11,6 @@ import { Button } from '../ui/Button';
 import { PasswordField, TextField } from '../ui/Field';
 import { AuthShell, FormError } from './AuthShell';
 import { MicrosoftButton } from './MicrosoftButton';
-import { ManchasPeek } from '../brand/ManchasPeek';
 
 const FIELDS = ['email', 'password'] as const;
 
@@ -84,9 +83,7 @@ export function LoginForm() {
         </>
       }
     >
-      <ManchasPeek>
-        <MicrosoftButton returnTo={returnTo} />
-      </ManchasPeek>
+      <MicrosoftButton returnTo={returnTo} />
       <Button href="/" variant="secondary" className="mt-3 w-full">
         Entrar como invitado
       </Button>

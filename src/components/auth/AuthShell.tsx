@@ -58,6 +58,15 @@ export function AuthShell({ title, description, children, footer, showGuest = tr
           <div className="flex flex-col items-center text-center">
             <Wordmark background className="text-[30px] lg:text-[64px]" />
           </div>
+          {/* Manchas saluda desde la esquina de esta mitad. */}
+          <Image
+            src="/brand/manchas/saludo.webp"
+            alt="Manchas, la mascota, saludando"
+            width={328}
+            height={588}
+            priority
+            className="sticker-outline mascot-rise pointer-events-none absolute bottom-0 right-3 h-32 w-auto select-none lg:right-8 lg:h-[min(36vh,340px)]"
+          />
         </aside>
       </div>
     </div>

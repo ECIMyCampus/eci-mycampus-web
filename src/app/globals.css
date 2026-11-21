@@ -254,3 +254,26 @@
     opacity: 0.5;
   }
 }
+
+/* Contorno blanco fino alrededor de una figura recortada (Manchas) para que se despegue del fondo oscuro. */
+.sticker-outline {
+  filter: drop-shadow(1.5px 0 0 #fff) drop-shadow(-1.5px 0 0 #fff) drop-shadow(0 1.5px 0 #fff) drop-shadow(0 -1.5px 0 #fff);
+}
+
+/* Entrada de Manchas: sube desde abajo de la pantalla. */
+@keyframes mascot-rise {
+  from {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+}
+
+.mascot-rise {
+  animation: mascot-rise 600ms cubic-bezier(0.23, 1, 0.32, 1) 250ms both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mascot-rise {
+    animation: none;
+  }
+}
