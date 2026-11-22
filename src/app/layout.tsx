@@ -6,6 +6,7 @@ import { BottomNav } from '../components/layout/BottomNav';
 import { Toaster } from 'sonner';
 import { SessionProvider } from '../lib/session/session';
 import { RegistrationsProvider } from '../lib/registrations/registrations';
+import { SplashScreen } from '../components/brand/SplashScreen';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
 /** Tipografía del logotipo (Sora 800 para «ECI», Sora 400 para «MyCampus»). */
@@ -42,6 +43,7 @@ export default function RootLayout({
       <body className="flex min-h-dvh flex-col bg-canvas font-sans text-ink antialiased">
         <SessionProvider>
           <RegistrationsProvider>
+          <SplashScreen />
           <Navbar />
           {/* El espacio inferior deja libre la barra de navegación del celular. */}
           <main className="flex-1 pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0">{children}</main>
