@@ -83,6 +83,11 @@ export function RegistrationsProvider({ children }: { children: React.ReactNode 
   return <RegistrationsContext.Provider value={value}>{children}</RegistrationsContext.Provider>;
 }
 
+/** Igual que `useRegistrations`, pero devuelve `null` fuera del proveedor: para vistas que también se muestran sin cuenta. */
+export function useOptionalRegistrations(): RegistrationsValue | null {
+  return useContext(RegistrationsContext);
+}
+
 export function useRegistrations(): RegistrationsValue {
   const value = useContext(RegistrationsContext);
   if (!value) throw new Error('useRegistrations debe usarse dentro de <RegistrationsProvider>');

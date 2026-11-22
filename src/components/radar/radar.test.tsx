@@ -6,7 +6,7 @@ import { createDemoEvents, DEMO_BUILDINGS, DEMO_SPORTS } from '../../lib/map/dem
 import { CampusEvent } from '../../types';
 
 let searchParams = new URLSearchParams();
-vi.mock('next/navigation', () => ({ useSearchParams: () => searchParams }));
+vi.mock('next/navigation', () => ({ useSearchParams: () => searchParams, useRouter: () => ({ push: vi.fn() }) }));
 
 import { EventCard } from './EventCard';
 import { RadarFeed } from './RadarFeed';
@@ -56,6 +56,21 @@ describe('EventCard con datos extremos', () => {
     expect(onRegister).toHaveBeenCalledWith(base.id);
     expect(screen.getByText('Bloque F')).toBeTruthy();
     expect(screen.getByText('Académico')).toBeTruthy();
+  });
+
+  it('cambia el botón por «Inscrito» cuando ya hay un cupo y lo desactiva mientras reserva', () => {
+    const onRegister = vi.fn();
+    const { rerender } = render(<EventCard event={base} onRegister={onRegister} registering />);
+    expect((screen.getByRole('button', { name: 'Inscribirme' }) as HTMLButtonElement).disabled).toBe(true);
+
+    rerender(<EventCard event={base} onRegister={onRegister} registered />);
+    expect(screen.getByText('Inscrito')).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'Inscribirme' })).toBeNull();
+  });
+
+  it('enlaza el título al detalle del evento', () => {
+    render(<EventCard event={base} />);
+    expect(screen.getByRole('link', { name: base.title }).getAttribute('href')).toBe('/eventos/' + base.id);
   });
 
   it('muestra "Gratis" con precio cero o inválido y "Acceso libre" sin aforo', () => {
