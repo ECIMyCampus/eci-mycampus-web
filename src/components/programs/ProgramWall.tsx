@@ -12,6 +12,8 @@ import { Manchas } from '../brand/Manchas';
 const WALL_PROGRAMS = PROGRAMS.slice(0, 12);
 const HELD_INDEX = 12;
 const HELD_PROGRAM = PROGRAMS[HELD_INDEX];
+/** La lámina que sostiene Manchas en su dibujo (`sosteniendo-cuadro`): proporción y posición, en % de la imagen. */
+const HELD_ASPECT = 1.45;
 
 const DEG = 180 / Math.PI;
 const spring = (): Spring => ({ value: 0, velocity: 0 });
@@ -32,6 +34,8 @@ interface TileProps {
   program: Program;
   isOpen: boolean;
   compact?: boolean;
+  /** Proporción ancho/alto del cuadro. Los del muro son 6:5; el que sostiene Manchas copia la lámina de su dibujo. */
+  aspect?: number;
   tileRef: (el: HTMLDivElement | null) => void;
   contentRef: (el: HTMLDivElement | null) => void;
   frontRef: (el: HTMLButtonElement | null) => void;
@@ -42,7 +46,7 @@ interface TileProps {
 }
 
 /** Un cuadro: de frente el color y el nombre del programa; al voltearlo, el reverso con el enlace a la página oficial. */
-function Tile({ program, isOpen, compact = false, tileRef, contentRef, frontRef, closeRef, onToggle, onHover, onPointer }: TileProps) {
+function Tile({ program, isOpen, compact = false, aspect = 6 / 5, tileRef, contentRef, frontRef, closeRef, onToggle, onHover, onPointer }: TileProps) {
   const text = textColorOn(program.color);
   const [prefix, main] = program.lines;
 
@@ -50,7 +54,7 @@ function Tile({ program, isOpen, compact = false, tileRef, contentRef, frontRef,
     <div
       ref={tileRef}
       className="relative rounded-[0.6rem] [transform-style:preserve-3d]"
-      style={{ aspectRatio: '6 / 5', pointerEvents: 'none' }}
+      style={{ aspectRatio: String(aspect), pointerEvents: 'none' }}
       onPointerEnter={(e) => e.pointerType === 'mouse' && onHover(true)}
       onPointerLeave={(e) => e.pointerType === 'mouse' && onHover(false)}
       onPointerMove={(e) => {
@@ -373,11 +377,11 @@ export function ProgramWall() {
     kick();
   };
 
-  const bind = (index: number, program: Program, compact = false) => (
+  const bind = (index: number, program: Program, held = false) => (
     <Tile
       key={program.slug}
       program={program}
-      compact={compact}
+      aspect={held ? HELD_ASPECT : undefined}
       isOpen={openIndex === index}
       tileRef={(el) => {
         tileEls.current[index] = el;
@@ -426,9 +430,9 @@ export function ProgramWall() {
           </div>
         </div>
 
-        <div className="relative mx-auto w-[min(100%,17rem)]">
-          <Manchas pose="calendario" className="h-auto w-full" />
-          <div className="absolute left-[56.6%] top-[25.5%] w-[36%]">{bind(HELD_INDEX, HELD_PROGRAM, true)}</div>
+        <div className="relative mx-auto w-[min(100%,15rem)]">
+          <Manchas pose="sosteniendo-cuadro" className="h-auto w-full" />
+          <div className="absolute left-[12.6%] top-[42.7%] w-[74.9%]">{bind(HELD_INDEX, HELD_PROGRAM, true)}</div>
         </div>
       </div>
 
