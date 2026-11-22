@@ -13,7 +13,7 @@ export const flipDelay = (col: number, row: number) => col * 0.11 + row * 0.075;
 export interface FlipPose {
   /** Avance suavizado del volteo del cuadro, de 0 a 1. */
   eased: number;
-  /** Giro sobre Y en radianes: π con la cara oculta hacia nosotros y 0 con el color a la vista. */
+  /** Giro sobre Y en radianes: con medio giro empieza en π (cara oculta) y con una vuelta entera en 2π (color a la vista). */
   rotY: number;
   /** Inclinación sobre X en radianes, según la fila. */
   rotX: number;
@@ -26,9 +26,10 @@ export interface FlipPose {
 
 /**
  * Pose de un cuadro en la entrada. `fraction` va de 0 a 1 para todo el muro; cada cuadro usa su retraso, se voltea,
- * se aleja del centro y se adelanta mientras gira (el arco), y vuelve plano al terminar.
+ * se aleja del centro y se adelanta mientras gira (el arco), y vuelve plano al terminar. `turns` son los medios giros:
+ * 1 empieza con la cara oculta a la vista; 2 es una vuelta completa que empieza y termina con el color de frente.
  */
-export function flipPose(fraction: number, col: number, row: number, cols: number, rows: number): FlipPose {
+export function flipPose(fraction: number, col: number, row: number, cols: number, rows: number, turns = 1): FlipPose {
   const local = clamp(fraction * 1.48 - flipDelay(col, row), 0, 1);
   const eased = smoothstep(local);
   const arc = Math.sin(Math.PI * eased);
@@ -36,7 +37,7 @@ export function flipPose(fraction: number, col: number, row: number, cols: numbe
   const cy = row - (rows - 1) / 2;
   return {
     eased,
-    rotY: Math.PI * (1 - eased),
+    rotY: Math.PI * turns * (1 - eased),
     rotX: arc * cy * 0.12,
     z: arc * (0.65 + row * 0.12),
     x: arc * 0.12 * cx,

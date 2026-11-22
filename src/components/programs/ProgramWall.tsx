@@ -15,6 +15,8 @@ const HELD_INDEX = 12;
 const HELD_PROGRAM = PROGRAMS[HELD_INDEX];
 /** La lámina que sostiene Manchas en su dibujo (`sosteniendo-cuadro`): proporción y posición, en % de la imagen. */
 const HELD_ASPECT = 1.45;
+/** La onda hace dar una vuelta entera a cada cuadro: empieza y termina con el color de frente. */
+const TURNS = 2;
 
 const DEG = 180 / Math.PI;
 const spring = (): Spring => ({ value: 0, velocity: 0 });
@@ -40,10 +42,12 @@ interface TileProps {
 /** Un cuadro: de frente el color y el nombre del programa; al voltearlo, el reverso con el enlace a la página oficial. */
 function Tile({ program, isOpen, compact = false, aspect = 6 / 5, tileRef, contentRef, frontRef, closeRef, onToggle, onHover, onPointer }: TileProps) {
   const text = textColorOn(program.color);
+  const sheenDelay = `${(PROGRAMS.indexOf(program) % 7) * 1.1}s`;
+
   return (
     <div
       ref={tileRef}
-      className="relative rounded-[0.6rem] [transform-style:preserve-3d]"
+      className="relative rounded-[0.7rem] [transform-style:preserve-3d]"
       style={{ aspectRatio: String(aspect), pointerEvents: 'none' }}
       onPointerEnter={(e) => e.pointerType === 'mouse' && onHover(true)}
       onPointerLeave={(e) => e.pointerType === 'mouse' && onHover(false)}
@@ -55,8 +59,9 @@ function Tile({ program, isOpen, compact = false, aspect = 6 / 5, tileRef, conte
     >
       {/* Frente */}
       <div
-        className="absolute inset-0 rounded-[inherit] shadow-[inset_0_0_0_1px_rgb(255_255_255/0.08)] [backface-visibility:hidden] [-webkit-backface-visibility:hidden]"
-        style={{ background: program.color, color: text, containerType: 'inline-size' }}
+        data-front={program.slug}
+        className="program-tile absolute inset-0 rounded-[inherit] [backface-visibility:hidden] [-webkit-backface-visibility:hidden]"
+        style={{ ['--tile' as string]: program.color, ['--sheen-delay' as string]: sheenDelay, color: text, containerType: 'inline-size' }}
       >
         <button
           ref={frontRef}
@@ -66,11 +71,11 @@ function Tile({ program, isOpen, compact = false, aspect = 6 / 5, tileRef, conte
           aria-label={`${program.name}, programa de pregrado. Ver el programa`}
           {...inertWhen(isOpen)}
           className={cn(
-            'pressable flex h-full w-full flex-col justify-end rounded-[inherit] text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-ink',
-            compact ? 'p-2' : 'p-2.5 sm:p-3.5',
+            'pressable relative z-[1] flex h-full w-full flex-col justify-end rounded-[inherit] text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-ink',
+            compact ? 'p-2.5' : 'p-3 sm:p-4',
           )}
         >
-          <ProgramLabel program={program} compact={compact} />
+          <ProgramLabel program={program} compact={compact} maxRem={2.3} />
         </button>
       </div>
 
@@ -82,12 +87,12 @@ function Tile({ program, isOpen, compact = false, aspect = 6 / 5, tileRef, conte
         <div
           ref={contentRef}
           {...inertWhen(!isOpen)}
-          className={cn('flex h-full flex-col justify-between', compact ? 'p-2' : 'p-2.5 sm:p-3.5')}
+          className={cn('flex h-full flex-col justify-between', compact ? 'p-2.5' : 'p-3 sm:p-4')}
           style={{ opacity: 0 }}
         >
           <div className="min-w-0">
             {!compact && <p className="hidden text-xs text-ink-muted sm:block">Programa de pregrado</p>}
-            <p className="font-display font-extrabold leading-[1.1] sm:mt-1" style={{ fontSize: fitFont(program.name, compact ? 0.65 : 0.9) }}>
+            <p className="font-program font-bold leading-[1] tracking-[-0.01em] sm:mt-1" style={{ fontSize: fitFont(program.name, compact ? 0.9 : 1.15) }}>
               {program.name}
             </p>
           </div>
@@ -122,20 +127,23 @@ function Tile({ program, isOpen, compact = false, aspect = 6 / 5, tileRef, conte
 }
 
 /**
- * Muro de las carreras de pregrado: 12 cuadros con el color oficial y el nombre de cada programa, y Manchas con el
- * cuadro que sobra. Al entrar, los cuadros se voltean en una onda diagonal; al tocar uno, se voltea y muestra su reverso.
- * Todo se mueve con CSS 3D desde un solo ciclo de animación que se detiene cuando nada se está moviendo.
+ * `hidden`: el muro está armado pero invisible (se mide mientras los cuadros vuelan hacia él). `open`: los cuadros dan
+ * la vuelta en una onda diagonal y el muro se inclina a su postura. `closing`: la onda corre al revés y, al terminar,
+ * avisa con `onClosed`.
  */
+export type WallMode = 'hidden' | 'open' | 'closing';
+
 interface ProgramWallProps {
-  /**
-   * `true`: el muro se arma (los cuadros se voltean en cascada). `false`: se desarma al revés, con la misma onda
-   * hacia atrás, y al terminar avisa con `onClosed`.
-   */
-  open?: boolean;
+  mode?: WallMode;
   onClosed?: () => void;
 }
 
-export function ProgramWall({ open = true, onClosed }: ProgramWallProps) {
+/**
+ * Muro de las carreras de pregrado: 12 cuadros con el color oficial y el nombre de cada programa, y Manchas con el
+ * cuadro que sobra. Al tocar un cuadro se voltea y muestra su reverso. Todo se mueve con CSS 3D desde un solo ciclo de
+ * animación que se detiene cuando nada se está moviendo.
+ */
+export function ProgramWall({ mode = 'open', onClosed }: ProgramWallProps) {
   const wide = useMediaQuery('(min-width: 640px)');
   const reduced = useReducedMotion();
   const cols = wide ? 4 : 3;
@@ -153,6 +161,8 @@ export function ProgramWall({ open = true, onClosed }: ProgramWallProps) {
 
   const entry = useRef<Spring>(spring());
   const entryTarget = useRef(0);
+  const tilt = useRef<Spring>(spring());
+  const tiltTarget = useRef(0);
   const opens = useRef<Spring[]>(PROGRAMS.map(spring));
   const hovers = useRef<Spring[]>(PROGRAMS.map(spring));
   const hoverTarget = useRef<number[]>(PROGRAMS.map(() => 0));
@@ -162,11 +172,13 @@ export function ProgramWall({ open = true, onClosed }: ProgramWallProps) {
   const unit = useRef(40);
   const heldUnit = useRef(20);
   const layout = useRef({ cols: 3, rows: 4 });
-  const flags = useRef({ reduced: false, visible: false });
+  const flags = useRef({ reduced: false, seen: false, began: false });
   const frame = useRef<number | null>(null);
   const last = useRef<number | null>(null);
   const previousOpen = useRef<number | null>(null);
   const closing = useRef(false);
+  const modeRef = useRef(mode);
+  modeRef.current = mode;
   const onClosedRef = useRef(onClosed);
   onClosedRef.current = onClosed;
 
@@ -174,11 +186,12 @@ export function ProgramWall({ open = true, onClosed }: ProgramWallProps) {
     const { cols: c, rows: r } = layout.current;
     const calm = flags.current.reduced;
     const ptr = wallPointer.current;
+    const lean = calm ? 0 : tilt.current.value;
 
     if (wallRef.current) {
       wallRef.current.style.transform = calm
         ? 'none'
-        : `rotateX(${(-0.09 + ptr.y.value * 0.065) * DEG}deg) rotateY(${(-0.19 + ptr.x.value * 0.11) * DEG}deg) rotateZ(${-0.045 * DEG}deg)`;
+        : `rotateX(${(-0.09 + ptr.y.value * 0.065) * lean * DEG}deg) rotateY(${(-0.19 + ptr.x.value * 0.11) * lean * DEG}deg) rotateZ(${-0.045 * lean * DEG}deg)`;
     }
 
     tileEls.current.forEach((el, i) => {
@@ -187,7 +200,7 @@ export function ProgramWall({ open = true, onClosed }: ProgramWallProps) {
       const col = held ? c - 1 : i % c;
       const row = held ? r - 1 : Math.floor(i / c);
       const u = held ? heldUnit.current : unit.current;
-      const pose = flipPose(entry.current.value, col, row, c, r);
+      const pose = flipPose(entry.current.value, col, row, c, r, TURNS);
       const open = opens.current[i].value;
       const hover = calm ? 0 : hovers.current[i].value;
       const openArc = Math.sin(Math.PI * clamp(open, 0, 1));
@@ -215,6 +228,7 @@ export function ProgramWall({ open = true, onClosed }: ProgramWallProps) {
       last.current = now;
 
       let busy = stepSpring(entry.current, entryTarget.current, 3.6, dt, 0.85);
+      busy = stepSpring(tilt.current, tiltTarget.current, 2.4, dt) || busy;
       opens.current.forEach((s, i) => {
         busy = stepSpring(s, openRef.current === i ? 1 : 0, 9, dt) || busy;
         busy = stepSpring(hovers.current[i], hoverTarget.current[i], 14, dt) || busy;
@@ -254,6 +268,19 @@ export function ProgramWall({ open = true, onClosed }: ProgramWallProps) {
     apply();
   }, [apply]);
 
+  /** Arranca la onda de entrada, una sola vez por apertura. */
+  const begin = useCallback(() => {
+    if (flags.current.began) return;
+    flags.current.began = true;
+    tiltTarget.current = 1;
+    if (flags.current.reduced) {
+      settleNow();
+    } else {
+      entryTarget.current = 1;
+      kick();
+    }
+  }, [kick, settleNow]);
+
   // Medidas: una unidad del muro en píxeles, para el espacio entre cuadros, la perspectiva y los empujes en profundidad.
   useLayoutEffect(() => {
     layout.current = { cols, rows };
@@ -278,41 +305,55 @@ export function ProgramWall({ open = true, onClosed }: ProgramWallProps) {
   // Movimiento reducido: el muro aparece completo y quieto, sin elevación al pasar ni inercia.
   useEffect(() => {
     flags.current.reduced = reduced;
-    if (reduced) settleNow();
+    if (reduced && flags.current.began) settleNow();
     else apply();
   }, [reduced, settleNow, apply]);
 
-  // La entrada arranca cuando el muro se ve por primera vez.
+  // Primera vez que el muro asoma en pantalla. Si ya está en modo abierto, la onda arranca de inmediato.
   useEffect(() => {
     const stage = stageRef.current;
-    const start = () => {
-      if (flags.current.visible) return;
-      flags.current.visible = true;
-      if (flags.current.reduced) {
-        settleNow();
-      } else {
-        entryTarget.current = 1;
-        kick();
-      }
-    };
     apply();
     setReady(true);
     if (!stage || typeof IntersectionObserver === 'undefined') {
-      start();
+      flags.current.seen = true;
+      if (modeRef.current === 'open') begin();
       return;
     }
     const observer = new IntersectionObserver(
       ([item]) => {
-        if (item.isIntersecting) {
-          start();
-          observer.disconnect();
-        }
+        if (!item.isIntersecting) return;
+        flags.current.seen = true;
+        observer.disconnect();
+        if (modeRef.current === 'open') begin();
       },
       { threshold: 0.25 },
     );
     observer.observe(stage);
     return () => observer.disconnect();
-  }, [apply, kick, settleNow]);
+  }, [apply, begin]);
+
+  // Cambios de modo: abrir arranca la onda; cerrar la corre al revés y avisa al terminar.
+  useEffect(() => {
+    if (mode === 'open') {
+      if (flags.current.seen) begin();
+      return;
+    }
+    if (mode !== 'closing') return;
+    openRef.current = null;
+    setOpenIndex(null);
+    closing.current = true;
+    entryTarget.current = 0;
+    tiltTarget.current = 0;
+    flags.current.began = false;
+    if (flags.current.reduced) {
+      entry.current = { value: 0, velocity: 0 };
+      apply();
+      closing.current = false;
+      queueMicrotask(() => onClosedRef.current?.());
+      return;
+    }
+    kick();
+  }, [mode, begin, apply, kick]);
 
   // Al desmontar se cancela el ciclo pendiente.
   useEffect(
@@ -350,23 +391,6 @@ export function ProgramWall({ open = true, onClosed }: ProgramWallProps) {
     if (openIndex !== null) closeEls.current[openIndex]?.focus({ preventScroll: true });
     else if (was !== null) frontEls.current[was]?.focus({ preventScroll: true });
   }, [openIndex]);
-
-  // `open` en falso: el muro se desarma. La entrada contraria (open en verdad) la inicia el observador de visibilidad.
-  useEffect(() => {
-    if (open) return;
-    openRef.current = null;
-    setOpenIndex(null);
-    closing.current = true;
-    entryTarget.current = 0;
-    if (flags.current.reduced) {
-      entry.current = { value: 0, velocity: 0 };
-      apply();
-      closing.current = false;
-      queueMicrotask(() => onClosedRef.current?.());
-      return;
-    }
-    kick();
-  }, [open, apply, kick]);
 
   const replay = () => {
     openRef.current = null;
@@ -433,7 +457,7 @@ export function ProgramWall({ open = true, onClosed }: ProgramWallProps) {
       <div
         ref={stageRef}
         className="program-wall grid items-center gap-10 py-2 lg:grid-cols-[minmax(0,1fr)_17rem]"
-        style={{ opacity: ready ? 1 : 0, ['--u' as string]: '40px' }}
+        style={{ opacity: ready ? 1 : 0, visibility: mode === 'hidden' ? 'hidden' : 'visible', ['--u' as string]: '40px' }}
         onPointerMove={onStagePointerMove}
         onPointerLeave={onStageLeave}
       >

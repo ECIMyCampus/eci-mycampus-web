@@ -20,6 +20,13 @@ describe('cascada de volteo', () => {
     expect(end.y).toBeCloseTo(0);
   });
 
+  it('con una vuelta entera (2 medios giros) empieza y termina con el color de frente', () => {
+    expect(flipPose(0, 2, 1, 4, 3, 2).rotY).toBeCloseTo(2 * Math.PI);
+    expect(flipPose(1, 3, 2, 4, 3, 2).rotY).toBeCloseTo(0);
+    // A mitad de su volteo (avance suavizado de 0,5), el cuadro muestra su reverso.
+    expect(flipPose(0.5 / 1.48, 0, 0, 4, 3, 2).rotY).toBeCloseTo(Math.PI);
+  });
+
   it('a mitad de camino un cuadro está en el aire: adelantado y separado del centro', () => {
     const mid = flipPose(0.55, 0, 0, 4, 3);
     expect(mid.eased).toBeGreaterThan(0);

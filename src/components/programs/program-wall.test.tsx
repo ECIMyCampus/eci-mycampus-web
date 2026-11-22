@@ -28,11 +28,12 @@ describe('ProgramWall', () => {
 
   it('muestra los 13 programas, 12 en el muro y Matemáticas en manos de Manchas', () => {
     mockMotion(false);
-    render(<ProgramWall />);
+    const { container } = render(<ProgramWall />);
 
-    expect(screen.getAllByRole('button', { name: /programa de pregrado/ })).toHaveLength(13);
+    // Consultas directas al DOM: las de rol son lentas con tantos botones y la prueba no depende de ellas.
+    expect(container.querySelectorAll('button[aria-label$="Ver el programa"]')).toHaveLength(13);
     for (const program of PROGRAMS) {
-      expect(screen.getByRole('button', { name: new RegExp(`^${program.name},`) })).toBeTruthy();
+      expect(container.querySelector(`button[aria-label^="${program.name},"]`)).toBeTruthy();
     }
   });
 

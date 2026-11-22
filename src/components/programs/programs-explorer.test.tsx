@@ -43,7 +43,8 @@ describe('ProgramsExplorer', () => {
     fireEvent.click(screen.getByRole('button', { name: /Ver todas las carreras/ }));
 
     expect(await screen.findByRole('button', { name: /Ver el recorrido/ })).toBeTruthy();
-    expect(screen.getAllByRole('button', { name: /programa de pregrado/ })).toHaveLength(13);
+    // El muro está oculto mientras los cuadros vuelan y aparece al aterrizar.
+    await waitFor(() => expect(document.querySelectorAll('button[aria-label$="Ver el programa"]')).toHaveLength(13));
     expect(screen.queryByRole('list', { name: /primera fila/ })).toBeNull();
     expect(screen.getByRole('status').textContent).toContain('todas las carreras');
   });
