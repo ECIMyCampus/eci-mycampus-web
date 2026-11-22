@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ApiRequestError } from '../../lib/api';
 import { safeRedirect } from '../../lib/auth/redirect';
@@ -61,6 +62,13 @@ export function LoginForm() {
       fineprint={
         <>
           <p>¿No tienes correo de la Escuela? Entra como invitado y explora el campus.</p>
+          <p>
+            Al acceder aceptas el tratamiento de tus datos según la{' '}
+            <Link href="/privacidad" className="font-medium text-ink-muted underline underline-offset-4 hover:text-ink">
+              política de privacidad
+            </Link>
+            .
+          </p>
           {HAS_DEMO && (
             <button
               type="button"

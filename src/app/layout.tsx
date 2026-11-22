@@ -7,6 +7,8 @@ import { Toaster } from 'sonner';
 import { SessionProvider } from '../lib/session/session';
 import { RegistrationsProvider } from '../lib/registrations/registrations';
 import { SplashScreen } from '../components/brand/SplashScreen';
+import { SiteFooter } from '../components/layout/SiteFooter';
+import { siteUrl } from '../lib/site';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
 /** Tipografía del logotipo (Sora 800 para «ECI», Sora 400 para «MyCampus»). */
@@ -20,9 +22,23 @@ const program = Bricolage_Grotesque({
   display: 'swap',
 });
 
+const TITLE = 'ECI-MyCampus | Escuela Colombiana de Ingeniería Julio Garavito';
+const DESCRIPTION = 'Radar de eventos en vivo, mapa ilustrado interactivo y vida universitaria de la Escuela Colombiana de Ingeniería.';
+
 export const metadata: Metadata = {
-  title: 'ECI-MyCampus | Escuela Colombiana de Ingeniería Julio Garavito',
-  description: 'Radar de eventos en vivo, mapa ilustrado interactivo y vida universitaria de la Escuela Colombiana de Ingeniería.',
+  metadataBase: new URL(siteUrl()),
+  title: TITLE,
+  description: DESCRIPTION,
+  // Cómo se ve el enlace al compartirlo en mensajes y redes.
+  openGraph: {
+    type: 'website',
+    siteName: 'ECI MyCampus',
+    locale: 'es_CO',
+    title: TITLE,
+    description: DESCRIPTION,
+    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'ECI MyCampus' }],
+  },
+  twitter: { card: 'summary_large_image', title: TITLE, description: DESCRIPTION, images: ['/og.png'] },
   manifest: '/manifest.json',
   icons: {
     icon: [
@@ -55,6 +71,7 @@ export default function RootLayout({
           <Navbar />
           {/* El espacio inferior deja libre la barra de navegación del celular. */}
           <main className="flex-1 pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0">{children}</main>
+          <SiteFooter />
           <BottomNav />
           {/* Arriba al centro: no tapa la barra inferior ni los botones de acción del celular. */}
           <Toaster theme="dark" position="top-center" closeButton />

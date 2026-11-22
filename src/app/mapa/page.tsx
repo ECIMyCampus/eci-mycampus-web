@@ -1,7 +1,11 @@
 import React from 'react';
 import { CampusMap } from '../../components/map/CampusMap';
+import { MapConsent } from '../../components/map/MapConsent';
 
-export const metadata = { title: 'Mapa del campus | ECI-MyCampus' };
+export const metadata = {
+  title: 'Mapa del campus | ECI-MyCampus',
+  description: 'El campus de la Escuela en un mapa: edificios, escenarios deportivos y lo que está pasando en cada lugar.',
+};
 
 export default function MapaPage() {
   return (
@@ -14,7 +18,10 @@ export default function MapaPage() {
         </p>
       </header>
 
-      <CampusMap showList />
+      {/* El mapa lo sirve Mapbox: no se carga hasta que la persona lo acepte. */}
+      <MapConsent>
+        <CampusMap showList />
+      </MapConsent>
     </div>
   );
 }

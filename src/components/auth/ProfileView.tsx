@@ -154,6 +154,12 @@ export function ProfileView() {
           </Button>
         </div>
       </div>
+
+      <p className="text-xs text-ink-subtle">
+        <Link href="/privacidad" className="underline underline-offset-4 hover:text-ink">
+          Privacidad y cookies
+        </Link>
+      </p>
     </div>
   );
 }

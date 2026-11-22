@@ -2,7 +2,10 @@ import { CampusGlitch } from '../../components/brand/CampusGlitch';
 import { LivingBackground } from '../../components/brand/LivingBackground';
 import { ProgramsExplorer } from '../../components/programs/ProgramsExplorer';
 
-export const metadata = { title: 'Carreras | ECI-MyCampus' };
+export const metadata = {
+  title: 'Carreras | ECI-MyCampus',
+  description: 'Los programas de pregrado de la Escuela, cada uno con su color. Míralos pasar o ábrelos todos juntos.',
+};
 
 export default function Page() {
   return (

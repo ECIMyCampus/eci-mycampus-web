@@ -46,3 +46,12 @@ describe('LoginForm con cuenta demo', () => {
     expect(replace).not.toHaveBeenCalled();
   });
 });
+
+describe('LoginForm: aviso de datos', () => {
+  afterEach(cleanup);
+
+  it('enlaza a la política de privacidad, donde se acepta el tratamiento de datos', () => {
+    render(<LoginForm />);
+    expect(screen.getByRole('link', { name: 'política de privacidad' }).getAttribute('href')).toBe('/privacidad');
+  });
+});
