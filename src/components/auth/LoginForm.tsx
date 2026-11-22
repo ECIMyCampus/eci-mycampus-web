@@ -106,7 +106,7 @@ export function LoginForm() {
       fineprint={
         <>
           <details className="group">
-            <summary className="cursor-pointer list-none hover:text-ink">¿Problemas para entrar?</summary>
+            <summary className="cursor-pointer list-none py-2.5 hover:text-ink">¿Problemas para entrar?</summary>
             <p className="mt-1.5 text-ink-muted">
               Usa el correo institucional que termina en @mail.escuelaing.edu.co. Si tu cuenta es nueva, créala primero.
               Mientras tanto puedes entrar como invitado.
@@ -135,7 +135,7 @@ export function LoginForm() {
         Como invitado puedes ver el radar y el mapa. Para inscribirte necesitas tu cuenta institucional.
       </p>
       <details className="group mt-5 border-t border-line pt-4" open={Boolean(formError) || submitted}>
-        <summary className="cursor-pointer list-none text-center text-sm text-ink-muted hover:text-ink">
+        <summary className="cursor-pointer list-none py-2.5 text-center text-sm text-ink-muted hover:text-ink">
           Usar correo y contraseña
         </summary>
       <form onSubmit={onSubmit} noValidate className="mt-4 space-y-4">
