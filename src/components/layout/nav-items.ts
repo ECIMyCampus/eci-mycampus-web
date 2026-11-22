@@ -1,4 +1,4 @@
-import { Calendar, Compass, MapPin, User, type LucideIcon } from 'lucide-react';
+import { Calendar, Compass, GraduationCap, MapPin, User, type LucideIcon } from 'lucide-react';
 
 export interface NavItem {
   label: string;
@@ -12,6 +12,7 @@ export interface NavItem {
 export const NAV_ITEMS: NavItem[] = [
   { label: 'Radar en vivo', shortLabel: 'Radar', href: '/', icon: Compass },
   { label: 'Mapa del campus', shortLabel: 'Mapa', href: '/mapa', icon: MapPin },
+  { label: 'Carreras', shortLabel: 'Carreras', href: '/carreras', icon: GraduationCap },
   { label: 'Mi agenda', shortLabel: 'Agenda', href: '/mis-eventos', icon: Calendar },
   { label: 'Perfil', shortLabel: 'Perfil', href: '/perfil', icon: User },
 ];
