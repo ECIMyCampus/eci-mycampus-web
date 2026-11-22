@@ -13,6 +13,8 @@ interface AuthShellProps {
   footer?: React.ReactNode;
   /** Muestra al pie el acceso de invitado (la pantalla de entrada lo pone dentro de la tarjeta). */
   showGuest?: boolean;
+  /** Letra pequeña al final de la columna: ayuda, tratamiento de datos. */
+  fineprint?: React.ReactNode;
 }
 
 /**
@@ -20,7 +22,7 @@ interface AuthShellProps {
  * contorno animado del edificio E a la derecha. En celular la animación pasa arriba, como banda corta.
  * Ocupa toda la pantalla, sin las barras de navegación.
  */
-export function AuthShell({ title, description, children, footer, showGuest = true }: AuthShellProps) {
+export function AuthShell({ title, description, children, footer, showGuest = true, fineprint }: AuthShellProps) {
   return (
     <div className="fixed inset-0 z-[60] overflow-y-auto bg-canvas lg:overflow-hidden">
       <div className="grid min-h-full lg:h-full lg:grid-cols-2">
@@ -29,27 +31,28 @@ export function AuthShell({ title, description, children, footer, showGuest = tr
             <h1 className="text-2xl font-semibold text-ink sm:text-3xl">{title}</h1>
             <p className="mt-1.5 text-sm text-ink-muted">{description}</p>
             <div className="mt-8">{children}</div>
-            {footer && <p className="mt-5 text-center text-sm text-ink-muted">{footer}</p>}
+            {footer && <div className="mt-5 text-center text-sm text-ink-muted">{footer}</div>}
             {showGuest && (
-            <div className="mt-6 border-t border-line pt-6 text-center">
-              <Button href="/" variant="ghost" className="w-full">
-                Entrar como invitado
-              </Button>
-              <p className="mt-2 text-xs leading-relaxed text-ink-subtle">
-                Como invitado puedes ver el radar y el mapa. Para inscribirte necesitas tu cuenta institucional.
-              </p>
-            </div>
+              <div className="mt-6 border-t border-line pt-6 text-center">
+                <Button href="/" variant="ghost" className="w-full">
+                  Entrar como invitado
+                </Button>
+                <p className="mt-2 text-xs leading-relaxed text-ink-muted">
+                  Como invitado puedes ver el radar y el mapa. Para inscribirte necesitas tu cuenta institucional.
+                </p>
+              </div>
             )}
-            <div className="mt-10 flex justify-center">
+            <div className="mt-8 flex justify-center">
               <Image
                 src="/brand/logo-eci-blanco.png"
                 alt="Escuela Colombiana de Ingeniería Julio Garavito"
                 width={485}
                 height={246}
                 priority
-                className="h-auto w-36 opacity-80"
+                className="h-auto w-32 opacity-80"
               />
             </div>
+            {fineprint && <div className="mt-5 space-y-2 text-center text-xs leading-relaxed text-ink-muted">{fineprint}</div>}
           </div>
           <Image
             src={manchasSrc('saludo-1')}
@@ -65,18 +68,25 @@ export function AuthShell({ title, description, children, footer, showGuest = tr
           {/* Dibujo de líneas del edificio E, en blanco, con una luz que lo recorre. */}
           <div aria-hidden="true" className="led-outline -z-20" />
           <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-b from-canvas/30 via-canvas/50 to-canvas lg:bg-gradient-to-t" />
+          {/* Velo oscuro detrás del logotipo: las líneas del edificio no deben cruzar las letras. */}
+          <div aria-hidden="true" className="logo-scrim absolute inset-0 -z-10" />
           <div className="flex flex-col items-center text-center">
             <Wordmark background className="text-[30px] lg:text-[64px]" />
           </div>
-          {/* Manchas saluda desde la esquina de esta mitad. */}
-          <Image
-            src={manchasSrc('saludo-1')}
-            alt="Manchas, la mascota, saludando"
-            width={manchasSize('saludo-1').width}
-            height={manchasSize('saludo-1').height}
-            priority
-            className={cn(manchasOutlineClass, 'mascot-rise pointer-events-none absolute bottom-0 right-8 hidden h-[min(36vh,340px)] w-auto select-none lg:block')}
-          />
+          {/* Manchas saluda desde la esquina de esta mitad; el globo va a su lado, a media altura, lejos del logotipo. */}
+          <div className="pointer-events-none absolute bottom-0 right-8 hidden items-end gap-3 lg:flex">
+            <p className="bubble-in relative mb-[min(17vh,160px)] max-w-[11rem] rounded-2xl bg-surface-raised px-3.5 py-2.5 text-sm leading-snug text-ink after:absolute after:-right-1 after:top-1/2 after:h-3 after:w-3 after:-translate-y-1/2 after:rotate-45 after:rounded-sm after:bg-surface-raised after:content-['']">
+              ¡Hola! Soy Manchas, tu guía del campus.
+            </p>
+            <Image
+              src={manchasSrc('saludo-1')}
+              alt="Manchas, la mascota, saludando"
+              width={manchasSize('saludo-1').width}
+              height={manchasSize('saludo-1').height}
+              priority
+              className={cn(manchasOutlineClass, 'mascot-rise h-[min(36vh,340px)] w-auto select-none')}
+            />
+          </div>
         </aside>
       </div>
     </div>

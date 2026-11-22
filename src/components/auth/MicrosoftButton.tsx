@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { toast } from 'sonner';
 
 /** El acceso con Microsoft se activa cuando el backend exponga el inicio de sesión institucional. */
@@ -19,6 +19,7 @@ function MicrosoftLogo() {
 }
 
 export function MicrosoftButton({ returnTo }: { returnTo?: string | null }) {
+  const [opening, setOpening] = useState(false);
   const onClick = () => {
     if (!MICROSOFT_LOGIN_URL) {
       toast.info('El acceso con Microsoft estará disponible pronto. Por ahora entra con tu correo.');
@@ -26,6 +27,7 @@ export function MicrosoftButton({ returnTo }: { returnTo?: string | null }) {
     }
     const url = new URL(MICROSOFT_LOGIN_URL, window.location.origin);
     if (returnTo) url.searchParams.set('volver', returnTo);
+    setOpening(true);
     window.location.assign(url.toString());
   };
 
@@ -33,10 +35,11 @@ export function MicrosoftButton({ returnTo }: { returnTo?: string | null }) {
     <button
       type="button"
       onClick={onClick}
-      className="flex h-14 w-full items-center justify-center gap-3 rounded-control border border-[#5E5E5E] bg-[#2F2F2F] px-4 text-base font-semibold text-white transition-[background-color,transform] duration-150 ease-out hover:bg-[#3a3a3a] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-ink"
+      disabled={opening}
+      className="flex h-14 w-full items-center justify-center gap-3 rounded-control border border-[#5E5E5E] bg-[#2F2F2F] px-4 text-base font-semibold text-white transition-[background-color,transform] duration-150 ease-out hover:bg-[#3a3a3a] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-ink disabled:cursor-wait disabled:opacity-70"
     >
       <MicrosoftLogo />
-      Iniciar sesión con Microsoft
+      {opening ? 'Abriendo Microsoft…' : 'Iniciar sesión con Microsoft'}
     </button>
   );
 }

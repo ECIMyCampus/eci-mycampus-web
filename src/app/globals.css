@@ -277,3 +277,27 @@
     animation: none;
   }
 }
+
+/* Velo detrás del logotipo de la pantalla de entrada: oscurece el centro para que las letras se lean sobre el dibujo. */
+.logo-scrim {
+  background: radial-gradient(ellipse 38% 30% at 50% 50%, rgb(var(--canvas) / 0.85), rgb(var(--canvas) / 0.55) 60%, transparent 100%);
+}
+
+/* Globo de Manchas: aparece después de que ella llega. */
+@keyframes bubble-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.94);
+  }
+}
+
+.bubble-in {
+  transform-origin: right center;
+  animation: bubble-in 400ms cubic-bezier(0.23, 1, 0.32, 1) 1000ms both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bubble-in {
+    animation: none;
+  }
+}

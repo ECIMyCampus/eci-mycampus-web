@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ApiRequestError } from '../../lib/api';
 import { safeRedirect, withReturnTo } from '../../lib/auth/redirect';
@@ -93,26 +92,48 @@ export function LoginForm() {
       title="Iniciar sesión"
       description="Entra con tu cuenta para inscribirte a actividades y ver tu agenda."
       footer={
-        <>
-          ¿No tienes cuenta?{' '}
-          <Link href={withReturnTo('/registro', returnTo)} className="font-medium text-accent-ink hover:text-ink">
+        <div className="space-y-2">
+          <p>¿Primera vez en MyCampus?</p>
+          <Button
+            href={withReturnTo('/registro', returnTo)}
+            variant="ghost"
+            className="w-full border border-accent/60 text-accent-ink hover:bg-accent/10 hover:text-accent-ink"
+          >
             Crear cuenta
-          </Link>
+          </Button>
+        </div>
+      }
+      fineprint={
+        <>
+          <details className="group">
+            <summary className="cursor-pointer list-none hover:text-ink">¿Problemas para entrar?</summary>
+            <p className="mt-1.5 text-ink-muted">
+              Usa el correo institucional que termina en @mail.escuelaing.edu.co. Si tu cuenta es nueva, créala primero.
+              Mientras tanto puedes entrar como invitado.
+            </p>
+          </details>
+          <p>Al crear tu cuenta aceptas el tratamiento de tus datos personales (Habeas Data) de la Escuela.</p>
+          {HAS_DEMO && (
+            <button
+              type="button"
+              onClick={onDemo}
+              disabled={submitting}
+              aria-label="Entrar con la cuenta demo (provisional)"
+              className="rounded px-1 text-[11px] text-ink-subtle/70 transition-colors duration-fast ease-out hover:text-ink-muted disabled:opacity-50"
+            >
+              acceso de pruebas
+            </button>
+          )}
         </>
       }
     >
       <MicrosoftButton returnTo={returnTo} />
-      <Button href="/" variant="secondary" className="mt-3 w-full">
+      <Button href="/" variant="ghost" className="mt-2 w-full">
         Entrar como invitado
       </Button>
-      <p className="mt-2 text-center text-xs leading-relaxed text-ink-subtle">
+      <p className="mt-2 text-center text-xs leading-relaxed text-ink-muted">
         Como invitado puedes ver el radar y el mapa. Para inscribirte necesitas tu cuenta institucional.
       </p>
-      {HAS_DEMO && (
-        <Button variant="ghost" className="mt-2 w-full" disabled={submitting} onClick={onDemo}>
-          {submitting ? 'Entrando…' : 'Entrar con la cuenta demo (provisional)'}
-        </Button>
-      )}
       <details className="group mt-5 border-t border-line pt-4" open={Boolean(formError) || submitted}>
         <summary className="cursor-pointer list-none text-center text-sm text-ink-muted hover:text-ink">
           Usar correo y contraseña
