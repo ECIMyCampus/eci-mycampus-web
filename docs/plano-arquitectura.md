@@ -3,6 +3,8 @@
 Estado: borrador para decidir. Destino de despliegue: **Azure**, más adelante (todavía no hay fecha ni suscripción).
 Los costos no llevan cifras porque dependen de decisiones sin tomar; cada fila dice qué se cobra y qué falta saber.
 
+El backend ya trae su propia guía de despliegue (`eci-mycampus-backend/docs/deployment/AZURE.md`, sin ejecutar todavía contra Azure) con la misma arquitectura que se propone aquí: Container Apps, PostgreSQL Flexible Server, Container Registry y un job de migraciones. Este plano la complementa con el frontend, los datos que viajan y los costos.
+
 ## 1. Las piezas
 
 | Pieza | Qué es | Dónde vive hoy | Estado |
@@ -12,7 +14,7 @@ Los costos no llevan cifras porque dependen de decisiones sin tomar; cada fila d
 | Base de datos | PostgreSQL | Local, puerto 5433 | Funciona |
 | Acceso institucional | Microsoft Entra ID (solo cuentas de la Escuela) | — | **Pendiente**: lo expone el backend (ver `acceso-microsoft.md`) |
 | Mapa | Mapbox GL, desde el navegador | Servicio externo | Funciona con token público |
-| Correo | Resend, desde el backend (`RESEND_API_KEY`) | Servicio externo | Existe en el backend; con acceso solo por Microsoft podría sobrar |
+| Correo | Resend, desde el backend (`RESEND_API_KEY`) | Servicio externo | **Apagado por defecto** (sin clave, el correo solo se escribe en el registro). Hoy envía un único correo: la confirmación de inscripción. No depende del acceso con Microsoft |
 | Secretos | `JWT_SECRET`, `DATABASE_URL`, tokens | Archivos `.env` | Hay que moverlos a un almacén seguro |
 
 ## 2. Cómo se pasan los datos
@@ -78,7 +80,7 @@ Se llena con la calculadora de precios de Azure una vez decididas las preguntas 
 2. **¿Cuántas personas lo usarán?** Define el tamaño de la base de datos y el volumen del radar.
 3. **¿En qué región?** Importa por la ley de datos: un servidor fuera de Colombia implica transferencia internacional de datos personales (Ley 1581). Debe confirmarlo quien maneje datos en la Escuela.
 4. **¿Qué dominio?** Un subdominio de `escuelaing.edu.co`.
-5. **¿El correo sigue en el backend?** Si el acceso es solo por Microsoft, Resend podría quitarse, y con él un tercero menos en la política de privacidad.
+5. **¿Se quiere el correo de confirmación de inscripción?** Es lo único que Resend envía. Si se activa hace falta un dominio remitente verificado (SPF y DKIM), contar el costo de Resend o usar un servicio dentro de Azure, y sumar a Resend en la página de privacidad. Si no se activa, la confirmación queda en la aplicación (aviso y agenda) y no hace falta nada de esto.
 6. **¿Quién opera en producción?** Quién recibe las alertas y quién renueva los secretos.
 
 ## 7. Antes de desplegar
@@ -87,6 +89,7 @@ Se llena con la calculadora de precios de Azure una vez decididas las preguntas 
 - [ ] Secretos en Key Vault; ninguno en el repositorio ni en la imagen.
 - [ ] Variables de compilación del entorno definidas; cuenta demo vacía.
 - [ ] `NEXT_PUBLIC_SITE_URL` con la dirección real (mapa del sitio y etiquetas para compartir).
+- [ ] Si se activa el correo: dominio remitente verificado, fecha del correo en hora de Colombia (hoy sale como marca ISO en UTC) y Resend agregado a `/privacidad`.
 - [ ] Política de datos de la Escuela enlazada en `NEXT_PUBLIC_DATA_POLICY_URL` y contacto en `NEXT_PUBLIC_DATA_CONTACT_EMAIL`.
 - [ ] Copias de seguridad de PostgreSQL y una prueba de restauración.
 - [ ] Prueba de carga del radar con el número esperado de personas.
