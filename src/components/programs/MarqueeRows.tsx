@@ -2,7 +2,7 @@
 
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { Pause, Play } from 'lucide-react';
-import { PROGRAMS, Program, textColorOn } from '../../lib/programs/programs';
+import { PROGRAMS, Program } from '../../lib/programs/programs';
 import { useReducedMotion } from '../../lib/use-media-query';
 import { cn } from '../../lib/utils';
 import { ProgramLabel } from './ProgramLabel';
@@ -76,7 +76,6 @@ function Row({ programs, direction, seconds, label, hidden }: RowProps) {
                   ['--sheen-delay' as string]: `${((PROGRAMS.indexOf(program) + copy) % 7) * 1.1}s`,
                   width: `calc(var(--tw) * ${WIDTHS[i]})`,
                   height: `${HEIGHTS[i]}%`,
-                  color: textColorOn(program.color),
                   containerType: 'inline-size',
                 }}
               >

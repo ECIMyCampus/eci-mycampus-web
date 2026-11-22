@@ -3,7 +3,7 @@
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { ArrowUpRight, RotateCcw, X } from 'lucide-react';
 import { cn } from '../../lib/utils';
-import { PROGRAMS, Program, programUrl, textColorOn } from '../../lib/programs/programs';
+import { PROGRAMS, Program, programUrl } from '../../lib/programs/programs';
 import { Spring, TILE_GAP, TILE_STEP, TILE_W, clamp, flipPose, smoothstep, stepSpring } from '../../lib/programs/wall-motion';
 import { useMediaQuery, useReducedMotion } from '../../lib/use-media-query';
 import { Manchas } from '../brand/Manchas';
@@ -41,7 +41,6 @@ interface TileProps {
 
 /** Un cuadro: de frente el color y el nombre del programa; al voltearlo, el reverso con el enlace a la página oficial. */
 function Tile({ program, isOpen, compact = false, aspect = 6 / 5, tileRef, contentRef, frontRef, closeRef, onToggle, onHover, onPointer }: TileProps) {
-  const text = textColorOn(program.color);
   const sheenDelay = `${(PROGRAMS.indexOf(program) % 7) * 1.1}s`;
 
   return (
@@ -61,7 +60,7 @@ function Tile({ program, isOpen, compact = false, aspect = 6 / 5, tileRef, conte
       <div
         data-front={program.slug}
         className="program-tile absolute inset-0 rounded-[inherit] [backface-visibility:hidden] [-webkit-backface-visibility:hidden]"
-        style={{ ['--tile' as string]: program.color, ['--sheen-delay' as string]: sheenDelay, color: text, containerType: 'inline-size' }}
+        style={{ ['--tile' as string]: program.color, ['--sheen-delay' as string]: sheenDelay, containerType: 'inline-size' }}
       >
         <button
           ref={frontRef}

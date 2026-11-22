@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { PROGRAMS, contrastRatio, programUrl, textColorOn } from './programs';
+import { PROGRAMS, programUrl } from './programs';
 
 describe('programas de pregrado', () => {
   it('son 13, sin nombres ni páginas repetidas, y cada uno con un color válido', () => {
@@ -17,13 +17,4 @@ describe('programas de pregrado', () => {
     expect(programUrl(PROGRAMS[0])).toBe('https://www.escuelaing.edu.co/es/programas/ingenieria-de-sistemas/');
   });
 
-  it('elige el texto claro u oscuro que mejor contraste da sobre cada color', () => {
-    for (const { color } of PROGRAMS) {
-      const best = contrastRatio(color, textColorOn(color));
-      expect(best).toBeGreaterThanOrEqual(4);
-      expect(best).toBeGreaterThanOrEqual(contrastRatio(color, '#f4f4f5'));
-    }
-    expect(textColorOn('#004b19')).toBe('#f4f4f5');
-    expect(textColorOn('#bed600')).toBe('#0a0a0b');
-  });
 });
