@@ -91,8 +91,9 @@ function Row({ programs, direction, seconds, label, hidden }: RowProps) {
 }
 
 /**
- * Recorrido de las carreras: dos filas de cuadros que pasan solas, en sentidos opuestos y despacio. Se detiene al
- * pasar el puntero, fuera de pantalla y cuando la persona lo pausa. Con movimiento reducido quedan quietas.
+ * Recorrido de las carreras: dos filas de cuadros que pasan solas, en sentidos opuestos y despacio. Siguen su camino
+ * aunque el puntero esté encima; solo se detienen fuera de pantalla o cuando la persona las pausa con el botón. Con
+ * movimiento reducido quedan quietas.
  */
 export const MarqueeRows = forwardRef<MarqueeHandle, MarqueeRowsProps>(function MarqueeRows({ startHidden = false, children }, ref) {
   const reduced = useReducedMotion();
