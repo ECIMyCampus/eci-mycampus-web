@@ -234,16 +234,21 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(105deg, transparent 38%, rgb(255 255 255) 50%, transparent 62%) 0 0 / 300% 100%;
-  animation: led-sweep 7s linear infinite;
+  background: linear-gradient(105deg, transparent 38%, rgb(255 255 255) 50%, transparent 62%) 108% 0 / 300% 100% no-repeat;
+  animation: led-sweep 9s ease-in-out infinite;
 }
 
+/*
+ * La franja entra por la izquierda y sale por la derecha, fuera de la vista en los dos extremos, y se queda un tiempo
+ * fuera antes de repetirse. Sin esto, el último fotograma dejaba la franja a media pantalla y al reiniciar saltaba.
+ */
 @keyframes led-sweep {
-  from {
-    background-position: 100% 0;
+  0% {
+    background-position: 108% 0;
   }
-  to {
-    background-position: -100% 0;
+  70%,
+  100% {
+    background-position: -8% 0;
   }
 }
 
