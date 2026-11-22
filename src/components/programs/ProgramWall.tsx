@@ -7,6 +7,7 @@ import { PROGRAMS, Program, programUrl, textColorOn } from '../../lib/programs/p
 import { Spring, TILE_GAP, TILE_STEP, TILE_W, clamp, flipPose, smoothstep, stepSpring } from '../../lib/programs/wall-motion';
 import { useMediaQuery, useReducedMotion } from '../../lib/use-media-query';
 import { Manchas } from '../brand/Manchas';
+import { ProgramLabel, fitFont } from './ProgramLabel';
 
 /** Los 12 cuadros del muro; el que sobra, Matemáticas, lo sostiene Manchas. */
 const WALL_PROGRAMS = PROGRAMS.slice(0, 12);
@@ -17,15 +18,6 @@ const HELD_ASPECT = 1.45;
 
 const DEG = 180 / Math.PI;
 const spring = (): Spring => ({ value: 0, velocity: 0 });
-
-/**
- * Tamaño de letra que hace caber la palabra más larga del texto dentro del cuadro (ancho útil de ~78 %), sin partirla.
- * Se expresa en `cqw`, relativo al ancho del propio cuadro, y se limita por arriba para los cuadros grandes.
- */
-const fitFont = (text: string, maxRem: number): string => {
-  const longest = Math.max(...text.split(' ').map((word) => word.length));
-  return `min(${(78 / (longest * 0.62)).toFixed(1)}cqw, ${maxRem}rem)`;
-};
 
 /** Un elemento inerte no recibe foco ni toques: el frente y el reverso se alternan según el cuadro esté abierto. */
 const inertWhen = (on: boolean): Record<string, unknown> => (on ? { inert: true } : {});
@@ -48,8 +40,6 @@ interface TileProps {
 /** Un cuadro: de frente el color y el nombre del programa; al voltearlo, el reverso con el enlace a la página oficial. */
 function Tile({ program, isOpen, compact = false, aspect = 6 / 5, tileRef, contentRef, frontRef, closeRef, onToggle, onHover, onPointer }: TileProps) {
   const text = textColorOn(program.color);
-  const [prefix, main] = program.lines;
-
   return (
     <div
       ref={tileRef}
@@ -80,14 +70,7 @@ function Tile({ program, isOpen, compact = false, aspect = 6 / 5, tileRef, conte
             compact ? 'p-2' : 'p-2.5 sm:p-3.5',
           )}
         >
-          {prefix && (
-            <span className="leading-tight opacity-85" style={{ fontSize: `min(9cqw, ${compact ? 0.6 : 0.8}rem)` }}>
-              {prefix}
-            </span>
-          )}
-          <span className="font-display font-extrabold leading-[1.1]" style={{ fontSize: fitFont(main, compact ? 0.8 : 1.05) }}>
-            {main}
-          </span>
+          <ProgramLabel program={program} compact={compact} />
         </button>
       </div>
 
@@ -143,7 +126,16 @@ function Tile({ program, isOpen, compact = false, aspect = 6 / 5, tileRef, conte
  * cuadro que sobra. Al entrar, los cuadros se voltean en una onda diagonal; al tocar uno, se voltea y muestra su reverso.
  * Todo se mueve con CSS 3D desde un solo ciclo de animación que se detiene cuando nada se está moviendo.
  */
-export function ProgramWall() {
+interface ProgramWallProps {
+  /**
+   * `true`: el muro se arma (los cuadros se voltean en cascada). `false`: se desarma al revés, con la misma onda
+   * hacia atrás, y al terminar avisa con `onClosed`.
+   */
+  open?: boolean;
+  onClosed?: () => void;
+}
+
+export function ProgramWall({ open = true, onClosed }: ProgramWallProps) {
   const wide = useMediaQuery('(min-width: 640px)');
   const reduced = useReducedMotion();
   const cols = wide ? 4 : 3;
@@ -174,6 +166,9 @@ export function ProgramWall() {
   const frame = useRef<number | null>(null);
   const last = useRef<number | null>(null);
   const previousOpen = useRef<number | null>(null);
+  const closing = useRef(false);
+  const onClosedRef = useRef(onClosed);
+  onClosedRef.current = onClosed;
 
   const apply = useCallback(() => {
     const { cols: c, rows: r } = layout.current;
@@ -234,6 +229,11 @@ export function ProgramWall() {
       } else {
         frame.current = null;
         last.current = null;
+        // El muro terminó de desarmarse: se avisa una sola vez.
+        if (closing.current && entry.current.value === 0) {
+          closing.current = false;
+          onClosedRef.current?.();
+        }
       }
     },
     [apply],
@@ -350,6 +350,23 @@ export function ProgramWall() {
     if (openIndex !== null) closeEls.current[openIndex]?.focus({ preventScroll: true });
     else if (was !== null) frontEls.current[was]?.focus({ preventScroll: true });
   }, [openIndex]);
+
+  // `open` en falso: el muro se desarma. La entrada contraria (open en verdad) la inicia el observador de visibilidad.
+  useEffect(() => {
+    if (open) return;
+    openRef.current = null;
+    setOpenIndex(null);
+    closing.current = true;
+    entryTarget.current = 0;
+    if (flags.current.reduced) {
+      entry.current = { value: 0, velocity: 0 };
+      apply();
+      closing.current = false;
+      queueMicrotask(() => onClosedRef.current?.());
+      return;
+    }
+    kick();
+  }, [open, apply, kick]);
 
   const replay = () => {
     openRef.current = null;
