@@ -16,6 +16,7 @@ import {
   loadRadar,
   placeName,
 } from '../../lib/radar/radar-service';
+import { groupRadarEvents } from '../../lib/radar/schedule';
 import { useOptionalRegistrations } from '../../lib/registrations/registrations';
 import { useOptionalSession } from '../../lib/session/session';
 import { Manchas } from '../brand/Manchas';
@@ -79,6 +80,7 @@ export const RadarFeed: React.FC = () => {
     () => (data ? filterEvents(data.events, data.places, { filter, place }) : []),
     [data, filter, place],
   );
+  const groups = useMemo(() => groupRadarEvents(events), [events]);
   const liveCount = useMemo(() => (data ? data.events.filter(isLiveEvent).length : 0), [data]);
   const placeLabel = place ? (data?.places[place]?.name ?? place) : null;
 
@@ -163,19 +165,32 @@ export const RadarFeed: React.FC = () => {
           }
         />
       ) : (
-        <ul className="enter grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {events.map((event) => (
-            <li key={event.id}>
-              <EventCard
-                event={event}
-                placeName={data.places[event.buildingId] ? placeName(event, data.places) : undefined}
-                onRegister={registrations ? handleRegister : undefined}
-                registered={registrations?.isRegistered(event.id) ?? false}
-                registering={registeringId === event.id}
-              />
-            </li>
+        <div className="enter space-y-9">
+          {groups.map((group) => (
+            <section key={group.key} aria-labelledby={`radar-${group.key}`}>
+              <h3
+                id={`radar-${group.key}`}
+                className={`mb-3 flex items-center gap-2 text-sm font-semibold ${group.live ? 'text-live' : 'text-ink-muted'}`}
+              >
+                {group.live && <span className="h-2 w-2 rounded-full bg-live" aria-hidden="true" />}
+                {group.label}
+              </h3>
+              <ul className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {group.events.map((event) => (
+                  <li key={event.id}>
+                    <EventCard
+                      event={event}
+                      placeName={data.places[event.buildingId] ? placeName(event, data.places) : undefined}
+                      onRegister={registrations ? handleRegister : undefined}
+                      registered={registrations?.isRegistered(event.id) ?? false}
+                      registering={registeringId === event.id}
+                    />
+                  </li>
+                ))}
+              </ul>
+            </section>
           ))}
-        </ul>
+        </div>
       )}
     </section>
   );
