@@ -2,6 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import { Button } from '../ui/Button';
 import { Wordmark } from '../brand/Wordmark';
+import { ManchasBubble } from '../brand/ManchasBubble';
 import { cn } from '../../lib/utils';
 import { manchasOutlineClass, manchasSize, manchasSrc } from '../../lib/brand/manchas';
 
@@ -75,9 +76,7 @@ export function AuthShell({ title, description, children, footer, showGuest = tr
           </div>
           {/* Manchas saluda desde la esquina de esta mitad; el globo va a su lado, a media altura, lejos del logotipo. */}
           <div className="pointer-events-none absolute bottom-0 right-8 hidden items-end gap-3 lg:flex">
-            <p className="bubble-in relative mb-[min(12vh,115px)] max-w-[11rem] rounded-2xl bg-surface-raised px-3.5 py-2.5 text-sm leading-snug text-ink after:absolute after:-right-1 after:top-1/2 after:h-3 after:w-3 after:-translate-y-1/2 after:rotate-45 after:rounded-sm after:bg-surface-raised after:content-['']">
-              ¡Hola! Soy Manchas, tu guía del campus.
-            </p>
+            <ManchasBubble className="bubble-in relative mb-[min(12vh,115px)] max-w-[13rem] rounded-2xl bg-surface-raised px-3.5 py-2.5 text-sm leading-snug text-ink after:absolute after:-right-1 after:top-1/2 after:h-3 after:w-3 after:-translate-y-1/2 after:rotate-45 after:rounded-sm after:bg-surface-raised after:content-['']" />
             <Image
               src={manchasSrc('saludo-1')}
               alt="Manchas, la mascota, saludando"

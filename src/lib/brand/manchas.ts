@@ -45,5 +45,16 @@ export function manchasSize(pose: ManchasPose, style: ManchasStyle = MANCHAS_STY
   return size;
 }
 
+/** Lo que dice Manchas al llegar a las pantallas de entrada. Siempre se presenta por su nombre; sale una al azar por carga. */
+export const MANCHAS_GREETINGS = [
+  '¡Hola! Soy Manchas. ¿Listo para ver qué está pasando?',
+  '¡Hola! Soy Manchas, tu guía del campus.',
+  '¿Primera vez? Soy Manchas, yo te guío.',
+] as const;
+
+export function pickGreeting(random: () => number = Math.random): string {
+  return MANCHAS_GREETINGS[Math.floor(random() * MANCHAS_GREETINGS.length)];
+}
+
 /** El estilo realista necesita un contorno blanco para despegarse del fondo oscuro; el animado ya lo trae. */
 export const manchasOutlineClass = MANCHAS_STYLE === 'realista' ? 'sticker-outline' : '';
