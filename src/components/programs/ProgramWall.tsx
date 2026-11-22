@@ -91,7 +91,7 @@ function Tile({ program, isOpen, compact = false, aspect = 6 / 5, tileRef, conte
         >
           <div className="min-w-0">
             {!compact && <p className="hidden text-xs text-ink-muted sm:block">Programa de pregrado</p>}
-            <p className="font-program font-bold leading-[1] tracking-[-0.01em] sm:mt-1" style={{ fontSize: fitFont(program.name, compact ? 0.9 : 1.15) }}>
+            <p className="font-program font-extrabold leading-[1] tracking-[-0.02em] sm:mt-1" style={{ fontSize: fitFont(program.name, compact ? 0.9 : 1.15) }}>
               {program.name}
             </p>
           </div>

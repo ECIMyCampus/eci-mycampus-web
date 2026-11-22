@@ -60,7 +60,7 @@ const config: Config = {
       fontFamily: {
         sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
         display: ['var(--font-sora)', 'var(--font-inter)', 'system-ui', 'sans-serif'],
-        program: ['var(--font-fraunces)', 'Georgia', 'serif'],
+        program: ['var(--font-program)', 'var(--font-sora)', 'system-ui', 'sans-serif'],
       },
       borderRadius: {
         control: '0.625rem',

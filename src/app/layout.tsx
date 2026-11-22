@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Fraunces, Inter, Sora } from 'next/font/google';
+import { Bricolage_Grotesque, Inter, Sora } from 'next/font/google';
 import './globals.css';
 import { Navbar } from '../components/layout/Navbar';
 import { BottomNav } from '../components/layout/BottomNav';
@@ -12,12 +12,11 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'sw
 /** Tipografía del logotipo (Sora 800 para «ECI», Sora 400 para «MyCampus»). */
 const sora = Sora({ subsets: ['latin'], weight: ['400', '800'], variable: '--font-sora', display: 'swap' });
 
-/** Voz editorial de los nombres de las carreras: una serif con carácter, en contraste con la geométrica del logotipo. */
-const fraunces = Fraunces({
+/** Voz de los nombres de las carreras: una grotesca expresiva y condensada, con más carácter que Inter y más aire que Sora. */
+const program = Bricolage_Grotesque({
   subsets: ['latin'],
-  style: ['normal', 'italic'],
-  axes: ['opsz', 'SOFT'],
-  variable: '--font-fraunces',
+  axes: ['opsz', 'wdth'],
+  variable: '--font-program',
   display: 'swap',
 });
 
@@ -48,7 +47,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es" className={`dark ${inter.variable} ${sora.variable} ${fraunces.variable}`}>
+    <html lang="es" className={`dark ${inter.variable} ${sora.variable} ${program.variable}`}>
       <body className="flex min-h-dvh flex-col bg-canvas font-sans text-ink antialiased">
         <SessionProvider>
           <RegistrationsProvider>

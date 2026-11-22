@@ -1,3 +1,4 @@
+import { CampusGlitch } from '../../components/brand/CampusGlitch';
 import { LivingBackground } from '../../components/brand/LivingBackground';
 import { ProgramsExplorer } from '../../components/programs/ProgramsExplorer';
 
@@ -8,6 +9,7 @@ export default function Page() {
     // Las filas y el muro se abren hacia los lados al moverse: se recortan en el borde de la pantalla, no en el del contenido.
     <div className="overflow-x-clip">
       <LivingBackground />
+      <CampusGlitch />
       <div className="mx-auto max-w-6xl px-4 pt-8 sm:px-6 sm:pt-12">
         <h1 className="text-balance text-3xl font-semibold leading-[1.1] tracking-tight text-ink sm:text-5xl">
           Conoce nuestras carreras

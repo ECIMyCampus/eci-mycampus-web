@@ -8,7 +8,7 @@ import { Program } from '../../lib/programs/programs';
  */
 export const fitFont = (text: string, maxRem: number): string => {
   const longest = Math.max(...text.split(' ').map((word) => word.length));
-  return `min(${(80 / (longest * 0.6)).toFixed(1)}cqw, ${maxRem}rem)`;
+  return `min(${(80 / (longest * 0.56)).toFixed(1)}cqw, ${maxRem}rem)`;
 };
 
 /**
@@ -20,11 +20,11 @@ export function ProgramLabel({ program, compact = false, maxRem = 2.6 }: { progr
   return (
     <span className="relative z-[1] flex flex-col">
       {prefix && (
-        <span className="font-program italic leading-tight opacity-90" style={{ fontSize: `min(10cqw, ${compact ? 0.7 : 1}rem)` }}>
+        <span className="font-program font-medium leading-tight opacity-90" style={{ fontSize: `min(10cqw, ${compact ? 0.7 : 1}rem)` }}>
           {prefix}
         </span>
       )}
-      <span className="font-program font-bold leading-[0.98] tracking-[-0.02em]" style={{ fontSize: fitFont(main, compact ? Math.min(maxRem, 1.5) : maxRem) }}>
+      <span className="font-program font-extrabold leading-[0.96] tracking-[-0.025em]" style={{ fontSize: fitFont(main, compact ? Math.min(maxRem, 1.5) : maxRem) }}>
         {main}
       </span>
     </span>
