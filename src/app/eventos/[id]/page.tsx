@@ -1,7 +1,8 @@
-import { ComingSoon } from '../../../components/ui/ComingSoon';
+import { EventDetail } from '../../../components/events/EventDetail';
 
-export const metadata = { title: 'Detalle de la actividad | ECI-MyCampus' };
+export const metadata = { title: 'Actividad | ECI-MyCampus' };
 
-export default function Page() {
-  return <ComingSoon title="Detalle de la actividad" description="La página con toda la información de cada actividad estará disponible pronto." />;
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  return <EventDetail id={id} />;
 }
