@@ -14,6 +14,11 @@ import { MicrosoftButton } from './MicrosoftButton';
 
 const FIELDS = ['email', 'password'] as const;
 
+/** Cuenta de demostración provisional: el botón solo aparece si las dos variables están definidas (ver .env.example). */
+const DEMO_EMAIL = process.env.NEXT_PUBLIC_DEMO_EMAIL;
+const DEMO_PASSWORD = process.env.NEXT_PUBLIC_DEMO_PASSWORD;
+const HAS_DEMO = Boolean(DEMO_EMAIL && DEMO_PASSWORD);
+
 export function LoginForm() {
   const router = useRouter();
   const returnTo = useSearchParams().get('volver');
@@ -69,6 +74,19 @@ export function LoginForm() {
     }
   };
 
+  const onDemo = async () => {
+    if (!DEMO_EMAIL || !DEMO_PASSWORD) return;
+    setSubmitting(true);
+    setFormError(null);
+    try {
+      await login(DEMO_EMAIL, DEMO_PASSWORD);
+      router.replace(safeRedirect(returnTo));
+    } catch (error) {
+      setFormError(error instanceof ApiRequestError ? error.message : 'No pudimos entrar con la cuenta demo.');
+      setSubmitting(false);
+    }
+  };
+
   return (
     <AuthShell
       showGuest={false}
@@ -90,6 +108,11 @@ export function LoginForm() {
       <p className="mt-2 text-center text-xs leading-relaxed text-ink-subtle">
         Como invitado puedes ver el radar y el mapa. Para inscribirte necesitas tu cuenta institucional.
       </p>
+      {HAS_DEMO && (
+        <Button variant="ghost" className="mt-2 w-full" disabled={submitting} onClick={onDemo}>
+          {submitting ? 'Entrando…' : 'Entrar con la cuenta demo (provisional)'}
+        </Button>
+      )}
       <details className="group mt-5 border-t border-line pt-4" open={Boolean(formError) || submitted}>
         <summary className="cursor-pointer list-none text-center text-sm text-ink-muted hover:text-ink">
           Usar correo y contraseña
