@@ -32,14 +32,18 @@ export function MicrosoftButton({ returnTo }: { returnTo?: string | null }) {
   };
 
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={opening}
-      className="flex h-14 w-full items-center justify-center gap-3 rounded-control border border-[#5E5E5E] bg-[#2F2F2F] px-4 text-base font-semibold text-white transition-[background-color,transform] duration-150 ease-out hover:bg-[#3a3a3a] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-ink disabled:cursor-wait disabled:opacity-70"
-    >
-      <MicrosoftLogo />
-      {opening ? 'Abriendo Microsoft…' : 'Iniciar sesión con Microsoft'}
-    </button>
+    <div className="relative isolate">
+      {/* Resplandor suave detrás: el vidrio necesita algo de color que difuminar. */}
+      <span aria-hidden="true" className="glass-glow absolute -inset-x-6 -inset-y-4 -z-10" />
+      <button
+        type="button"
+        onClick={onClick}
+        disabled={opening}
+        className="glass-button flex h-14 w-full items-center justify-center gap-3 rounded-control px-4 text-base font-semibold text-white transition-[background-color,transform,box-shadow] duration-150 ease-out active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-ink disabled:cursor-wait disabled:opacity-70"
+      >
+        <MicrosoftLogo />
+        {opening ? 'Abriendo Microsoft…' : 'Iniciar sesión con Microsoft'}
+      </button>
+    </div>
   );
 }
