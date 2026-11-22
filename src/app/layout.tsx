@@ -16,8 +16,11 @@ export const metadata: Metadata = {
   description: 'Radar de eventos en vivo, mapa ilustrado interactivo y vida universitaria de la Escuela Colombiana de Ingeniería.',
   manifest: '/manifest.json',
   icons: {
-    icon: '/icon-192.png',
-    apple: '/icon-192.png',
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/favicon-32.png', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: '/apple-icon.png',
   },
 };
 
