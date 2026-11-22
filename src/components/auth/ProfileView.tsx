@@ -1,11 +1,15 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '../../lib/api';
 import { ROLE_LABELS, getInitials } from '../../lib/auth/labels';
 import { withReturnTo } from '../../lib/auth/redirect';
+import { dayLabel, splitAgenda } from '../../lib/registrations/agenda';
+import { useOptionalRegistrations } from '../../lib/registrations/registrations';
 import { useSession } from '../../lib/session/session';
+import { formatEventTime } from '../../lib/utils';
+import Link from 'next/link';
 import { Faculty } from '../../types';
 import { Button } from '../ui/Button';
 import { Card, Skeleton } from '../ui/Card';
@@ -22,6 +26,11 @@ export function ProfileView() {
   const [faculties, setFaculties] = useState<Faculty[]>([]);
   const [leaving, setLeaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const registrations = useOptionalRegistrations();
+  const next = useMemo(
+    () => (registrations?.status === 'ready' ? (splitAgenda(registrations.items).upcoming[0]?.items[0] ?? null) : null),
+    [registrations?.status, registrations?.items],
+  );
 
   useEffect(() => {
     if (status === 'anonymous' && !leaving) router.replace(withReturnTo('/login', '/perfil'));
@@ -84,6 +93,34 @@ export function ProfileView() {
           </p>
         </div>
       </header>
+
+      {registrations?.status === 'ready' && (
+        <section aria-labelledby="proxima-title" className="space-y-1">
+          <h2 id="proxima-title" className="text-sm font-semibold text-ink">
+            Tu próxima actividad
+          </h2>
+          {next ? (
+            <p className="text-sm text-ink-muted">
+              <Link href={`/eventos/${next.eventId}`} className="font-medium text-ink hover:text-accent-ink">
+                {next.eventTitle ?? 'Actividad'}
+              </Link>
+              {next.startTime && (
+                <span className="tabular-nums">
+                  {' · '}
+                  {dayLabel(next.startTime)}, {formatEventTime(next.startTime)}
+                </span>
+              )}
+            </p>
+          ) : (
+            <p className="text-sm text-ink-muted">
+              No tienes actividades próximas.{' '}
+              <Link href="/" className="font-medium text-ink hover:text-accent-ink">
+                Mira el radar
+              </Link>
+            </p>
+          )}
+        </section>
+      )}
 
       <Card as="section" aria-label="Datos de tu cuenta" className="divide-y divide-line">
         {rows
