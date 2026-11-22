@@ -8,12 +8,12 @@ export function safeRedirect(target: string | null | undefined, fallback = '/'):
   if (!target.startsWith('/') || target.startsWith('//') || target.startsWith('/\\')) return fallback;
   if (/[\u0000-\u001f]/.test(target)) return fallback;
   // No volver a las pantallas de entrada: sería un bucle.
-  if (/^\/(login|registro)(\/|\?|#|$)/.test(target)) return fallback;
+  if (/^\/login(\/|\?|#|$)/.test(target)) return fallback;
   return target;
 }
 
 /** Enlace a una pantalla de entrada que recuerda a dónde volver. */
-export function withReturnTo(path: '/login' | '/registro', returnTo: string | null | undefined): string {
+export function withReturnTo(path: '/login', returnTo: string | null | undefined): string {
   const target = safeRedirect(returnTo, '');
   return target ? `${path}?volver=${encodeURIComponent(target)}` : path;
 }

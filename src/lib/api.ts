@@ -6,7 +6,6 @@ import {
   EventRegistration,
   Faculty,
   RadarPage,
-  RegisterInput,
   SportsFacility,
 } from '../types';
 import { getAccessToken, setAccessToken } from './session/token-store';
@@ -171,10 +170,6 @@ export const api = {
     });
     setAccessToken(result.token);
     return { user: result.user };
-  },
-
-  register(input: RegisterInput): Promise<{ message: string }> {
-    return request('/auth/register', { body: input, fallback: 'No pudimos crear tu cuenta' });
   },
 
   /** Perfil de la sesión actual. */

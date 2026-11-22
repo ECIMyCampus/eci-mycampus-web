@@ -33,7 +33,6 @@ function stubBackend({ loggedIn = false }: { loggedIn?: boolean } = {}) {
       cookie = true;
       return jsonResponse(200, { token: 'tk', user: ME });
     }
-    if (url.endsWith('/auth/register')) return jsonResponse(201, { message: 'ok' });
     if (url.endsWith('/auth/logout')) {
       cookie = false;
       return jsonResponse(200, { message: 'ok' });
@@ -51,19 +50,12 @@ function stubBackend({ loggedIn = false }: { loggedIn?: boolean } = {}) {
 }
 
 function Probe() {
-  const { status, user, login, register, logout } = useSession();
+  const { status, user, login, logout } = useSession();
   return (
     <div>
       <p data-testid="estado">{status}</p>
       <p data-testid="nombre">{user?.fullName ?? '-'}</p>
       <button onClick={() => login(ME.email, 'Secreto123')}>entrar</button>
-      <button
-        onClick={() =>
-          register({ email: ME.email, password: 'Secreto123', fullName: ME.fullName, habeasDataAccepted: true })
-        }
-      >
-        registrar
-      </button>
       <button onClick={() => logout()}>salir</button>
     </div>
   );
@@ -111,18 +103,6 @@ describe('SessionProvider', () => {
     fireEvent.click(screen.getByText('salir'));
     await waitFor(() => expect(screen.getByTestId('estado').textContent).toBe('anonymous'));
     expect(screen.getByTestId('nombre').textContent).toBe('-');
-  });
-
-  it('registrarse entra directamente, sin pedir iniciar sesión otra vez', async () => {
-    const { fetchMock } = stubBackend();
-    renderProbe();
-    await waitFor(() => expect(screen.getByTestId('estado').textContent).toBe('anonymous'));
-
-    fireEvent.click(screen.getByText('registrar'));
-
-    await waitFor(() => expect(screen.getByTestId('estado').textContent).toBe('authenticated'));
-    const called = fetchMock.mock.calls.map(([url]) => String(url).replace('/api/v1', ''));
-    expect(called).toEqual(['/auth/refresh', '/auth/register', '/auth/login']);
   });
 
   it('vuelve a visitante cuando una acción con sesión recibe 401 y el refresco ya no sirve', async () => {

@@ -2,7 +2,7 @@
 
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { api, onUnauthorized } from '../api';
-import { AuthUser, RegisterInput } from '../../types';
+import { AuthUser } from '../../types';
 
 /** `loading`: todavía no sabemos si hay sesión (la restauración al abrir la app no ha terminado). */
 export type SessionStatus = 'loading' | 'authenticated' | 'anonymous';
@@ -11,8 +11,6 @@ interface SessionValue {
   status: SessionStatus;
   user: AuthUser | null;
   login: (email: string, password: string) => Promise<AuthUser>;
-  /** Crea la cuenta y entra directamente: el backend de registro no devuelve sesión. */
-  register: (input: RegisterInput) => Promise<AuthUser>;
   logout: () => Promise<void>;
 }
 
@@ -52,20 +50,12 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
     [setSession],
   );
 
-  const register = useCallback(
-    async (input: RegisterInput) => {
-      await api.register(input);
-      return login(input.email, input.password);
-    },
-    [login],
-  );
-
   const logout = useCallback(async () => {
     await api.logout();
     setSession(null);
   }, [setSession]);
 
-  const value = useMemo(() => ({ status, user, login, register, logout }), [status, user, login, register, logout]);
+  const value = useMemo(() => ({ status, user, login, logout }), [status, user, login, logout]);
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
 }

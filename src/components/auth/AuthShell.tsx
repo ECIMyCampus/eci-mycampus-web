@@ -1,6 +1,5 @@
 import React from 'react';
 import Image from 'next/image';
-import { Button } from '../ui/Button';
 import { Wordmark } from '../brand/Wordmark';
 import { ManchasBubble } from '../brand/ManchasBubble';
 import { cn } from '../../lib/utils';
@@ -10,20 +9,16 @@ interface AuthShellProps {
   title: string;
   description: string;
   children: React.ReactNode;
-  /** Enlace a la pantalla hermana ("¿No tienes cuenta?..."). */
-  footer?: React.ReactNode;
-  /** Muestra al pie el acceso de invitado (la pantalla de entrada lo pone dentro de la tarjeta). */
-  showGuest?: boolean;
   /** Letra pequeña al final de la columna: ayuda, tratamiento de datos. */
   fineprint?: React.ReactNode;
 }
 
 /**
- * Marco común de las pantallas de entrada, partido en dos mitades: el formulario a la izquierda y el
+ * Marco de la pantalla de acceso, partido en dos mitades: el formulario a la izquierda y el
  * contorno animado del edificio E a la derecha. En celular la animación pasa arriba, como banda corta.
  * Ocupa toda la pantalla, sin las barras de navegación.
  */
-export function AuthShell({ title, description, children, footer, showGuest = true, fineprint }: AuthShellProps) {
+export function AuthShell({ title, description, children, fineprint }: AuthShellProps) {
   return (
     <div className="fixed inset-0 z-[60] overflow-y-auto bg-canvas lg:overflow-hidden">
       <div className="grid min-h-full lg:h-full lg:grid-cols-2">
@@ -32,17 +27,6 @@ export function AuthShell({ title, description, children, footer, showGuest = tr
             <h1 className="text-2xl font-semibold text-ink sm:text-3xl">{title}</h1>
             <p className="mt-1.5 text-sm text-ink-muted">{description}</p>
             <div className="mt-8">{children}</div>
-            {footer && <div className="mt-6 text-center text-sm text-ink-muted">{footer}</div>}
-            {showGuest && (
-              <div className="mt-6 border-t border-line pt-6 text-center">
-                <Button href="/" variant="ghost" className="w-full">
-                  Entrar como invitado
-                </Button>
-                <p className="mt-2 text-xs leading-relaxed text-ink-muted">
-                  Como invitado puedes ver el radar y el mapa. Para inscribirte necesitas tu cuenta institucional.
-                </p>
-              </div>
-            )}
             <div className="mt-12 flex justify-center">
               <Image
                 src="/brand/logo-eci-blanco.png"

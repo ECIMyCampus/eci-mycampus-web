@@ -7,6 +7,9 @@ import { getInitials } from '../../lib/auth/labels';
 
 const replace = vi.fn();
 let search = new URLSearchParams();
+const toastInfo = vi.fn();
+vi.mock('sonner', () => ({ toast: { info: (...args: unknown[]) => toastInfo(...args) } }));
+
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ replace }),
   useSearchParams: () => search,
@@ -15,7 +18,6 @@ vi.mock('next/navigation', () => ({
 
 import { LoginForm } from './LoginForm';
 import { ProfileView } from './ProfileView';
-import { RegisterForm } from './RegisterForm';
 
 const json = (status: number, body: unknown) =>
   new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } });
@@ -45,7 +47,6 @@ function stubBackend(overrides: Record<string, Handler> = {}, { loggedIn = false
       session = true;
       return json(200, { token: 'tk', user: ME });
     },
-    '/auth/register': () => json(201, { message: 'ok' }),
     '/auth/logout': () => {
       session = false;
       return json(200, { message: 'ok' });
@@ -67,9 +68,6 @@ const calls = (fetchMock: ReturnType<typeof stubBackend>, path: string) =>
 
 const withSession = (ui: React.ReactElement) => render(<SessionProvider>{ui}</SessionProvider>);
 
-const type = (label: RegExp | string, value: string) =>
-  fireEvent.change(screen.getByLabelText(label), { target: { value } });
-
 beforeEach(() => {
   replace.mockClear();
   search = new URLSearchParams();
@@ -81,68 +79,41 @@ afterEach(() => {
 });
 
 describe('LoginForm', () => {
-  it('avisa los errores de cada campo sin llamar al backend', async () => {
-    const fetchMock = stubBackend();
-    withSession(<LoginForm />);
-
-    fireEvent.click(screen.getByRole('button', { name: 'Entrar' }));
-
-    expect(await screen.findByText('Escribe tu correo')).toBeTruthy();
-    expect(screen.getByText('La contraseña es obligatoria')).toBeTruthy();
-    expect(calls(fetchMock, '/auth/login')).toHaveLength(0);
-    expect(document.activeElement).toBe(screen.getByLabelText('Correo'));
-  });
-
-  it('inicia sesión y vuelve a la página de donde venía', async () => {
-    search = new URLSearchParams('volver=/eventos/abc');
-    const fetchMock = stubBackend();
-    withSession(<LoginForm />);
-
-    type('Correo', 'ana@mail.escuelaing.edu.co');
-    type('Contraseña', 'Secreto123');
-    fireEvent.click(screen.getByRole('button', { name: 'Entrar' }));
-
-    await waitFor(() => expect(replace).toHaveBeenCalledWith('/eventos/abc'));
-    expect(JSON.parse(String(calls(fetchMock, '/auth/login')[0][1]?.body))).toEqual({
-      email: 'ana@mail.escuelaing.edu.co',
-      password: 'Secreto123',
-    });
-  });
-
-  it('ignora un destino externo en la URL', async () => {
-    search = new URLSearchParams('volver=https://sitio-malicioso.com');
+  it('ofrece Microsoft y entrar como invitado, sin crear cuenta ni formulario de correo', async () => {
     stubBackend();
     withSession(<LoginForm />);
 
-    type('Correo', 'ana@mail.escuelaing.edu.co');
-    type('Contraseña', 'Secreto123');
-    fireEvent.click(screen.getByRole('button', { name: 'Entrar' }));
-
-    await waitFor(() => expect(replace).toHaveBeenCalledWith('/'));
+    expect(screen.getByRole('heading', { name: 'Acceder' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: /Iniciar sesión con Microsoft/ })).toBeTruthy();
+    expect(screen.getByRole('link', { name: 'Entrar como invitado' }).getAttribute('href')).toBe('/');
+    expect(screen.queryByText(/Crear cuenta/)).toBeNull();
+    expect(screen.queryByLabelText(/Contraseña/)).toBeNull();
+    expect(screen.queryByText(/correo y contraseña/i)).toBeNull();
   });
 
-  it('muestra el mensaje del backend si las credenciales son incorrectas y deja reintentar', async () => {
-    stubBackend({ '/auth/login': () => json(401, { mensaje: 'Credenciales inválidas o cuenta inactiva.' }) });
+  it('avisa que el acceso con Microsoft llega pronto mientras el backend no lo exponga', () => {
+    stubBackend();
     withSession(<LoginForm />);
 
-    type('Correo', 'ana@mail.escuelaing.edu.co');
-    type('Contraseña', 'mala');
-    fireEvent.click(screen.getByRole('button', { name: 'Entrar' }));
+    fireEvent.click(screen.getByRole('button', { name: /Iniciar sesión con Microsoft/ }));
 
-    expect((await screen.findByRole('alert')).textContent).toBe('Credenciales inválidas o cuenta inactiva.');
-    expect((screen.getByRole('button', { name: 'Entrar' }) as HTMLButtonElement).disabled).toBe(false);
-    expect(replace).not.toHaveBeenCalled();
+    expect(toastInfo).toHaveBeenCalledWith(expect.stringMatching(/estará disponible pronto/));
   });
 
-  it('explica con claridad cuando no hay conexión', async () => {
-    stubBackend({ '/auth/login': () => Promise.reject(new TypeError('Failed to fetch')) });
+  it('explica el rechazo cuando la cuenta no es de la Escuela', () => {
+    search = new URLSearchParams('error=dominio');
+    stubBackend();
     withSession(<LoginForm />);
 
-    type('Correo', 'ana@mail.escuelaing.edu.co');
-    type('Contraseña', 'Secreto123');
-    fireEvent.click(screen.getByRole('button', { name: 'Entrar' }));
+    expect(screen.getByRole('alert').textContent).toMatch(/no es de la Escuela/);
+  });
 
-    expect((await screen.findByRole('alert')).textContent).toMatch(/No pudimos conectar con el servidor/);
+  it('muestra un aviso general ante un motivo de error desconocido', () => {
+    search = new URLSearchParams('error=otro');
+    stubBackend();
+    withSession(<LoginForm />);
+
+    expect(screen.getByRole('alert').textContent).toMatch(/No pudimos completar el acceso con Microsoft/);
   });
 
   it('quien ya tiene sesión es llevado a su destino', async () => {
@@ -151,106 +122,6 @@ describe('LoginForm', () => {
     withSession(<LoginForm />);
 
     await waitFor(() => expect(replace).toHaveBeenCalledWith('/mis-eventos'));
-  });
-
-  it('el enlace a crear cuenta conserva el destino', () => {
-    search = new URLSearchParams('volver=/eventos/abc');
-    stubBackend();
-    withSession(<LoginForm />);
-
-    expect(screen.getByRole('link', { name: 'Crear cuenta' }).getAttribute('href')).toBe('/registro?volver=%2Feventos%2Fabc');
-  });
-
-  it('muestra y oculta la contraseña', () => {
-    stubBackend();
-    withSession(<LoginForm />);
-    const input = screen.getByLabelText('Contraseña') as HTMLInputElement;
-
-    expect(input.type).toBe('password');
-    fireEvent.click(screen.getByRole('button', { name: 'Mostrar contraseña' }));
-    expect(input.type).toBe('text');
-  });
-});
-
-describe('RegisterForm', () => {
-  const fill = () => {
-    type('Nombre completo', 'Ana María Pérez');
-    type('Correo institucional', 'ana@mail.escuelaing.edu.co');
-    type('Contraseña', 'Secreto123');
-    fireEvent.click(screen.getByLabelText(/Acepto la política/));
-  };
-
-  it('valida con las mismas reglas del backend antes de enviar', async () => {
-    const fetchMock = stubBackend();
-    withSession(<RegisterForm />);
-
-    type('Nombre completo', 'Al');
-    type('Correo institucional', 'ana@gmail.com');
-    type('Contraseña', 'abc');
-    fireEvent.click(screen.getByRole('button', { name: 'Crear cuenta' }));
-
-    expect(await screen.findByText('El nombre completo debe tener al menos 3 caracteres')).toBeTruthy();
-    expect(screen.getByText(/El registro exige un correo institucional válido/)).toBeTruthy();
-    expect(screen.getByText('La contraseña debe contener al menos 8 caracteres')).toBeTruthy();
-    expect(screen.getByText(/Habeas Data\)$/)).toBeTruthy();
-    expect(calls(fetchMock, '/auth/register')).toHaveLength(0);
-  });
-
-  it('crea la cuenta, entra directamente y manda facultad y carrera solo si se eligieron', async () => {
-    const fetchMock = stubBackend();
-    withSession(<RegisterForm />);
-    await screen.findByLabelText(/Facultad/);
-
-    fill();
-    fireEvent.change(screen.getByLabelText(/Facultad/), { target: { value: 'fac-1' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Crear cuenta' }));
-
-    await waitFor(() => expect(replace).toHaveBeenCalledWith('/'));
-    expect(JSON.parse(String(calls(fetchMock, '/auth/register')[0][1]?.body))).toEqual({
-      email: 'ana@mail.escuelaing.edu.co',
-      password: 'Secreto123',
-      fullName: 'Ana María Pérez',
-      facultyId: 'fac-1',
-      habeasDataAccepted: true,
-    });
-    expect(calls(fetchMock, '/auth/login')).toHaveLength(1);
-  });
-
-  it('muestra "correo ya registrado" en el campo del correo', async () => {
-    stubBackend({ '/auth/register': () => json(409, { mensaje: 'El correo electrónico ya se encuentra registrado.' }) });
-    withSession(<RegisterForm />);
-
-    fill();
-    fireEvent.click(screen.getByRole('button', { name: 'Crear cuenta' }));
-
-    expect(await screen.findByText('El correo electrónico ya se encuentra registrado.')).toBeTruthy();
-    expect(screen.getByLabelText('Correo institucional').getAttribute('aria-invalid')).toBe('true');
-    expect(replace).not.toHaveBeenCalled();
-  });
-
-  it('pasa los errores por campo del backend al campo correspondiente', async () => {
-    stubBackend({
-      '/auth/register': () =>
-        json(400, {
-          mensaje: 'La solicitud contiene datos inválidos.',
-          detalles: [{ campo: 'body.fullName', mensaje: 'Nombre no permitido' }],
-        }),
-    });
-    withSession(<RegisterForm />);
-
-    fill();
-    fireEvent.click(screen.getByRole('button', { name: 'Crear cuenta' }));
-
-    expect(await screen.findByText('Nombre no permitido')).toBeTruthy();
-    expect(screen.getByLabelText('Nombre completo').getAttribute('aria-invalid')).toBe('true');
-  });
-
-  it('funciona sin el campo de facultad si la lista no carga', async () => {
-    stubBackend({ '/campus/faculties': () => json(500, { mensaje: 'fallo' }) });
-    withSession(<RegisterForm />);
-
-    await waitFor(() => expect(screen.queryByLabelText(/Facultad/)).toBeNull());
-    expect(screen.getByRole('button', { name: 'Crear cuenta' })).toBeTruthy();
   });
 });
 

@@ -9,7 +9,7 @@ import { cn } from '../../lib/utils';
 import { NAV_ITEMS, NavItem, isActivePath } from './nav-items';
 
 /** Sin sesión, el último botón invita a entrar en vez de llevar a un perfil que no existe. */
-const SIGN_IN_ITEM: NavItem = { label: 'Entrar', shortLabel: 'Entrar', href: '/login', icon: LogIn };
+const SIGN_IN_ITEM: NavItem = { label: 'Acceder', shortLabel: 'Acceder', href: '/login', icon: LogIn };
 
 /** Barra de navegación del celular. Respeta la zona segura inferior del dispositivo. */
 export const BottomNav: React.FC = () => {
@@ -25,7 +25,7 @@ export const BottomNav: React.FC = () => {
     >
       <div className="flex h-14 items-stretch">
         {items.map((item) => {
-          const active = isActivePath(pathname, item.href) || (item === SIGN_IN_ITEM && pathname === '/registro');
+          const active = isActivePath(pathname, item.href);
           const Icon = item.icon;
 
           return (

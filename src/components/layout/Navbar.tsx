@@ -59,7 +59,7 @@ export const Navbar: React.FC = () => {
         ) : (
           <Button href={withReturnTo('/login', pathname)} variant="secondary" size="sm">
             <User className="h-4 w-4" aria-hidden="true" />
-            Iniciar sesión
+            Acceder
           </Button>
         )}
       </div>

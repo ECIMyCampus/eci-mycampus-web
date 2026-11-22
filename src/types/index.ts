@@ -120,16 +120,6 @@ export interface AuthUser {
   avatarUrl?: string | null;
 }
 
-/** Datos del formulario de registro. El backend exige correo institucional y Habeas Data. */
-export interface RegisterInput {
-  email: string;
-  password: string;
-  fullName: string;
-  facultyId?: string;
-  academicProgram?: string;
-  habeasDataAccepted: true;
-}
-
 /** Una reserva de cupo. En la agenda (`/registrations/itinerary`) trae los datos del evento. */
 export interface EventRegistration {
   id: string;
