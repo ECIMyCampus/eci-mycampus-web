@@ -28,6 +28,11 @@ const FOLDERS: Record<ManchasStyle, string> = { realista: 'manchas', animado: 'm
 /** Medidas de los archivos, para que `next/image` reserve el espacio. Solo las poses que ya se usan. */
 const SIZES: Partial<Record<ManchasPose, Record<ManchasStyle, { width: number; height: number }>>> = {
   'saludo-1': { realista: { width: 200, height: 404 }, animado: { width: 236, height: 388 } },
+  'sin-resultados': { realista: { width: 248, height: 384 }, animado: { width: 292, height: 396 } },
+  'error-manos-cabeza': { realista: { width: 204, height: 384 }, animado: { width: 228, height: 392 } },
+  'esperando-sentado': { realista: { width: 216, height: 316 }, animado: { width: 256, height: 348 } },
+  calendario: { realista: { width: 228, height: 416 }, animado: { width: 272, height: 416 } },
+  durmiendo: { realista: { width: 196, height: 420 }, animado: { width: 272, height: 420 } },
 };
 
 export function manchasSrc(pose: ManchasPose, style: ManchasStyle = MANCHAS_STYLE): string {
