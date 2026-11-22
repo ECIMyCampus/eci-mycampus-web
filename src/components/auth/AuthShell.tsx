@@ -26,12 +26,12 @@ export function AuthShell({ title, description, children, footer, showGuest = tr
   return (
     <div className="fixed inset-0 z-[60] overflow-y-auto bg-canvas lg:overflow-hidden">
       <div className="grid min-h-full lg:h-full lg:grid-cols-2">
-        <section className="relative order-2 flex flex-col justify-start px-4 pb-44 pt-8 sm:px-12 lg:order-1 lg:overflow-y-auto lg:py-12">
+        <section className="relative order-2 flex flex-col justify-start px-4 pb-36 pt-8 sm:px-12 lg:order-1 lg:overflow-y-auto lg:py-12">
           <div className="mx-auto w-full max-w-md lg:my-auto">
             <h1 className="text-2xl font-semibold text-ink sm:text-3xl">{title}</h1>
             <p className="mt-1.5 text-sm text-ink-muted">{description}</p>
             <div className="mt-8">{children}</div>
-            {footer && <div className="mt-5 text-center text-sm text-ink-muted">{footer}</div>}
+            {footer && <div className="mt-6 text-center text-sm text-ink-muted">{footer}</div>}
             {showGuest && (
               <div className="mt-6 border-t border-line pt-6 text-center">
                 <Button href="/" variant="ghost" className="w-full">
@@ -42,17 +42,17 @@ export function AuthShell({ title, description, children, footer, showGuest = tr
                 </p>
               </div>
             )}
-            <div className="mt-8 flex justify-center">
+            <div className="mt-12 flex justify-center">
               <Image
                 src="/brand/logo-eci-blanco.png"
                 alt="Escuela Colombiana de Ingeniería Julio Garavito"
                 width={485}
                 height={246}
                 priority
-                className="h-auto w-32 opacity-80"
+                className="h-auto w-28 opacity-70"
               />
             </div>
-            {fineprint && <div className="mt-5 space-y-2 text-center text-xs leading-relaxed text-ink-muted">{fineprint}</div>}
+            {fineprint && <div className="mt-4 space-y-1 text-center text-xs leading-relaxed text-ink-muted">{fineprint}</div>}
           </div>
           <Image
             src={manchasSrc('saludo-1')}
@@ -60,7 +60,7 @@ export function AuthShell({ title, description, children, footer, showGuest = tr
             aria-hidden="true"
             width={manchasSize('saludo-1').width}
             height={manchasSize('saludo-1').height}
-            className={cn(manchasOutlineClass, 'mascot-rise pointer-events-none absolute bottom-0 right-4 h-40 w-auto select-none sm:fixed sm:right-10 lg:hidden')}
+            className={cn(manchasOutlineClass, 'mascot-rise pointer-events-none absolute bottom-0 right-4 h-28 w-auto select-none sm:fixed sm:right-10 lg:hidden')}
           />
         </section>
 
@@ -75,7 +75,7 @@ export function AuthShell({ title, description, children, footer, showGuest = tr
           </div>
           {/* Manchas saluda desde la esquina de esta mitad; el globo va a su lado, a media altura, lejos del logotipo. */}
           <div className="pointer-events-none absolute bottom-0 right-8 hidden items-end gap-3 lg:flex">
-            <p className="bubble-in relative mb-[min(17vh,160px)] max-w-[11rem] rounded-2xl bg-surface-raised px-3.5 py-2.5 text-sm leading-snug text-ink after:absolute after:-right-1 after:top-1/2 after:h-3 after:w-3 after:-translate-y-1/2 after:rotate-45 after:rounded-sm after:bg-surface-raised after:content-['']">
+            <p className="bubble-in relative mb-[min(12vh,115px)] max-w-[11rem] rounded-2xl bg-surface-raised px-3.5 py-2.5 text-sm leading-snug text-ink after:absolute after:-right-1 after:top-1/2 after:h-3 after:w-3 after:-translate-y-1/2 after:rotate-45 after:rounded-sm after:bg-surface-raised after:content-['']">
               ¡Hola! Soy Manchas, tu guía del campus.
             </p>
             <Image
@@ -84,7 +84,7 @@ export function AuthShell({ title, description, children, footer, showGuest = tr
               width={manchasSize('saludo-1').width}
               height={manchasSize('saludo-1').height}
               priority
-              className={cn(manchasOutlineClass, 'mascot-rise h-[min(36vh,340px)] w-auto select-none')}
+              className={cn(manchasOutlineClass, 'mascot-rise h-[min(26vh,250px)] w-auto select-none')}
             />
           </div>
         </aside>

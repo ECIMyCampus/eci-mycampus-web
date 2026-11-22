@@ -92,8 +92,7 @@ export function LoginForm() {
       title="Iniciar sesión"
       description="Entra con tu cuenta para inscribirte a actividades y ver tu agenda."
       footer={
-        <div className="space-y-2">
-          <p>¿Primera vez en MyCampus?</p>
+        <div>
           <Button
             href={withReturnTo('/registro', returnTo)}
             variant="ghost"
@@ -108,11 +107,10 @@ export function LoginForm() {
           <details className="group">
             <summary className="cursor-pointer list-none py-2.5 hover:text-ink">¿Problemas para entrar?</summary>
             <p className="mt-1.5 text-ink-muted">
-              Usa el correo institucional que termina en @mail.escuelaing.edu.co. Si tu cuenta es nueva, créala primero.
-              Mientras tanto puedes entrar como invitado.
+              Usa tu correo institucional (@mail.escuelaing.edu.co); si es tu primera vez, crea la cuenta. Como invitado
+              puedes ver el radar y el mapa, pero para inscribirte necesitas tu cuenta.
             </p>
           </details>
-          <p>Al crear tu cuenta aceptas el tratamiento de tus datos personales (Habeas Data) de la Escuela.</p>
           {HAS_DEMO && (
             <button
               type="button"
@@ -131,10 +129,7 @@ export function LoginForm() {
       <Button href="/" variant="ghost" className="mt-2 w-full">
         Entrar como invitado
       </Button>
-      <p className="mt-2 text-center text-xs leading-relaxed text-ink-muted">
-        Como invitado puedes ver el radar y el mapa. Para inscribirte necesitas tu cuenta institucional.
-      </p>
-      <details className="group mt-5 border-t border-line pt-4" open={Boolean(formError) || submitted}>
+      <details className="group mt-3" open={Boolean(formError) || submitted}>
         <summary className="cursor-pointer list-none py-2.5 text-center text-sm text-ink-muted hover:text-ink">
           Usar correo y contraseña
         </summary>
